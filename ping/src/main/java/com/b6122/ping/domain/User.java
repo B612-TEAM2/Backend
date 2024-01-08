@@ -1,13 +1,16 @@
 package com.b6122.ping.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -21,8 +24,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private UserRole role; // ROLE_USER or ROLE_ADMIN
 
-//    @ElementCollection
-//    private List<Long> friends = new ArrayList<>(); //친구의 id 저장
+    @OneToMany(mappedBy = "user")
+    private List<Post> posts = new ArrayList<>();
 
     /** oauth2 연동 유저정보(username, providerId, provider) **/
     private String username;
@@ -30,7 +33,7 @@ public class User {
     private String providerId; //google, kakao 등 사용자의 고유Id (ex: google의 'sub'값 등)
 
     //회원 생성
-    public static User createUser() {
-
-    }
+//    public static User createUser() {
+//
+//    }
 }

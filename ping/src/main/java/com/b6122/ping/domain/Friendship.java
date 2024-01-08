@@ -29,8 +29,8 @@ public class Friendship {
 
     //친구 요청 시 메소드
     //fromUser와 toUser사이 정방향/역방향 레코드 모두 추가
-    public static Friendship createFriendship() {
-
-    }
+//    public static Friendship createFriendship() {
+//
+//    }
 }
 
