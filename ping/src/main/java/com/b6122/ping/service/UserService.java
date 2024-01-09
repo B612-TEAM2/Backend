@@ -45,7 +45,6 @@ public class UserService {
                 .findByUsername(oAuthUser.getProvider() + "_" + oAuthUser.getProviderId())
                 .orElseGet(() -> {
                     User user = User.builder()
-                            .username(oAuthUser.getProvider() + "_" + oAuthUser.getProviderId())
                             .provider(oAuthUser.getProvider())
                             .providerId(oAuthUser.getProviderId())
                             .role(UserRole.ROLE_USER)
@@ -55,7 +54,7 @@ public class UserService {
                     return userDataRepository.save(user);
                 });
         return new UserDto(findUser.getId(), findUser.getProvider(),
-                findUser.getProviderId(), findUser.getUsername(), findUser.getRole());
+                findUser.getProviderId(), findUser.getRole());
 
     }
 
