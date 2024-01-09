@@ -5,6 +5,8 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
@@ -17,9 +19,8 @@ public class Post extends TimeEntity{
     @Column(name = "title")
     private char title; // 제목
 
-    @ColumnDefault("0")
-    @Column(name = "likeNum")
-    private int likeNum; //좋아요 수
+    @OneToMany(mappedBy = "post")
+    private List<Like> likes = new ArrayList<>();
 
     @ColumnDefault("0")
     @Column(name = "viewerNum")
