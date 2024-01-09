@@ -24,7 +24,7 @@ public class RestApiController {
     private final JwtService jwtService;
     private final UserService userService;
 
-    @PostMapping("/oauth/jwt/google")
+    @PostMapping("/oauth/jwt")
     public ResponseEntity<Map<String, String>> createJwt(@RequestBody CreateJwtRequestDto jwtRequestDto) {
         //회원가입
         UserDto userDto = userService.joinOAuthUser(jwtRequestDto);

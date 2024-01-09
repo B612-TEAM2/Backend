@@ -28,7 +28,6 @@ public class User {
     private List<Post> posts = new ArrayList<>();
 
     /** oauth2 연동 유저정보(username, providerId, provider) **/
-    private String username;
     private String provider; //"google", "kakao", etc.
     private String providerId; //google, kakao 등 사용자의 고유Id (ex: google의 'sub'값 등)
 
