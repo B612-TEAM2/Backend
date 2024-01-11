@@ -1,6 +1,7 @@
 package com.b6122.ping.service;
 
 import com.b6122.ping.config.jwt.JwtProperties;
+import com.b6122.ping.oauth.provider.OAuthProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,8 @@ public class OAuthService {
 
         // 데이터 작성, 요청 시 필요한 필수 요소만 포함
         String requestBody = "grant_type=authorization_code" +
-                "&client_id=clientId" +
-                "&redirect_uri=redirectUri" +
+                "&client_id=" + OAuthProperties.KAKAO_CLIENT_ID +
+                "&redirect_uri" + OAuthProperties.KAKAO_REDIRECT_URI +
                 "&code=" + authorizationCode;
 
         // 데이터 전송
