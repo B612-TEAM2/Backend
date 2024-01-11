@@ -19,7 +19,9 @@ public class User {
     private Long id;
 
     @Column(unique = true)
-    private String nickname; // 사용자가 직접 입력하는 고유닉네임
+    private String nickname; // 사용자가 직접 입력하는 고유닉네임 지예님
+
+    private String username;
 
     @Enumerated(EnumType.STRING)
     private UserRole role; // ROLE_USER or ROLE_ADMIN
