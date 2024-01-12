@@ -1,14 +1,15 @@
 package com.b6122.ping.service;
 
-import com.b6122.ping.config.jwt.JwtProperties;
 import com.b6122.ping.oauth.provider.OAuthProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,8 @@ public class OAuthService {
         // HTTP 연결 설정
         URL url = new URL(tokenEndpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("POST");
+        connection.setRequestMethod("POST"); // post만 가능
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8"); //필수
         connection.setDoOutput(true); //데이터의 전송을 허용, 기본 값 false
 
         // 데이터 작성, 요청 시 필요한 필수 요소만 포함
@@ -40,7 +42,6 @@ public class OAuthService {
 
         // 데이터 전송
         try (OutputStream os = connection.getOutputStream();
-             //전송 하기 전에 인코딩을 해야되는지..? 한 번 디버깅 해봐야겠다.
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os))) {
             writer.write(requestBody);
             writer.flush();
@@ -56,11 +57,10 @@ public class OAuthService {
                 while ((line = reader.readLine()) != null) {
                     response.append(line);
                 }
-                // JSON -> 객체
+
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(response.toString());
                 System.out.println("jsonNode = " + jsonNode);
-
                 // access token 추출 후 컨트롤러로 전달
                 return jsonNode.get("access_token").asText();
             }
@@ -72,8 +72,42 @@ public class OAuthService {
                 while ((line = errorReader.readLine()) != null) {
                     errorResponse.append(line);
                 }
+                return errorResponse.toString(); //예외처리 필요..
+            }
+        }
+    }
 
-                return errorResponse.toString();
+    public Map<String, Object> getKakaoUserInfo(String accessToken) throws IOException{
+        String requestEndpoint = "https://kapi.kakao.com/v2/user/me";
+
+        URL url = new URL(requestEndpoint);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST"); //get post 둘다 가능
+        connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=utf-8"); //필수
+        connection.setRequestProperty("Authorization", "Bearer " + accessToken); //필수
+        connection.setDoOutput(true);
+
+        int responseCode = connection.getResponseCode();
+        if (responseCode == HttpURLConnection.HTTP_OK) {
+            // 성공적으로 값을 전송받았다면
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
+                }
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.readValue(response.toString(), Map.class);
+            }
+        } else {
+            try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"))) {
+                StringBuilder errorResponse = new StringBuilder();
+                String line;
+                while ((line = errorReader.readLine()) != null) {
+                    errorResponse.append(line);
+                }
+                ObjectMapper objectMapper = new ObjectMapper();
+                return objectMapper.readValue(errorResponse.toString(), Map.class); //예외처리 필요..
             }
         }
     }
