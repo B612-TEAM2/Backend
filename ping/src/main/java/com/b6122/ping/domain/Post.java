@@ -2,6 +2,7 @@ package com.b6122.ping.domain;
 
 import com.b6122.ping.repository.PostRepository;
 import jakarta.persistence.*;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -12,7 +13,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "post")
+@RequiredArgsConstructor
 public class Post extends TimeEntity{
+
+    private final PostRepository postRepository;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
