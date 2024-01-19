@@ -30,7 +30,7 @@ public class UserService {
     public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
         
         //OAuthUser 생성을 위한 매핑
-        String provider = "google";
+        String provider = userInfoMap.get("provider").toString();
         String providerId = userInfoMap.get("id").toString();
         String username = provider + "_" + providerId;
 
@@ -50,6 +50,7 @@ public class UserService {
                     User user = User.builder()
                             .provider(oAuthUser.getProvider())
                             .providerId(oAuthUser.getProviderId())
+                            .username(oAuthUser.getName())
                             .role(UserRole.ROLE_USER)
                             .build();
 
