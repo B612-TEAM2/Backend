@@ -2,7 +2,7 @@ package com.b6122.ping.controller;
 
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.service.JwtService;
-import com.b6122.ping.service.OAuthService;
+import com.b6122.ping.service.KakaoOAuthService;
 import com.b6122.ping.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +20,7 @@ public class RestApiController {
 
     private final JwtService jwtService;
     private final UserService userService;
-    private final OAuthService oAuthService;
+    private final KakaoOAuthService oAuthService;
 
     @PostMapping("/oauth/jwt/kakao")
     public ResponseEntity<Map<String, String>> createJwt(@RequestBody Map<String, Object> request) throws IOException {

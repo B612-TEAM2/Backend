@@ -27,13 +27,7 @@ public class UserService {
     private final UserDataRepository userDataRepository;
 
     @Transactional
-    public void join(User user) {
-        userDataRepository.save(user);
-    }
-
-    @Transactional
     public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
-
 
         //OAuthUser 생성을 위한 매핑
         String provider = "kakao";
