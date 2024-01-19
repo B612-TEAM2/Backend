@@ -5,14 +5,14 @@ import com.b6122.ping.service.JwtService;
 import com.b6122.ping.service.KakaoOAuthService;
 import com.b6122.ping.service.UserService;
 import com.b6122.ping.service.GoogleOAuthService;
+import com.b6122.ping.service.NaverOAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
+import java.io.IOException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.io.IOException;
 import java.util.Map;
 
 
@@ -20,10 +20,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RestApiController {
 
+    private final NaverOAuthService naverOAuthService;
+    private final GoogleOAuthService googleOAuthService;
     private final JwtService jwtService;
     private final UserService userService;
     private final KakaoOAuthService kakaoOAuthService;
-    private final GoogleOAuthService googleOAuthService;
 
     @PostMapping("/oauth/jwt/kakao")
     public ResponseEntity<Map<String, String>> createJwt(@RequestBody Map<String, Object> request) throws IOException {
@@ -39,7 +40,7 @@ public class RestApiController {
         // jwt accessToken을 리액트 서버에 return
         return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
     }
-  
+
     @PostMapping("/oauth/jwt/google")
     public ResponseEntity<Map<String, String>> createGoogleJwt(@RequestBody Map<String, Object> request) throws IOException {
         // Frontend sends the authorization code to the server
@@ -57,5 +58,22 @@ public class RestApiController {
         // Return the JWT access token to the React server
         return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
     }
+
+    @CrossOrigin(origins = "https://localhost:3000/authnaver")
+    @PostMapping("/oauth/jwt/naver")
+    public ResponseEntity<Map<String, String>> createJwtNaver(@RequestBody Map<String, Object> request) throws IOException {
+        // Frontend sends the authorization code, use it to request Naver for an access token
+        String accessToken = naverOAuthService.getNaverAccessToken(request.get("code").toString());
+
+        // Use the obtained access token to fetch Naver user information from Naver resource server
+        Map<String, Object> userInfo = naverOAuthService.getNaverUserInfo(accessToken);
+
+        // Based on the retrieved information, perform user registration
+        UserDto userDto = userService.joinOAuthUser(userInfo);
+
+        // Return the JWT access token to the React server
+        return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
+    }
+
 
 }
