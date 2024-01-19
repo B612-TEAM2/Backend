@@ -13,10 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "post")
-@RequiredArgsConstructor
 public class Post extends TimeEntity{
-
-    private final PostRepository postRepository;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
