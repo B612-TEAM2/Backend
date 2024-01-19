@@ -1,0 +1,973 @@
+Index: ping/src/main/java/com/b6122/ping/domain/Like.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.b6122.ping.domain;\r\n\r\npublic class Like {\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/domain/Like.java b/ping/src/main/java/com/b6122/ping/domain/Like.java
+--- a/ping/src/main/java/com/b6122/ping/domain/Like.java	
++++ b/ping/src/main/java/com/b6122/ping/domain/Like.java	
+@@ -1,4 +1,5 @@
+ package com.b6122.ping.domain;
+ 
+ public class Like {
++
+ }
+Index: ping/src/main/java/com/b6122/ping/domain/TimeEntity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.b6122.ping.domain;\r\n\r\n\r\nimport lombok.Getter;\r\nimport org.springframework.data.annotation.CreatedDate;\r\nimport org.springframework.data.annotation.LastModifiedDate;\r\nimport org.springframework.data.jpa.domain.support.AuditingEntityListener;\r\n\r\nimport jakarta.persistence.EntityListeners;\r\nimport jakarta.persistence.MappedSuperclass;\r\nimport java.time.LocalDateTime;\r\n\r\n//JPA Entity 클래스가 TimeEntity를 상속할 경우 이 클래스의 변수를 Column으로 인식\r\n@Getter\r\n@MappedSuperclass\r\n@EntityListeners(AuditingEntityListener.class) //시간 값을 자동으로 할당\r\npublic class TimeEntity {\r\n\r\n    @CreatedDate\r\n    private LocalDateTime createdDate;\r\n\r\n    @LastModifiedDate\r\n    private LocalDateTime modifiedDate;\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/domain/TimeEntity.java b/ping/src/main/java/com/b6122/ping/domain/TimeEntity.java
+--- a/ping/src/main/java/com/b6122/ping/domain/TimeEntity.java	
++++ b/ping/src/main/java/com/b6122/ping/domain/TimeEntity.java	
+@@ -1,6 +1,7 @@
+ package com.b6122.ping.domain;
+ 
+ 
++import jakarta.persistence.Column;
+ import lombok.Getter;
+ import org.springframework.data.annotation.CreatedDate;
+ import org.springframework.data.annotation.LastModifiedDate;
+@@ -17,8 +18,11 @@
+ public class TimeEntity {
+ 
+     @CreatedDate
+-    private LocalDateTime createdDate;
++    @Column(updatable = false)
++    private LocalDateTime createdAt;
+ 
+     @LastModifiedDate
+-    private LocalDateTime modifiedDate;
++    private LocalDateTime modifiedAt;
++
++
+ }
+Index: ping/src/main/java/com/b6122/ping/domain/User.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.b6122.ping.domain;\r\n\r\nimport jakarta.persistence.*;\r\nimport lombok.AccessLevel;\r\nimport lombok.Getter;\r\nimport lombok.NoArgsConstructor;\r\n\r\n@Entity\r\n@Getter\r\n@NoArgsConstructor(access = AccessLevel.PROTECTED)\r\npublic class User {\r\n\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    @Column(name = \"user_id\")\r\n    private Long id;\r\n\r\n    @Column(unique = true)\r\n    private String nickname; // 사용자가 직접 입력하는 고유닉네임\r\n\r\n    @Enumerated(EnumType.STRING)\r\n    private UserRole role; // ROLE_USER or ROLE_ADMIN\r\n\r\n//    @ElementCollection\r\n//    private List<Long> friends = new ArrayList<>(); //친구의 id 저장\r\n\r\n    /** oauth2 연동 유저정보(username, providerId, provider) **/\r\n    private String username;\r\n    private String provider; //\"google\", \"kakao\", etc.\r\n    private String providerId; //google, kakao 등 사용자의 고유Id (ex: google의 'sub'값 등)\r\n\r\n    //회원 생성\r\n    public static User createUser() {\r\n\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/domain/User.java b/ping/src/main/java/com/b6122/ping/domain/User.java
+--- a/ping/src/main/java/com/b6122/ping/domain/User.java	
++++ b/ping/src/main/java/com/b6122/ping/domain/User.java	
+@@ -29,8 +29,4 @@
+     private String provider; //"google", "kakao", etc.
+     private String providerId; //google, kakao 등 사용자의 고유Id (ex: google의 'sub'값 등)
+ 
+-    //회원 생성
+-    public static User createUser() {
+-
+-    }
+ }
+Index: ping/src/main/java/com/b6122/ping/domain/Post.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.b6122.ping.domain;\r\n\r\nimport jakarta.persistence.*;\r\nimport org.hibernate.annotations.ColumnDefault;\r\nimport org.springframework.data.annotation.CreatedDate;\r\nimport org.springframework.data.annotation.LastModifiedDate;\r\n\r\n\r\n\r\n@Entity\r\n@Table(name = \"post\")\r\npublic class Post extends TimeEntity{\r\n    @Id\r\n    @GeneratedValue(strategy = GenerationType.IDENTITY)\r\n    @Column(name = \"post_id\")\r\n    private  long id; //post id\r\n    @Column(name = \"title\")\r\n    private char title; // 제목\r\n\r\n    @ColumnDefault(\"0\")\r\n    @Column(name = \"likeNum\")\r\n    private int likeNum; //좋아요 수\r\n\r\n    @ColumnDefault(\"0\")\r\n    @Column(name = \"viewerNum\")\r\n    private int viewerNum; // 조회수\r\n\r\n\r\n    @Column(name = \"content\", nullable = false)\r\n    private String content;\r\n\r\n\r\n    @ManyToOne(fetch = FetchType.LAZY)\r\n    @JoinColumn(name = \"user_id\")\r\n    private User user; //사용자\r\n\r\n    @Enumerated(EnumType.STRING)\r\n    private PostScope scope; //공개 범위 [private, friends, public]\r\n\r\n    //연관관계 매서드//\r\n    public void setUser(User user) {\r\n        this.user = user;\r\n        user.getPosts().add(this); //user의 posts list에 post(this) 추가\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/domain/Post.java b/ping/src/main/java/com/b6122/ping/domain/Post.java
+--- a/ping/src/main/java/com/b6122/ping/domain/Post.java	
++++ b/ping/src/main/java/com/b6122/ping/domain/Post.java	
+@@ -1,14 +1,22 @@
+ package com.b6122.ping.domain;
+ 
+ import jakarta.persistence.*;
++import lombok.Getter;
++import lombok.Setter;
+ import org.hibernate.annotations.ColumnDefault;
++
++import com.b6122.ping.repository.datajpa.PostDataRepository;
+ import org.springframework.data.annotation.CreatedDate;
+ import org.springframework.data.annotation.LastModifiedDate;
++import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+ 
++import java.time.LocalDateTime;
+ 
+-
++@Getter @Setter
+ @Entity
+ @Table(name = "post")
++
++
+ public class Post extends TimeEntity{
+     @Id
+     @GeneratedValue(strategy = GenerationType.IDENTITY)
+@@ -18,18 +26,22 @@
+     private char title; // 제목
+ 
+     @ColumnDefault("0")
+-    @Column(name = "likeNum")
+-    private int likeNum; //좋아요 수
++    @Column(name = "likeCount")
++    private int likeCount; //좋아요 수
+ 
+     @ColumnDefault("0")
+-    @Column(name = "viewerNum")
+-    private int viewerNum; // 조회수
++    @Column(name = "viewCount")
++    private int viewCount; // 조회수
+ 
+ 
+     @Column(name = "content", nullable = false)
+     private String content;
+ 
+ 
++    //주소
++
++
++
+     @ManyToOne(fetch = FetchType.LAZY)
+     @JoinColumn(name = "user_id")
+     private User user; //사용자
+@@ -43,4 +55,23 @@
+         user.getPosts().add(this); //user의 posts list에 post(this) 추가
+     }
+ 
++    //생성자
++
++
++    //메서드
++    public Long getId(Post post){
++        return post.id;
++    }
++
++    public int getViewCount(Post post){
++        return post.viewCount;
++    }
++
++    public Post getPost(Long id){
++        Post post = PostDataRepository.findById(id);
++
++        PostDataRepository.updateViewCount(getViewCount(post) + 1), getId(post))
++        return post;
++
++    }
+ }
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\r\n  <component name=\"FrameworkDetectionExcludesConfiguration\">\r\n    <file type=\"web\" url=\"file://$PROJECT_DIR$/ping\" />\r\n  </component>\r\n  <component name=\"ProjectRootManager\">\r\n    <output url=\"file://$PROJECT_DIR$/out\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	
++++ b/.idea/misc.xml	
+@@ -4,7 +4,7 @@
+   <component name="FrameworkDetectionExcludesConfiguration">
+     <file type="web" url="file://$PROJECT_DIR$/ping" />
+   </component>
+-  <component name="ProjectRootManager">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="17" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/out" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java b/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java
+new file mode 100644
+--- /dev/null	
++++ b/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java	
+@@ -0,0 +1,34 @@
++package com.b6122.ping.repository.datajpa;
++
++import jakarta.persistence.EntityManager;
++import jakarta.persistence.PersistenceContext;
++import org.springframework.data.jpa.repository.JpaRepository;
++import org.springframework.data.jpa.repository.Modifying;
++import org.springframework.data.jpa.repository.Query;
++import org.springframework.data.repository.query.Param;
++
++import com.b6122.ping.domain.Post;
++import org.springframework.stereotype.Repository;
++
++import java.util.Optional;
++
++@Repository
++public interface PostDataRepository extends JpaRepository<Post, Long> {
++
++    @PersistenceContext
++    private EntityManager em;
++
++    public Long save(Post post){
++        em.persist(post);
++        return post.getId();
++    }
++
++    @Modifying
++    @Query("update Post p set p.viewCount = :viewCount where p.id  = :id")
++    void updateViewCount(@Param("viewCount") int viewCount, @Param("id") Long id);
++
++
++    public static Post findById(Long id){
++        return em.find(Post.class, id);
++    }
++}
+Index: ping/src/main/java/com/b6122/ping/config/SecurityConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/config/SecurityConfig.java b/ping/src/main/java/com/b6122/ping/config/SecurityConfig.java
+new file mode 100644
+--- /dev/null	
++++ b/ping/src/main/java/com/b6122/ping/config/SecurityConfig.java	
+@@ -0,0 +1,57 @@
++package com.b6122.ping.config;
++
++import com.b6122.ping.config.jwt.JwtAuthorizationFilter;
++import com.b6122.ping.repository.UserRepository;
++import lombok.RequiredArgsConstructor;
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.security.authentication.AuthenticationManager;
++import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
++import org.springframework.security.config.annotation.web.builders.HttpSecurity;
++import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
++import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
++import org.springframework.security.config.http.SessionCreationPolicy;
++import org.springframework.security.core.userdetails.UserDetailsService;
++import org.springframework.security.web.SecurityFilterChain;
++import org.springframework.security.web.context.SecurityContextPersistenceFilter;
++import org.springframework.web.filter.CorsFilter;
++
++@Configuration
++@EnableWebSecurity
++@RequiredArgsConstructor
++public class SecurityConfig {
++
++    private final CorsFilter corsFilter;
++    private final UserDetailsService userDetailsService;
++    private final UserRepository userRepository;
++
++    @Bean
++    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
++
++        //AuthenticaionManager 생성
++        AuthenticationManagerBuilder sharedObject = http.getSharedObject(AuthenticationManagerBuilder.class);
++        sharedObject.userDetailsService(this.userDetailsService); //이 userDetailsService와 PrincipalDetailsService에서 상속받는 인터페이스는 서로 같음.
++        AuthenticationManager authenticationManager = sharedObject.build();
++        http.authenticationManager(authenticationManager);
++
++        http.csrf(AbstractHttpConfigurer::disable);
++        //세션 만들지 않기.
++        http
++                .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
++                .addFilter(corsFilter)
++                .formLogin((formLogin) -> formLogin.disable())
++//                .addFilter(new JwtAuthenticationFilter((authenticationManager)))
++                .addFilter((new JwtAuthorizationFilter(authenticationManager, userRepository)))
++                .httpBasic((httpBasic) -> httpBasic.disable()) //Bearer 방식을 사용하기 위해 basic 인증 비활성화
++                .authorizeHttpRequests((authorize) ->
++                        authorize
++                                .requestMatchers("/user/**").hasAnyRole("ADMIN", "MANAGER", "USER")
++                                .requestMatchers("/admin/**").hasAnyRole("ADMIN")
++                                .anyRequest().permitAll());
++
++
++
++
++        return http.build();
++    }
++}
+\ No newline at end of file
+Index: ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthenticationFilter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthenticationFilter.java b/ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthenticationFilter.java
+new file mode 100644
+--- /dev/null	
++++ b/ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthenticationFilter.java	
+@@ -0,0 +1,95 @@
++package com.b6122.ping.config.jwt;
++
++import java.io.IOException;
++import java.util.Date;
++
++import javax.servlet.FilterChain;
++import javax.servlet.ServletException;
++import javax.servlet.http.Cookie;
++import javax.servlet.http.HttpServletRequest;
++import javax.servlet.http.HttpServletResponse;
++
++import org.springframework.context.annotation.Configuration;
++import org.springframework.security.authentication.AuthenticationManager;
++import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
++import org.springframework.security.core.Authentication;
++import org.springframework.security.core.AuthenticationException;
++import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
++
++import com.auth0.jwt.JWT;
++import com.auth0.jwt.algorithms.Algorithm;
++
++import com.b6122.ping.config.auth.PrincipalDetails;
++import com.b6122.ping.dto.LoginRequestDto;
++
++import com.fasterxml.jackson.databind.ObjectMapper;
++
++import lombok.RequiredArgsConstructor;
++
++@RequiredArgsConstructor
++public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
++
++    private final AuthenticationManager authenticationManager;
++
++    // Authentication 객체 만들어서 리턴 => 의존 : AuthenticationManager
++    // 인증 요청시에 실행되는 함수 => /login
++    @Override
++    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
++            throws AuthenticationException {
++
++        System.out.println("JwtAuthenticationFilter : 진입");
++
++        // request에 있는 username과 password를 파싱해서 자바 Object로 받기
++        ObjectMapper om = new ObjectMapper();
++        LoginRequestDto loginRequestDto = null;
++        try {
++            loginRequestDto = om.readValue(request.getInputStream(), LoginRequestDto.class);
++        } catch (Exception e) {
++            e.printStackTrace();
++        }
++
++        System.out.println("JwtAuthenticationFilter : "+loginRequestDto);
++
++        // 유저네임패스워드 토큰 생성
++        UsernamePasswordAuthenticationToken authenticationToken =
++                new UsernamePasswordAuthenticationToken(
++                        loginRequestDto.getUsername(),
++                        loginRequestDto.getPassword());
++
++        System.out.println("JwtAuthenticationFilter : 토큰생성완료");
++
++        // authenticate() 함수가 호출 되면 인증 프로바이더가 유저 디테일 서비스의
++        // loadUserByUsername(토큰의 첫번째 파라메터) 를 호출하고
++        // UserDetails를 리턴받아서 토큰의 두번째 파라메터(credential)과
++        // UserDetails(DB값)의 getPassword()함수로 비교해서 동일하면
++        // Authentication 객체를 만들어서 필터체인으로 리턴해준다.
++
++        // Tip: 인증 프로바이더의 디폴트 서비스는 UserDetailsService 타입
++        // Tip: 인증 프로바이더의 디폴트 암호화 방식은 BCryptPasswordEncoder
++        // 결론은 인증 프로바이더에게 알려줄 필요가 없음.
++        Authentication authentication =
++                authenticationManager.authenticate(authenticationToken);
++
++        PrincipalDetails principalDetailis = (PrincipalDetails) authentication.getPrincipal();
++        System.out.println("Authentication : "+principalDetailis.getUser().getUsername());
++        return authentication;
++    }
++
++    // JWT Token 생성해서 response에 담아주기
++    @Override
++    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
++                                            Authentication authResult) throws IOException, ServletException {
++
++        PrincipalDetails principalDetailis = (PrincipalDetails) authResult.getPrincipal();
++
++        String jwtToken = JWT.create()
++                .withSubject(principalDetailis.getUsername())
++                .withExpiresAt(new Date(System.currentTimeMillis()+JwtProperties.EXPIRATION_TIME))
++                .withClaim("id", principalDetailis.getUser().getId())
++                .withClaim("username", principalDetailis.getUser().getUsername())
++                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
++
++        response.addHeader(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX+jwtToken);
++    }
++
++}
+\ No newline at end of file
+Index: ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthorizationFilter.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthorizationFilter.java b/ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthorizationFilter.java
+new file mode 100644
+--- /dev/null	
++++ b/ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthorizationFilter.java	
+@@ -0,0 +1,69 @@
++package com.b6122.ping.config.jwt;
++
++import java.io.IOException;
++
++import javax.servlet.FilterChain;
++import javax.servlet.ServletException;
++import javax.servlet.http.HttpServletRequest;
++import javax.servlet.http.HttpServletResponse;
++
++import org.springframework.security.authentication.AuthenticationManager;
++import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
++import org.springframework.security.core.Authentication;
++import org.springframework.security.core.context.SecurityContextHolder;
++import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
++
++import com.auth0.jwt.JWT;
++import com.auth0.jwt.algorithms.Algorithm;
++
++import com.b6122.ping.config.auth.PrincipalDetails;
++import com.b6122.ping.domain.User;
++import com.b6122.ping.UserRepository;
++
++// 인가
++public class JwtAuthorizationFilter extends BasicAuthenticationFilter{
++
++    private UserRepository userRepository;
++
++    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
++        super(authenticationManager);
++        this.userRepository = userRepository;
++    }
++
++    @Override
++    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
++            throws IOException, ServletException {
++        String header = request.getHeader(JwtProperties.HEADER_STRING);
++        if(header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
++            chain.doFilter(request, response);
++            return;
++        }
++        System.out.println("header : "+header);
++        String token = request.getHeader(JwtProperties.HEADER_STRING)
++                .replace(JwtProperties.TOKEN_PREFIX, "");
++
++        // 토큰 검증 (이게 인증이기 때문에 AuthenticationManager도 필요 없음)
++        // 내가 SecurityContext에 집적접근해서 세션을 만들때 자동으로 UserDetailsService에 있는 loadByUsername이 호출됨.
++        String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
++                .getClaim("username").asString();
++
++        if(username != null) {
++            User user = userRepository.findByUsername(username);
++
++            // 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해
++            // 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장!
++            PrincipalDetails principalDetails = new PrincipalDetails(user);
++            Authentication authentication =
++                    new UsernamePasswordAuthenticationToken(
++                            principalDetails, //나중에 컨트롤러에서 DI해서 쓸 때 사용하기 편함.
++                            null, // 패스워드는 모르니까 null 처리, 어차피 지금 인증하는게 아니니까!!
++                            principalDetails.getAuthorities());
++
++            // 강제로 시큐리티의 세션에 접근하여 값 저장
++            SecurityContextHolder.getContext().setAuthentication(authentication);
++        }
++
++        chain.doFilter(request, response);
++    }
++
++}
+\ No newline at end of file
+Index: .idea/uiDesigner.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/uiDesigner.xml b/.idea/uiDesigner.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/uiDesigner.xml	
+@@ -0,0 +1,124 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Palette2">
++    <group name="Swing">
++      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
++      </item>
++      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
++      </item>
++      <item class="javax.swing.JPanel" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JScrollPane" icon="/com/intellij/uiDesigner/icons/scrollPane.svg" removable="false" auto-create-binding="false" can-attach-label="true">
++        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JButton" icon="/com/intellij/uiDesigner/icons/button.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
++        <initial-values>
++          <property name="text" value="Button" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="RadioButton" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="CheckBox" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JLabel" icon="/com/intellij/uiDesigner/icons/label.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="Label" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JTextField" icon="/com/intellij/uiDesigner/icons/textField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JFormattedTextField" icon="/com/intellij/uiDesigner/icons/formattedTextField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JEditorPane" icon="/com/intellij/uiDesigner/icons/editorPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JComboBox" icon="/com/intellij/uiDesigner/icons/comboBox.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JTable" icon="/com/intellij/uiDesigner/icons/table.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JList" icon="/com/intellij/uiDesigner/icons/list.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTree" icon="/com/intellij/uiDesigner/icons/tree.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTabbedPane" icon="/com/intellij/uiDesigner/icons/tabbedPane.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
++          <preferred-size width="200" height="200" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JSplitPane" icon="/com/intellij/uiDesigner/icons/splitPane.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
++          <preferred-size width="200" height="200" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JSpinner" icon="/com/intellij/uiDesigner/icons/spinner.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JSlider" icon="/com/intellij/uiDesigner/icons/slider.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JSeparator" icon="/com/intellij/uiDesigner/icons/separator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JProgressBar" icon="/com/intellij/uiDesigner/icons/progressbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1" />
++      </item>
++      <item class="javax.swing.JToolBar" icon="/com/intellij/uiDesigner/icons/toolbar.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1">
++          <preferred-size width="-1" height="20" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JToolBar$Separator" icon="/com/intellij/uiDesigner/icons/toolbarSeparator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="0" anchor="0" fill="1" />
++      </item>
++      <item class="javax.swing.JScrollBar" icon="/com/intellij/uiDesigner/icons/scrollbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="0" anchor="0" fill="2" />
++      </item>
++    </group>
++  </component>
++</project>
+\ No newline at end of file
+Index: ping/src/main/java/com/b6122/ping/config/CorsConfig.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/config/CorsConfig.java b/ping/src/main/java/com/b6122/ping/config/CorsConfig.java
+new file mode 100644
+--- /dev/null	
++++ b/ping/src/main/java/com/b6122/ping/config/CorsConfig.java	
+@@ -0,0 +1,23 @@
++package com.b6122.ping.config;
++
++import org.springframework.context.annotation.Bean;
++import org.springframework.context.annotation.Configuration;
++import org.springframework.web.cors.CorsConfiguration;
++import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
++import org.springframework.web.filter.CorsFilter;
++
++public class CorsConfig {
++    @Bean
++    public CorsFilter corsFilter() {
++        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
++        CorsConfiguration config = new CorsConfiguration();
++        config.setAllowCredentials(true);
++        config.addAllowedOrigin("*"); // e.g. http://domain1.com
++        config.addAllowedHeader("*");
++        config.addAllowedMethod("*");
++
++        source.registerCorsConfiguration("/api/**", config);
++        return new CorsFilter(source);
++    }
++
++}
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"f7b5d0e3-c203-4ac2-8340-d5731dea6b7c\" name=\"Changes\" comment=\"\" />\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ExternalProjectsData\">\r\n    <projectState path=\"$PROJECT_DIR$/ping\">\r\n      <ProjectState />\r\n    </projectState>\r\n  </component>\r\n  <component name=\"ExternalProjectsManager\">\r\n    <system id=\"GRADLE\">\r\n      <state>\r\n        <projects_view>\r\n          <tree_state>\r\n            <expand />\r\n            <select />\r\n          </tree_state>\r\n        </projects_view>\r\n      </state>\r\n    </system>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\"><![CDATA[{\r\n  \"associatedIndex\": 6\r\n}]]></component>\r\n  <component name=\"ProjectId\" id=\"2aO5QEjUgFEpj0eFr9ieXL95cNz\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"WebServerToolWindowFactoryState\": \"false\",\r\n    \"android.gradle.sync.needed\": \"true\",\r\n    \"git-widget-placeholder\": \"main\",\r\n    \"last_opened_file_path\": \"C:/Users/Administrator/Desktop/B612project_backend/Backend\",\r\n    \"settings.editor.selected.configurable\": \"configurable.group.build\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"f7b5d0e3-c203-4ac2-8340-d5731dea6b7c\" name=\"Changes\" comment=\"\" />\r\n      <created>1704176766234</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1704176766234</updated>\r\n      <workItem from=\"1704176767281\" duration=\"80000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	
++++ b/.idea/workspace.xml	
+@@ -4,7 +4,26 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="" />
++    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Post">
++      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/config/CorsConfig.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/config/SecurityConfig.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetails.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetailsService.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthenticationFilter.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/config/jwt/JwtAuthorizationFilter.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/config/jwt/JwtProperties.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Like.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Like.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/TimeEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/TimeEntity.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" afterDir="false" />
++    </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+@@ -26,17 +45,40 @@
+         </projects_view>
+       </state>
+     </system>
++  </component>
++  <component name="FileTemplateManagerImpl">
++    <option name="RECENT_TEMPLATES">
++      <list>
++        <option value="Enum" />
++        <option value="Class" />
++      </list>
++    </option>
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
++  <component name="GitHubPullRequestSearchHistory">{
++  &quot;lastFilter&quot;: {
++  }
++}</component>
++  <component name="GithubPullRequestsUISettings">
++    <option name="selectedUrlAndAccountId">
++      <UrlAndAccount>
++        <option name="accountId" value="ea0e92ca-f83d-428f-819b-5aa3e06d38bd" />
++        <option name="url" value="https://github.com/B612-TEAM2/Backend.git" />
++      </UrlAndAccount>
++    </option>
++  </component>
+   <component name="MarkdownSettingsMigration">
+     <option name="stateVersion" value="1" />
+   </component>
+-  <component name="ProjectColorInfo"><![CDATA[{
+-  "associatedIndex": 6
+-}]]></component>
++  <component name="ProjectColorInfo">{
++  &quot;associatedIndex&quot;: 6
++}</component>
+   <component name="ProjectId" id="2aO5QEjUgFEpj0eFr9ieXL95cNz" />
++  <component name="ProjectLevelVcsManager">
++    <ConfirmationsSetting value="2" id="Add" />
++  </component>
+   <component name="ProjectViewState">
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+@@ -44,11 +86,15 @@
+   <component name="PropertiesComponent"><![CDATA[{
+   "keyToString": {
+     "RunOnceActivity.ShowReadmeOnStart": "true",
++    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+     "WebServerToolWindowFactoryState": "false",
+     "android.gradle.sync.needed": "true",
+     "git-widget-placeholder": "main",
+     "last_opened_file_path": "C:/Users/Administrator/Desktop/B612project_backend/Backend",
+-    "settings.editor.selected.configurable": "configurable.group.build",
++    "project.structure.last.edited": "Project",
++    "project.structure.proportion": "0.0",
++    "project.structure.side.proportion": "0.0",
++    "settings.editor.selected.configurable": "build.analyzer",
+     "vue.rearranger.settings.migration": "true"
+   }
+ }]]></component>
+@@ -62,9 +108,46 @@
+       <updated>1704176766234</updated>
+       <workItem from="1704176767281" duration="80000" />
+     </task>
++    <task id="LOCAL-00001" summary="Post">
++      <created>1704359703258</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1704359703258</updated>
++    </task>
++    <task id="LOCAL-00002" summary="Post">
++      <created>1704427217307</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1704427217307</updated>
++    </task>
++    <task id="LOCAL-00003" summary="Post">
++      <created>1704427542317</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1704427542317</updated>
++    </task>
++    <option name="localTasksCounter" value="4" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+     <option name="version" value="3" />
+   </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="TAB_STATES">
++      <map>
++        <entry key="MAIN">
++          <value>
++            <State />
++          </value>
++        </entry>
++      </map>
++    </option>
++  </component>
++  <component name="VcsManagerConfiguration">
++    <MESSAGE value="Post" />
++    <option name="LAST_COMMIT_MESSAGE" value="Post" />
++  </component>
+ </project>
+\ No newline at end of file
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/compiler.xml	
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <annotationProcessing>
++      <profile name="Gradle Imported" enabled="true">
++        <outputRelativeToContentRoot value="true" />
++        <processorPath useClasspath="false">
++          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.30/f195ee86e6c896ea47a1d39defbe20eb59cd149d/lombok-1.18.30.jar" />
++        </processorPath>
++        <module name="ping.main" />
++      </profile>
++    </annotationProcessing>
++  </component>
++</project>
+\ No newline at end of file
+Index: ping/src/main/java/com/b6122/ping/config/jwt/JwtProperties.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/config/jwt/JwtProperties.java b/ping/src/main/java/com/b6122/ping/config/jwt/JwtProperties.java
+new file mode 100644
+--- /dev/null	
++++ b/ping/src/main/java/com/b6122/ping/config/jwt/JwtProperties.java	
+@@ -0,0 +1,8 @@
++package com.b6122.ping.config.jwt;
++
++public class JwtProperties {
++    String SECRET = "ping"; // 우리 서버만 알고 있는 비밀값
++    int EXPIRATION_TIME = 864000000; // 10일 (1/1000초)
++    String TOKEN_PREFIX = "Bearer ";
++    String HEADER_STRING = "Authorization";
++}
+Index: ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetailsService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetailsService.java b/ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetailsService.java
+new file mode 100644
+--- /dev/null	
++++ b/ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetailsService.java	
+@@ -0,0 +1,25 @@
++package com.b6122.ping.config.auth;
++
++import org.springframework.security.core.userdetails.UserDetails;
++import org.springframework.security.core.userdetails.UserDetailsService;
++import org.springframework.security.core.userdetails.UsernameNotFoundException;
++import org.springframework.stereotype.Service;
++
++import com.b6122.ping.domain.User;
++import com.b6122.ping.UserRepository;
++
++import lombok.RequiredArgsConstructor;
++@Service
++@RequiredArgsConstructor
++public class PrincipalDetailsService implements UserDetailsService{
++    private final UserRepository userRepository;
++
++    @Override
++    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
++        System.out.println("PrincipalDetailsService : 진입");
++        User user = userRepository.findByUsername(username);
++
++        // session.setAttribute("loginUser", user);
++        return new PrincipalDetails(user);
++    }
++}
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"delegatedBuild\" value=\"false\" />\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$/ping\" />\r\n        <option name=\"gradleJvm\" value=\"17\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$/ping\" />\r\n          </set>\r\n        </option>\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	
++++ b/.idea/gradle.xml	
+@@ -1,5 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="GradleMigrationSettings" migrationVersion="1" />
+   <component name="GradleSettings">
+     <option name="linkedExternalProjectsSettings">
+       <GradleProjectSettings>
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	
++++ b/.idea/jarRepositories.xml	
+@@ -0,0 +1,20 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="MavenRepo" />
++      <option name="name" value="MavenRepo" />
++      <option name="url" value="https://repo.maven.apache.org/maven2/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
+Index: ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetails.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetails.java b/ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetails.java
+new file mode 100644
+--- /dev/null	
++++ b/ping/src/main/java/com/b6122/ping/config/auth/PrincipalDetails.java	
+@@ -0,0 +1,52 @@
++package com.b6122.ping.config.auth;
++
++import org.springframework.security.core.GrantedAuthority;
++import org.springframework.security.core.userdetails.UserDetails;
++
++import java.util.ArrayList;
++import java.util.Collection;
++
++import com.b6122.ping.domain.User;
++public class PrincipalDetails implements UserDetails {
++    private User user;
++
++    public PrincipalDetails(User user){
++        this user = user;
++    }
++
++    public User getUser(){
++        return user;
++    }
++    @Override
++    public String getUsername() {
++        return user.getUsername();
++    }
++
++    @Override
++    public boolean isAccountNonExpired() {
++        return true;
++    }
++
++    @Override
++    public boolean isAccountNonLocked() {
++        return true;
++    }
++
++    @Override
++    public boolean isCredentialsNonExpired() {
++        return true;
++    }
++
++    @Override
++    public boolean isEnabled() {
++        return true;
++    }
++    @Override
++    public Collection<? extends GrantedAuthority> getAuthorities() {
++        Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
++        user.getRoleList().forEach(r -> {
++            authorities.add(()->{ return r;});
++        });
++        return authorities;
++    }
++}
