@@ -28,9 +28,9 @@ public class UserService {
 
     @Transactional
     public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
-
+        
         //OAuthUser 생성을 위한 매핑
-        String provider = "kakao";
+        String provider = "google";
         String providerId = userInfoMap.get("id").toString();
         String username = provider + "_" + providerId;
 
