@@ -4,16 +4,8 @@ import com.b6122.ping.repository.PostRepository;
 import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 @RequiredArgsConstructor
 @Entity
@@ -44,6 +36,10 @@ public class Post extends TimeEntity{
     @Column(name = "content", nullable = false)
     private String content;
 
+    public Post() {
+
+    }
+
     public long getId(){
         return this.id;
     }
@@ -52,7 +48,7 @@ public class Post extends TimeEntity{
         return this.viewCount;
     }
 
-    public int getLikeCount(){return this.likeCount};
+    public int getLikeCount(){return this.likeCount;}
 
 
     @ManyToOne(fetch = FetchType.LAZY)
