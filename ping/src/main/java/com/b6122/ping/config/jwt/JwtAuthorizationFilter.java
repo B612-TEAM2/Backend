@@ -37,7 +37,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             return;
         }
 
-        //토큰 검증
+        //토큰 검증(동일한 토큰인지, 만료시간은 안지났는지 com.auth0.jwt 라이브러리가 확인해줌)
         String token = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, "");
         String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
                 .getClaim("username").asString();
