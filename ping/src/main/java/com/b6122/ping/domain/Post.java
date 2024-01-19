@@ -59,12 +59,12 @@ public class Post extends TimeEntity{
 
 
 
-    //요청한 post를 반환하고 viewCount++
-    public Post getPost(Long id) {
-        Post post = PostRepository.findById(id);
-        PostRepository.updateViewCount(post.getViewCount() + 1, post.getId());//중복 방지 구현 필요
-
-        return post;
-    }
+//    //요청한 post를 반환하고 viewCount++
+//    public Post getPost(Long id) {
+//        Post post = PostRepository.findById(id);
+//        PostRepository.updateViewCount(post.getViewCount() + 1, post.getId());//중복 방지 구현 필요
+//
+//        return post;
+//    }
 
 }
