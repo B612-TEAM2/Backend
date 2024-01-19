@@ -21,16 +21,16 @@ public class RestApiController {
 
     private final JwtService jwtService;
     private final UserService userService;
-    private final KakaoOAuthService oAuthService;
-
+    private final KakaoOAuthService kakaoOAuthService;
+    private final GoogleOAuthService googleOAuthService;
 
     @PostMapping("/oauth/jwt/kakao")
     public ResponseEntity<Map<String, String>> createJwt(@RequestBody Map<String, Object> request) throws IOException {
         // 프론트엔드로부터 authorization code 받고 -> 그 code로 카카오에 accesstoken 요청
-        String accessToken = oAuthService.getKakaoAccessToken(request.get("code").toString());
+        String accessToken = kakaoOAuthService.getKakaoAccessToken(request.get("code").toString());
 
         // 받아 온 access token으로 카카오 리소스 서버로부터 카카오 유저 정보 가져오기
-        Map<String, Object> userInfo = oAuthService.getKakaoUserInfo(accessToken);
+        Map<String, Object> userInfo = kakaoOAuthService.getKakaoUserInfo(accessToken);
 
         // 가져온 정보를 기반으로 회원가입
         UserDto userDto = userService.joinOAuthUser(userInfo);
@@ -45,10 +45,10 @@ public class RestApiController {
         String authorizationCode = request.get("code").toString();
 
         // Exchange the authorization code for an access token from Google
-        String accessToken = GoogleOAuthService.getGoogleAccessToken(authorizationCode);
+        String accessToken = googleOAuthService.getGoogleAccessToken(authorizationCode);
 
         // Use the access token to fetch user information from Google
-        Map<String, Object> userInfo = GoogleOAuthService.getGoogleUserInfo(accessToken);
+        Map<String, Object> userInfo = googleOAuthService.getGoogleUserInfo(accessToken);
 
         // Process the user information and perform user registration if needed
         UserDto userDto = userService.joinOAuthUser(userInfo);
