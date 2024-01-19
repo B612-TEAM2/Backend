@@ -18,16 +18,16 @@ public class PostRepository{
     private final EntityManager em;
 
 
-    @Modifying
-    @Query("update Post p set p.viewCount = :viewCount where p.id =:id")
-    public int updateViewCount(@Param("viewCount") int viewCount, @Param("id") Long id){
-        return 0;
-    };
-
-    public  Post findById(long id){
-        return em.createQuery("select P from Post p where p.id = :id", Post.class)
-                .setParameter("id", id)
-                .getSingleResult();
-    }
+//    @Modifying
+//    @Query("update Post p set p.viewCount = :viewCount where p.id =:id")
+//    public static int updateViewCount(@Param("viewCount") int viewCount, @Param("id") Long id){
+//        return 0;
+//    };
+//
+//    public static Post findById(long id){
+//        return em.createQuery("select P from Post p where p.id = :id", Post.class)
+//                .setParameter("id", id)
+//                .getSingleResult();
+//    }
 
 }
