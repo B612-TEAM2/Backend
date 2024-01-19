@@ -1,0 +1,314 @@
+Index: ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.b6122.ping.oauth.provider;\r\n\r\npublic interface OAuthUser {\r\n    String getProviderId();\r\n    String getProvider();\r\n    String getName();\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java b/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java
+--- a/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java	(revision 7d8470c8a6e6f012fecc127eecfb30fb98b7a85a)
++++ b/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java	(date 1705564426358)
+@@ -5,3 +5,5 @@
+     String getProvider();
+     String getName();
+ }
++
++//환준님 코드 업데이트 확인
+\ No newline at end of file
+Index: ping/.gitignore
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>HELP.md\r\n.gradle\r\nbuild/\r\n!gradle/wrapper/gradle-wrapper.jar\r\n!**/src/main/**/build/\r\n!**/src/test/**/build/\r\n\r\n### STS ###\r\n.apt_generated\r\n.classpath\r\n.factorypath\r\n.project\r\n.settings\r\n.springBeans\r\n.sts4-cache\r\nbin/\r\n!**/src/main/**/bin/\r\n!**/src/test/**/bin/\r\n### IntelliJ IDEA ###\r\n.idea\r\n*.iws\r\n*.iml\r\n*.ipr\r\nout/\r\n!**/src/main/**/out/\r\n!**/src/test/**/out/\r\napplication.yml\r\nJwtProperties.java\r\n### NetBeans ###\r\n/nbproject/private/\r\n/nbbuild/\r\n/dist/\r\n/nbdist/\r\n/.nb-gradle/\r\n\r\n### VS Code ###\r\n.vscode/\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/.gitignore b/ping/.gitignore
+--- a/ping/.gitignore	(revision 7d8470c8a6e6f012fecc127eecfb30fb98b7a85a)
++++ b/ping/.gitignore	(date 1705639789512)
+@@ -32,6 +32,6 @@
+ /dist/
+ /nbdist/
+ /.nb-gradle/
+-
++OAuhpProperties
+ ### VS Code ###
+ .vscode/
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"f7b5d0e3-c203-4ac2-8340-d5731dea6b7c\" name=\"Changes\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/compiler.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/jarRepositories.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/uiDesigner.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthProperties.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/GoogleOAuthService.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/gradle.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/gradle.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ExternalProjectsData\">\r\n    <projectState path=\"$PROJECT_DIR$/ping\">\r\n      <ProjectState />\r\n    </projectState>\r\n  </component>\r\n  <component name=\"ExternalProjectsManager\">\r\n    <system id=\"GRADLE\">\r\n      <state>\r\n        <projects_view>\r\n          <tree_state>\r\n            <expand />\r\n            <select />\r\n          </tree_state>\r\n        </projects_view>\r\n      </state>\r\n    </system>\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2aO5QEjUgFEpj0eFr9ieXL95cNz\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,\r\n    &quot;android.gradle.sync.needed&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/B612project_backend/Backend&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"f7b5d0e3-c203-4ac2-8340-d5731dea6b7c\" name=\"Changes\" comment=\"\" />\r\n      <created>1704176766234</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1704176766234</updated>\r\n      <workItem from=\"1704176767281\" duration=\"80000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"main\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <breakpoint-manager>\r\n      <breakpoints>\r\n        <line-breakpoint enabled=\"true\" type=\"java-method\">\r\n          <url>file://$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java</url>\r\n          <line>11</line>\r\n          <properties class=\"com.b6122.ping.repository.datajpa.PostDataRepository\" method=\"updateViewCount\">\r\n            <option name=\"EMULATED\" value=\"true\" />\r\n            <option name=\"WATCH_EXIT\" value=\"false\" />\r\n          </properties>\r\n          <option name=\"timeStamp\" value=\"1\" />\r\n        </line-breakpoint>\r\n      </breakpoints>\r\n    </breakpoint-manager>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 7d8470c8a6e6f012fecc127eecfb30fb98b7a85a)
++++ b/.idea/workspace.xml	(date 1705650407716)
+@@ -4,22 +4,16 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="">
++    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
+       <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+       <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthProperties.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/GoogleOAuthService.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ping/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ping/.gitignore" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+@@ -89,6 +83,21 @@
+       <updated>1704176766234</updated>
+       <workItem from="1704176767281" duration="80000" />
+     </task>
++    <task id="LOCAL-00001" summary="Post 수정, google 로그인 구현">
++      <created>1705639450008</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1705639450008</updated>
++    </task>
++    <task id="LOCAL-00002" summary="Naver 소셜로그인 구현">
++      <created>1705650308048</created>
++      <option name="number" value="00002" />
++      <option name="presentableId" value="LOCAL-00002" />
++      <option name="project" value="LOCAL" />
++      <updated>1705650308048</updated>
++    </task>
++    <option name="localTasksCounter" value="3" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -116,6 +125,12 @@
+         </entry>
+       </map>
+     </option>
++  </component>
++  <component name="VcsManagerConfiguration">
++    <MESSAGE value="Post 수정, google 로그인 구현" />
++    <MESSAGE value="likeCount 수정" />
++    <MESSAGE value="Naver 소셜로그인 구현" />
++    <option name="LAST_COMMIT_MESSAGE" value="Naver 소셜로그인 구현" />
+   </component>
+   <component name="XDebuggerManager">
+     <breakpoint-manager>
+Index: .idea/compiler.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+new file mode 100644
+--- /dev/null	(date 1704795338547)
++++ b/.idea/compiler.xml	(date 1704795338547)
+@@ -0,0 +1,14 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="CompilerConfiguration">
++    <annotationProcessing>
++      <profile name="Gradle Imported" enabled="true">
++        <outputRelativeToContentRoot value="true" />
++        <processorPath useClasspath="false">
++          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.30/f195ee86e6c896ea47a1d39defbe20eb59cd149d/lombok-1.18.30.jar" />
++        </processorPath>
++        <module name="ping.main" />
++      </profile>
++    </annotationProcessing>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/uiDesigner.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/uiDesigner.xml b/.idea/uiDesigner.xml
+new file mode 100644
+--- /dev/null	(date 1705205719231)
++++ b/.idea/uiDesigner.xml	(date 1705205719231)
+@@ -0,0 +1,124 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="Palette2">
++    <group name="Swing">
++      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
++      </item>
++      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
++      </item>
++      <item class="javax.swing.JPanel" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JScrollPane" icon="/com/intellij/uiDesigner/icons/scrollPane.svg" removable="false" auto-create-binding="false" can-attach-label="true">
++        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JButton" icon="/com/intellij/uiDesigner/icons/button.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
++        <initial-values>
++          <property name="text" value="Button" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="RadioButton" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="CheckBox" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JLabel" icon="/com/intellij/uiDesigner/icons/label.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
++        <initial-values>
++          <property name="text" value="Label" />
++        </initial-values>
++      </item>
++      <item class="javax.swing.JTextField" icon="/com/intellij/uiDesigner/icons/textField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JFormattedTextField" icon="/com/intellij/uiDesigner/icons/formattedTextField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
++          <preferred-size width="150" height="-1" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JEditorPane" icon="/com/intellij/uiDesigner/icons/editorPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JComboBox" icon="/com/intellij/uiDesigner/icons/comboBox.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JTable" icon="/com/intellij/uiDesigner/icons/table.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JList" icon="/com/intellij/uiDesigner/icons/list.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTree" icon="/com/intellij/uiDesigner/icons/tree.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
++          <preferred-size width="150" height="50" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JTabbedPane" icon="/com/intellij/uiDesigner/icons/tabbedPane.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
++          <preferred-size width="200" height="200" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JSplitPane" icon="/com/intellij/uiDesigner/icons/splitPane.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
++          <preferred-size width="200" height="200" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JSpinner" icon="/com/intellij/uiDesigner/icons/spinner.svg" removable="false" auto-create-binding="true" can-attach-label="true">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JSlider" icon="/com/intellij/uiDesigner/icons/slider.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
++      </item>
++      <item class="javax.swing.JSeparator" icon="/com/intellij/uiDesigner/icons/separator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3" />
++      </item>
++      <item class="javax.swing.JProgressBar" icon="/com/intellij/uiDesigner/icons/progressbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1" />
++      </item>
++      <item class="javax.swing.JToolBar" icon="/com/intellij/uiDesigner/icons/toolbar.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1">
++          <preferred-size width="-1" height="20" />
++        </default-constraints>
++      </item>
++      <item class="javax.swing.JToolBar$Separator" icon="/com/intellij/uiDesigner/icons/toolbarSeparator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
++        <default-constraints vsize-policy="0" hsize-policy="0" anchor="0" fill="1" />
++      </item>
++      <item class="javax.swing.JScrollBar" icon="/com/intellij/uiDesigner/icons/scrollbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
++        <default-constraints vsize-policy="6" hsize-policy="0" anchor="0" fill="2" />
++      </item>
++    </group>
++  </component>
++</project>
+\ No newline at end of file
+Index: .idea/gradle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"delegatedBuild\" value=\"false\" />\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$/ping\" />\r\n        <option name=\"gradleJvm\" value=\"17\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$/ping\" />\r\n          </set>\r\n        </option>\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+--- a/.idea/gradle.xml	(revision 7d8470c8a6e6f012fecc127eecfb30fb98b7a85a)
++++ b/.idea/gradle.xml	(date 1705472256582)
+@@ -1,5 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
++  <component name="GradleMigrationSettings" migrationVersion="1" />
+   <component name="GradleSettings">
+     <option name="linkedExternalProjectsSettings">
+       <GradleProjectSettings>
+Index: .idea/jarRepositories.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+new file mode 100644
+--- /dev/null	(date 1704795559705)
++++ b/.idea/jarRepositories.xml	(date 1704795559705)
+@@ -0,0 +1,20 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<project version="4">
++  <component name="RemoteRepositoriesConfiguration">
++    <remote-repository>
++      <option name="id" value="central" />
++      <option name="name" value="Maven Central repository" />
++      <option name="url" value="https://repo1.maven.org/maven2" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="jboss.community" />
++      <option name="name" value="JBoss Community repository" />
++      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
++    </remote-repository>
++    <remote-repository>
++      <option name="id" value="MavenRepo" />
++      <option name="name" value="MavenRepo" />
++      <option name="url" value="https://repo.maven.apache.org/maven2/" />
++    </remote-repository>
++  </component>
++</project>
+\ No newline at end of file
