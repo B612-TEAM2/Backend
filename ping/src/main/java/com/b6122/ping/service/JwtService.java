@@ -25,10 +25,8 @@ public class JwtService {
 
         //accessToken 생성
         String jwtToken = JWT.create()
-                .withSubject(userDto.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
                 .withClaim("id", userDto.getId())
-                .withClaim("username", userDto.getUsername())
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
         //responseBody에 값 저장해서 return

@@ -24,6 +24,18 @@ public class PostRepository{
         return 0;
     };
 
+    @Modifying
+    @Query("update Post p set p.likeCount = :likeCount where p.id =:pid")
+    public int updateLikeCount(@Param("likeCount") int likeCount, @Param("id") Long pid){
+        return 0;
+    };
+
+    @Modifying
+    @Query("insert into Like(user_id, post_id) Values(:uid,:pid)")
+    public int createLike(@Param("pid") Long pid, @Param("uid") Long uid){
+        return 0;
+    }
+
     public  Post findById(long id){
         return em.createQuery("select P from Post p where p.id = :id", Post.class)
                 .setParameter("id", id)
