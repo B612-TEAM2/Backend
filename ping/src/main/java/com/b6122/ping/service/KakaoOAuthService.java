@@ -3,7 +3,6 @@ package com.b6122.ping.service;
 import com.b6122.ping.oauth.provider.OAuthProperties;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.io.*;
@@ -13,7 +12,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class OAuthService {
+public class KakaoOAuthService {
 
     //프론트에서 전달 받은 인가코드로 카카오 서버로 요청해서 access token 받는 메소드
     //요청 데이터 타입 (Content-type: application/x-www-form-urlencoded;charset=utf-8)
