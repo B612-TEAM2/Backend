@@ -1,5 +1,6 @@
 package com.b6122.ping.domain;
 
+import com.b6122.ping.repository.PostRepository;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
@@ -23,12 +24,24 @@ public class Post extends TimeEntity{
     private List<Like> likes = new ArrayList<>();
 
     @ColumnDefault("0")
-    @Column(name = "viewerNum")
-    private int viewerNum; // 조회수
+    @Column(name = "viewCount")
+    private int viewCount; // 조회수
+
+    @ColumnDefault("0")
+    @Column(name = "likeCount")
+    private int likeCount; // 좋아요 수
 
 
     @Column(name = "content", nullable = false)
     private String content;
+
+    public long getId(){
+        return this.id;
+    }
+
+    public int getViewCount(){
+        return this.viewCount;
+    }
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,7 +54,17 @@ public class Post extends TimeEntity{
     //연관관계 매서드//
     public void setUser(User user) {
         this.user = user;
-        user.getPosts().add(this); //user의 posts list에 post(this) 추가
+        user.addPost(this); //user의 posts list에 post(this) 추가
+    }
+
+
+
+    //요청한 post를 반환하고 viewCount++
+    public Post getPost(Long id) {
+        Post post = PostRepository.findById(id);
+        PostRepository.updateViewCount(post.getViewCount() + 1, post.getId());//중복 방지 구현 필요
+
+        return post;
     }
 
 }

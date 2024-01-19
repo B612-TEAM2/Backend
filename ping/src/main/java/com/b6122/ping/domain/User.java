@@ -29,6 +29,10 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
+    public void addPost(Post p) {//외부에서 post 생성시 posts list에 추가
+        this.posts.add(p);
+    }
+
     /** oauth2 연동 유저정보(username, providerId, provider) **/
     private String provider; //"google", "kakao", etc.
     private String providerId; //google, kakao 등 사용자의 고유Id (ex: google의 'sub'값 등)
