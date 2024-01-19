@@ -2,17 +2,25 @@ package com.b6122.ping.domain;
 
 import com.b6122.ping.repository.PostRepository;
 import jakarta.persistence.*;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@RequiredArgsConstructor
 @Entity
 @Table(name = "post")
 public class Post extends TimeEntity{
+
+    private final PostRepository postRepository;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
@@ -43,6 +51,8 @@ public class Post extends TimeEntity{
         return this.viewCount;
     }
 
+    public int getLikeCount(){return this.likeCount};
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -58,11 +68,18 @@ public class Post extends TimeEntity{
     }
 
 
+    //like 눌렀을때
+    public void pushLIke(Long uid){
+        postRepository.createLike(this.id,uid);
+        postRepository.updateLikeCount(this.getLikeCount()+1, this.id);
+    }
+
+
 
     //요청한 post를 반환하고 viewCount++
     public Post getPost(Long id) {
-        Post post = PostRepository.findById(id);
-        PostRepository.updateViewCount(post.getViewCount() + 1, post.getId());//중복 방지 구현 필요
+        Post post = postRepository.findById(id);
+        postRepository.updateViewCount(post.getViewCount() + 1, post.getId());//중복 방지 구현 필요
 
         return post;
     }
