@@ -4,7 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="" />
+    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthProperties.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/GoogleOAuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -27,31 +44,41 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 6
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
   <component name="ProjectId" id="2aO5QEjUgFEpj0eFr9ieXL95cNz" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "android.gradle.sync.needed": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/Administrator/Desktop/B612project_backend/Backend",
-    "settings.editor.selected.configurable": "configurable.group.build",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;android.gradle.sync.needed&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/B612project_backend/Backend&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -66,5 +93,43 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="main" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java</url>
+          <line>11</line>
+          <properties class="com.b6122.ping.repository.datajpa.PostDataRepository" method="updateViewCount">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
