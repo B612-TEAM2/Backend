@@ -86,7 +86,7 @@ public class RestApiController {
     //친구 목록
     @GetMapping("/friends/list")
     public ResponseEntity<Map<String, Object>> friends(Authentication authentication) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();;
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         List<UserDto> friendsList = userService.findFriends(principalDetails.getUser().getId());
 
         Map<String, Object> data = new HashMap<>();
@@ -94,4 +94,9 @@ public class RestApiController {
         return ResponseEntity.ok().body(data);
     }
 
+    @DeleteMapping("/account")
+    public void deleteAccount(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        userService.deleteAccount(principalDetails.getUser().getId());
+    }
 }

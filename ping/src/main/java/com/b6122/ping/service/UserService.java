@@ -106,4 +106,8 @@ public class UserService {
         return friendDtos;
     }
 
+    @Transactional
+    public void deleteAccount(Long id) {
+        userDataRepository.deleteById(id);
+    }
 }
