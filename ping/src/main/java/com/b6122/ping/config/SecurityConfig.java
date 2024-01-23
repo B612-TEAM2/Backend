@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .httpBasic((httpBasic) -> httpBasic.disable()) //Bearer 방식을 사용하기 위해 basic 인증 비활성화
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/user/**").hasAnyRole("ADMIN", "MANAGER", "USER")
+                                .requestMatchers("/api/**").hasAnyRole("ADMIN", "MANAGER", "USER")
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
                                 .anyRequest().permitAll());
 
