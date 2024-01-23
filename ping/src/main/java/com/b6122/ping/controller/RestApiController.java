@@ -67,7 +67,7 @@ public class RestApiController {
         return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
     }
 
-    @CrossOrigin(origins = "https://localhost:3000/authnaver")
+    @CrossOrigin
     @PostMapping("/oauth/jwt/naver")
     public ResponseEntity<Map<String, String>> createJwtNaver(@RequestBody Map<String, Object> request) throws IOException {
         // Frontend sends the authorization code, use it to request Naver for an access token
