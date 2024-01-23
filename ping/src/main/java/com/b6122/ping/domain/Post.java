@@ -51,7 +51,7 @@ public class Post extends TimeEntity{
         return this.viewCount;
     }
 
-    public int getLikeCount(){return this.likeCount};
+    public int getLikeCount(){return this.likeCount;};
 
 
     @ManyToOne(fetch = FetchType.LAZY)

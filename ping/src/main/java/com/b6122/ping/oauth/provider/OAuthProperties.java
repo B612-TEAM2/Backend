@@ -4,10 +4,8 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 import java.math.BigInteger;
-@Component
-public class OAuthProperties {
 
-
+public interface OAuthProperties {
 
     String KAKAO_CLIENT_ID = "4294c81106f19588526f3a34cb2b4356";
     String KAKAO_REDIRECT_URI =  "http://localhost:3000/authkakao";
