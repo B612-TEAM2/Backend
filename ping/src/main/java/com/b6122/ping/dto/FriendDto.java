@@ -6,11 +6,11 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 public class FriendDto {
 
-    private String profileImagePath;
+    private byte[] imageBytes;
     private String nickname;
 
-    public FriendDto(String profileImagePath, String nickname) {
-        this.profileImagePath = profileImagePath;
+    public FriendDto(byte[] imageBytes, String nickname) {
+        this.imageBytes = imageBytes;
         this.nickname = nickname;
     }
 }
