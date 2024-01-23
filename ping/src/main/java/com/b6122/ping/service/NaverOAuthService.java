@@ -74,7 +74,7 @@ public class NaverOAuthService {
         connection.setRequestProperty("Authorization", "Bearer " + accessToken);
 
         // Handle CORS issue by allowing requests from the frontend domain
-        connection.setRequestProperty("Access-Control-Allow-Origin", "https://your-frontend-domain.com");
+        //connection.setRequestProperty("Access-Control-Allow-Origin", "https://your-frontend-domain.com");
 
         int responseCode = connection.getResponseCode();
         if (responseCode == HttpURLConnection.HTTP_OK) {
