@@ -8,10 +8,10 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface FriendshipDataRepository extends JpaRepository<Friendship, Long> {
-
-    @Query("select f from Friendship f " +
-            "join fetch f.fromUser " +
-            "join fetch f.toUser " +
-            "where (f.fromUser.id = :userId or f.toUser.id = :userId) and f.isFriend = true")
-    List<Friendship> findFriendshipsById(@Param("id") Long userId);
+    @Query("select f from Friendship f" +
+            " join fetch f.fromUser" +
+            " join fetch f.toUser" +
+            " where (f.fromUser.id = :userId or f.toUser.id = :userId) and f.isFriend = true")
+    List<Friendship> findFriendshipsById(@Param("userId") Long userId);
 }
+

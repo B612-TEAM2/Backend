@@ -19,9 +19,14 @@ public class User {
     private Long id;
 
     @Column(unique = true)
-    private String nickname; // 사용자가 직접 입력하는 고유닉네임 지예님
+    private String nickname; // 사용자가 직접 입력하는 고유닉네임
 
-    private String username;
+    /** oauth2 연동 유저정보(username, providerId, provider) **/
+    private String provider; //"google", "kakao", etc.
+    private String providerId; //google, kakao 등 사용자의 고유Id (ex: google의 'sub'값 등)
+    private String username; // provider + _ + providerId
+
+    private String profileImagePath;
 
     @Enumerated(EnumType.STRING)
     private UserRole role; // ROLE_USER or ROLE_ADMIN
@@ -33,7 +38,11 @@ public class User {
         this.posts.add(p);
     }
 
-    /** oauth2 연동 유저정보(username, providerId, provider) **/
-    private String provider; //"google", "kakao", etc.
-    private String providerId; //google, kakao 등 사용자의 고유Id (ex: google의 'sub'값 등)
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setProfileImagePath(String path) {
+        this.profileImagePath = path;
+    }
 }

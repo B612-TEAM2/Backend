@@ -13,10 +13,13 @@ import com.b6122.ping.repository.datajpa.UserDataRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +30,9 @@ public class UserService {
 
     private final UserDataRepository userDataRepository;
     private final FriendshipDataRepository friendshipDataRepository;
+
+    @Value("${profile.image.upload-path}")
+    private String profileImagePath;
 
     @Transactional
     public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
@@ -60,7 +66,7 @@ public class UserService {
                     return userDataRepository.save(user);
                 });
         return new UserDto( findUser.getId(), findUser.getProvider(),
-                findUser.getProviderId(), findUser.getRole());
+                findUser.getProviderId(), findUser.getUsername());
 
     }
 
@@ -95,15 +101,43 @@ public class UserService {
             //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
             if (fromUser.getId().equals(id)) {
                 friendDtos.add(new UserDto(toUser.getId(), toUser.getProvider(),
-                        toUser.getProviderId(), toUser.getRole()));
+                        toUser.getProviderId(), toUser.getUsername()));
 
             //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
             } else {
                 friendDtos.add(new UserDto(fromUser.getId(), fromUser.getProvider(),
-                        fromUser.getProviderId(), fromUser.getRole()));
+                        fromUser.getProviderId(), fromUser.getUsername()));
             }
         }
         return friendDtos;
+    }
+
+    @Transactional
+    public void updateProfile(MultipartFile file, String nickname, Long userId) {
+        try {
+            User user = userDataRepository.findById(userId).orElseThrow(RuntimeException::new);
+            user.setNickname(nickname);
+            user.setProfileImagePath(saveProfileImage(file));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String saveProfileImage(MultipartFile file) throws IOException {
+            String imageName = UUID.randomUUID() + file.getOriginalFilename();
+            String path = profileImagePath;
+            File fileDir = new File(profileImagePath);
+
+            //지정한 디렉토리가 없으면 생성
+            if (!fileDir.exists()) {
+                fileDir.mkdirs();
+            }
+
+            //새로운 파일로 변환해서 지정한 경로에 저장.
+            file.transferTo(new File(path, imageName));
+
+            return path;
     }
 
     //계정 삭제
