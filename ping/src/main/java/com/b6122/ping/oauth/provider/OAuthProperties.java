@@ -1,6 +1,4 @@
 package com.b6122.ping.oauth.provider;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 import java.math.BigInteger;
