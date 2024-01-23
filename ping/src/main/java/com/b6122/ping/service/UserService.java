@@ -1,30 +1,32 @@
 package com.b6122.ping.service;
 
+import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.domain.UserRole;
-import com.b6122.ping.dto.CreateJwtRequestDto;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.oauth.provider.GoogleUser;
 import com.b6122.ping.oauth.provider.KakaoUser;
 import com.b6122.ping.oauth.provider.NaverUser;
 import com.b6122.ping.oauth.provider.OAuthUser;
+import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserDataRepository userDataRepository;
+    private final FriendshipDataRepository friendshipDataRepository;
 
     @Transactional
     public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
@@ -74,6 +76,34 @@ public class UserService {
             default:
                 return null;
         }
+    }
+
+    public List<UserDto> findFriends(Long id) {
+
+        List<Friendship> friendshipList = friendshipDataRepository.findFriendshipsById(id);
+        if (friendshipList.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Long> friendsId = new ArrayList<>();
+        for (Friendship friendship : friendshipList) {
+            // Friendship의 fromUser와 toUser 중 현재 사용자의 ID와 다른 사용자의 ID를 찾아서 friendsId에 추가
+            if (friendship.getFromUser().getId().equals(id)) {
+                friendsId.add(friendship.getToUser().getId());
+            } else {
+                friendsId.add(friendship.getFromUser().getId());
+            }
+        }
+
+        // friendsId를 이용하여 사용자 정보를 불러오기
+        List<User> friends = userDataRepository.findAllById(friendsId);
+
+        // User 정보를 UserDto로 변환 후(다른 dto를 따로 만들어야할듯, 일단 userdto로) 리스트에 추가
+        List<UserDto> friendDtos = friends.stream()
+                .map(user -> new UserDto(user.getId(), user.getProvider(), user.getProviderId(), user.getRole()))
+                .collect(Collectors.toList());
+
+        return friendDtos;
     }
 
 }

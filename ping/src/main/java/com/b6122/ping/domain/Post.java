@@ -7,12 +7,9 @@ import org.hibernate.annotations.ColumnDefault;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiredArgsConstructor
 @Entity
 @Table(name = "post")
 public class Post extends TimeEntity{
-
-    private final PostRepository postRepository;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -66,19 +63,19 @@ public class Post extends TimeEntity{
 
 
     //like 눌렀을때
-    public void pushLIke(Long uid){
-        postRepository.createLike(this.id,uid);
-        postRepository.updateLikeCount(this.getLikeCount()+1, this.id);
-    }
-
-
-
-    //요청한 post를 반환하고 viewCount++
-    public Post getPost(Long id) {
-        Post post = postRepository.findById(id);
-        postRepository.updateViewCount(post.getViewCount() + 1, post.getId());//중복 방지 구현 필요
-
-        return post;
-    }
+//    public void pushLIke(Long uid){
+//        postRepository.createLike(this.id,uid);
+//        postRepository.updateLikeCount(this.getLikeCount()+1, this.id);
+//    }
+//
+//
+//
+//    //요청한 post를 반환하고 viewCount++
+//    public Post getPost(Long id) {
+//        Post post = postRepository.findById(id);
+//        postRepository.updateViewCount(post.getViewCount() + 1, post.getId());//중복 방지 구현 필요
+//
+//        return post;
+//    }
 
 }
