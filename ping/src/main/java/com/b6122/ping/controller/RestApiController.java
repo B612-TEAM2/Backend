@@ -1,18 +1,26 @@
 package com.b6122.ping.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.Claim;
+import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.service.JwtService;
 import com.b6122.ping.service.KakaoOAuthService;
 import com.b6122.ping.service.UserService;
 import com.b6122.ping.service.GoogleOAuthService;
 import com.b6122.ping.service.NaverOAuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -75,5 +83,15 @@ public class RestApiController {
         return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
     }
 
+    //친구 목록
+    @GetMapping("/friends/list")
+    public ResponseEntity<Map<String, Object>> friends(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();;
+        List<UserDto> friendsList = userService.findFriends(principalDetails.getUser().getId());
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("friendsList", friendsList);
+        return ResponseEntity.ok().body(data);
+    }
 
 }

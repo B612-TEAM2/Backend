@@ -25,7 +25,7 @@ public class Friendship {
     @Enumerated(EnumType.STRING)
     private FriendshipRequestStatus requestStatus; // PENDING, ACCEPTED, REJECTED
 
-    private boolean isFriend;
+    private boolean isFriend = false;
 
     //친구 요청 시 메소드
     //fromUser와 toUser사이 정방향/역방향 레코드 모두 추가
