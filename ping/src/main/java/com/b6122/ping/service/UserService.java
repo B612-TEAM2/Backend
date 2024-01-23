@@ -78,34 +78,35 @@ public class UserService {
         }
     }
 
+    //친구 목록 불러오기
     public List<UserDto> findFriends(Long id) {
 
+        //fromUser, toUser 페치 조인
         List<Friendship> friendshipList = friendshipDataRepository.findFriendshipsById(id);
         if (friendshipList.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Long> friendsId = new ArrayList<>();
+        List<UserDto> friendDtos = new ArrayList<>();
         for (Friendship friendship : friendshipList) {
-            // Friendship의 fromUser와 toUser 중 현재 사용자의 ID와 다른 사용자의 ID를 찾아서 friendsId에 추가
-            if (friendship.getFromUser().getId().equals(id)) {
-                friendsId.add(friendship.getToUser().getId());
+            User fromUser = friendship.getFromUser();
+            User toUser = friendship.getToUser();
+
+            //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
+            if (fromUser.getId().equals(id)) {
+                friendDtos.add(new UserDto(toUser.getId(), toUser.getProvider(),
+                        toUser.getProviderId(), toUser.getRole()));
+
+            //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
             } else {
-                friendsId.add(friendship.getFromUser().getId());
+                friendDtos.add(new UserDto(fromUser.getId(), fromUser.getProvider(),
+                        fromUser.getProviderId(), fromUser.getRole()));
             }
         }
-
-        // friendsId를 이용하여 사용자 정보를 불러오기
-        List<User> friends = userDataRepository.findAllById(friendsId);
-
-        // User 정보를 UserDto로 변환 후(다른 dto를 따로 만들어야할듯, 일단 userdto로) 리스트에 추가
-        List<UserDto> friendDtos = friends.stream()
-                .map(user -> new UserDto(user.getId(), user.getProvider(), user.getProviderId(), user.getRole()))
-                .collect(Collectors.toList());
-
         return friendDtos;
     }
 
+    //계정 삭제
     @Transactional
     public void deleteAccount(Long id) {
         userDataRepository.deleteById(id);
