@@ -14,10 +14,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.File;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +84,17 @@ public class RestApiController {
 
         // Return the JWT access token to the React server
         return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
+    }
+
+
+    @PostMapping("/nickname")
+    public void setInitialProfile(@RequestParam("profileImg") MultipartFile file,
+                            @RequestParam("nickname") String nickname,
+                            Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long userId = principalDetails.getUser().getId();
+        userService.updateProfile(file, nickname, userId);
+
     }
 
     //친구 목록
