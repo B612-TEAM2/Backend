@@ -2,6 +2,7 @@ package com.b6122.ping.oauth.provider;
 
 import java.security.SecureRandom;
 import java.math.BigInteger;
+
 public interface OAuthProperties {
 
     String NAVER_CLIENT_ID = "HT4vaEYy1mRjQXVadpwE";
