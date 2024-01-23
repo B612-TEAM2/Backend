@@ -3,6 +3,7 @@ package com.b6122.ping.controller;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.Claim;
 import com.b6122.ping.auth.PrincipalDetails;
+import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.service.JwtService;
 import com.b6122.ping.service.KakaoOAuthService;
@@ -102,7 +103,7 @@ public class RestApiController {
     @GetMapping("/api/friends")
     public ResponseEntity<Map<String, Object>> friends(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        List<UserDto> friendsList = userService.findFriends(principalDetails.getUser().getId());
+        List<FriendDto> friendsList = userService.findFriendsById(principalDetails.getUser().getId());
 
         Map<String, Object> data = new HashMap<>();
         data.put("friendsList", friendsList);

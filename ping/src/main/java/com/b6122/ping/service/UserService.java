@@ -3,6 +3,7 @@ package com.b6122.ping.service;
 import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.domain.UserRole;
+import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.oauth.provider.GoogleUser;
 import com.b6122.ping.oauth.provider.KakaoUser;
@@ -14,6 +15,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -85,7 +92,7 @@ public class UserService {
     }
 
     //친구 목록 불러오기
-    public List<UserDto> findFriends(Long id) {
+    public List<FriendDto> findFriendsById(Long id) {
 
         //fromUser, toUser 페치 조인
         List<Friendship> friendshipList = friendshipDataRepository.findFriendshipsById(id);
@@ -93,23 +100,41 @@ public class UserService {
             return Collections.emptyList();
         }
 
-        List<UserDto> friendDtos = new ArrayList<>();
+        List<FriendDto> friendDtos = new ArrayList<>();
         for (Friendship friendship : friendshipList) {
             User fromUser = friendship.getFromUser();
             User toUser = friendship.getToUser();
 
             //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
             if (fromUser.getId().equals(id)) {
-                friendDtos.add(new UserDto(toUser.getId(), toUser.getProvider(),
-                        toUser.getProviderId(), toUser.getUsername()));
-
-            //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
+                byte[] imageBytes = getByteArrayOfImageByPath(toUser.getProfileImagePath());
+                friendDtos.add(new FriendDto(imageBytes, toUser.getNickname()));
+                //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
             } else {
-                friendDtos.add(new UserDto(fromUser.getId(), fromUser.getProvider(),
-                        fromUser.getProviderId(), fromUser.getUsername()));
+                byte[] imageBytes = getByteArrayOfImageByPath(fromUser.getProfileImagePath());
+                friendDtos.add(new FriendDto(imageBytes, fromUser.getNickname()));
             }
         }
         return friendDtos;
+    }
+
+    public byte[] getByteArrayOfImageByPath(String imagePath) {
+        try {
+            Resource resource = new UrlResource(Path.of(imagePath).toUri());
+            if (resource.exists() && resource.isReadable()) {
+                // InputStream을 사용하여 byte 배열로 변환
+                try (InputStream inputStream = resource.getInputStream()) {
+                    byte[] data = new byte[inputStream.available()];
+                    inputStream.read(data);
+                    return data;
+                }
+            } else {
+                // 이미지를 찾을 수 없는 경우 예외 또는 다른 처리 방법을 선택
+                throw new RuntimeException("Image not found");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Transactional
