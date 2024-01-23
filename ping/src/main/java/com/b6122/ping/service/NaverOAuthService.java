@@ -27,12 +27,11 @@ public class NaverOAuthService {
         connection.setDoOutput(true);
 
         // 데이터 작성
-        String requestBody = "client_id=" + OAuthProperties.NAVER_CLIENT_ID +
-                "&client_secret=" + OAuthProperties.NAVER_CLIENT_SECRET +
-                "&grant_type=authorization_code" +
-                "&code=" + authorizationCode +
-                "&state=" + OAuthProperties.NAVER_STATE;
-
+        String requestBody =  "&grant_type=authorization_code" +
+                "client_id=" + OAuthProperties.NAVER_CLIENT_ID +
+                "&redirect_uri" + OAuthProperties.NAVER_REDIRECT_URI +
+                "&state=" + OAuthProperties.NAVER_STATE+
+                "&code=" + authorizationCode;
         // 데이터 전송
         try (OutputStream os = connection.getOutputStream();
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os))) {
