@@ -5,20 +5,17 @@ import com.b6122.ping.domain.User;
 import com.b6122.ping.domain.UserRole;
 import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
+import com.b6122.ping.dto.UserInfoDto;
 import com.b6122.ping.oauth.provider.GoogleUser;
 import com.b6122.ping.oauth.provider.KakaoUser;
 import com.b6122.ping.oauth.provider.NaverUser;
 import com.b6122.ping.oauth.provider.OAuthUser;
 import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,10 +23,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -162,6 +157,9 @@ public class UserService {
             //새로운 파일로 변환해서 지정한 경로에 저장.
             file.transferTo(new File(path, imageName));
 
+            //이미지 찾아올 때 모든 경로가 필요하기 때문에 아래와 같이 저장.
+            path = profileImagePath + "\\" + imageName;
+
             return path;
     }
 
@@ -169,5 +167,12 @@ public class UserService {
     @Transactional
     public void deleteAccount(Long id) {
         userDataRepository.deleteById(id);
+    }
+
+    public UserInfoDto userWithNicknameAndImage(Long id) {
+        User user = userDataRepository.findById(id).orElseThrow(RuntimeException::new);
+        String nickname = user.getNickname();
+        byte[] imageBytes = getByteArrayOfImageByPath(user.getProfileImagePath());
+        return new UserInfoDto(nickname, imageBytes);
     }
 }

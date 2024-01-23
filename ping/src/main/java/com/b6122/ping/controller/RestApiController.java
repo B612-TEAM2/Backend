@@ -1,22 +1,19 @@
 package com.b6122.ping.controller;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.Claim;
 import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
+import com.b6122.ping.dto.UserInfoDto;
 import com.b6122.ping.service.JwtService;
 import com.b6122.ping.service.KakaoOAuthService;
 import com.b6122.ping.service.UserService;
 import com.b6122.ping.service.GoogleOAuthService;
 import com.b6122.ping.service.NaverOAuthService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.File;
 import java.io.IOException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -115,5 +112,15 @@ public class RestApiController {
     public void deleteAccount(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         userService.deleteAccount(principalDetails.getUser().getId());
+    }
+
+    @GetMapping("/api/account")
+    public ResponseEntity<Map<String, Object>> account(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        UserInfoDto userInfoDto = userService.userWithNicknameAndImage(principalDetails.getUser().getId());
+        Map<String, Object> data = new HashMap<>();
+        data.put("userInfo", userInfoDto);
+
+        return ResponseEntity.ok().body(data);
     }
 }
