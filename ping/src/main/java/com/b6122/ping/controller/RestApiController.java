@@ -4,11 +4,7 @@ import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.dto.UserInfoDto;
-import com.b6122.ping.service.JwtService;
-import com.b6122.ping.service.KakaoOAuthService;
-import com.b6122.ping.service.UserService;
-import com.b6122.ping.service.GoogleOAuthService;
-import com.b6122.ping.service.NaverOAuthService;
+import com.b6122.ping.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -34,6 +30,7 @@ public class RestApiController {
     private final JwtService jwtService;
     private final UserService userService;
     private final KakaoOAuthService kakaoOAuthService;
+    private final FriendshipService friendshipService;
 
     @PostMapping("/oauth/jwt/kakao")
     public ResponseEntity<Map<String, String>> createJwt(@RequestBody Map<String, Object> request) throws IOException {
@@ -133,5 +130,15 @@ public class RestApiController {
         userService.updateProfile(file,
                 principalDetails.getUser().getNickname(),
                 principalDetails.getUser().getId());
+    }
+
+    @DeleteMapping("/friends")
+    public void deleteFriend(@RequestBody Map<String, Object> request, Authentication authentication) {
+        String friendNickname = request.get("nickname").toString();
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long userId = principalDetails.getUser().getId();
+
+        friendshipService.deleteFriend(friendNickname, userId);
+
     }
 }
