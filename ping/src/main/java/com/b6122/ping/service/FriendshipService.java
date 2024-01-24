@@ -18,13 +18,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class FriendshipService {
 
     private final FriendshipDataRepository friendshipDataRepository;
-    private final UserDataRepository userDataRepository;
 
     /**
      * 친구의 고유 nickname으로 사용자의 친구 목록에서 삭제
@@ -57,11 +57,11 @@ public class FriendshipService {
             //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
             if (fromUser.getId().equals(id)) {
                 byte[] imageBytes = getByteArrayOfImageByPath(toUser.getProfileImagePath());
-                friendDtos.add(new FriendDto(imageBytes, toUser.getNickname()));
+                friendDtos.add(new FriendDto(id, imageBytes, toUser.getNickname()));
                 //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
             } else {
                 byte[] imageBytes = getByteArrayOfImageByPath(fromUser.getProfileImagePath());
-                friendDtos.add(new FriendDto(imageBytes, fromUser.getNickname()));
+                friendDtos.add(new FriendDto(fromUser.getId(), imageBytes, fromUser.getNickname()));
             }
         }
         return friendDtos;
@@ -90,15 +90,11 @@ public class FriendshipService {
         }
     }
 
+
     /**
-     * nickname으로 친구 검색
-     * @param nickname 쿼리 파라미터로 넘어온 nickname
-     * @return FriendDto (nickname, profileImg)
-     * @throws EntityNotFoundException 리소스가 없을 경우 예외
+     * 친구 단건 조회(FriendShip 엔티티 가져오기, isFriend가 true인 경우만)
      */
-    public FriendDto findFriendByNickname(String nickname) {
-        User findUser = userDataRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
-        byte[] imageBytes = getByteArrayOfImageByPath(findUser.getProfileImagePath());
-        return new FriendDto(imageBytes, findUser.getNickname());
+    public Optional<Friendship> findFriendByIds(Long userId, Long friendId) {
+        return friendshipDataRepository.findFriendshipByIds(userId, friendId);
     }
 }

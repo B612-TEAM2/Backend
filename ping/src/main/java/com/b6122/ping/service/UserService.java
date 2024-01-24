@@ -1,25 +1,19 @@
 package com.b6122.ping.service;
 
-import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.domain.UserRole;
-import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
-import com.b6122.ping.dto.UserInfoDto;
+import com.b6122.ping.dto.UserProfileDto;
 import com.b6122.ping.oauth.provider.GoogleUser;
 import com.b6122.ping.oauth.provider.KakaoUser;
 import com.b6122.ping.oauth.provider.NaverUser;
 import com.b6122.ping.oauth.provider.OAuthUser;
-import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -151,11 +145,11 @@ public class UserService {
      * @param id 사용자의 id
      * @return 사용자 정보(UserInfoDto 정보: nickname, profileImg)
      */
-    public UserInfoDto userWithNicknameAndImage(Long id) {
+    public UserProfileDto getUserProfile(Long id) {
         User user = userDataRepository.findById(id).orElseThrow(RuntimeException::new);
         String nickname = user.getNickname();
         byte[] imageBytes = getByteArrayOfImageByPath(user.getProfileImagePath());
-        return new UserInfoDto(nickname, imageBytes);
+        return new UserProfileDto(id, nickname, imageBytes);
     }
 
     /**
@@ -179,5 +173,16 @@ public class UserService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * nickname으로 유저 검색
+     * @param nickname
+     * @return UserInfoDto(nickname, profileImg)
+     */
+    public UserProfileDto findUserByNickname(String nickname) {
+        User findUser = userDataRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
+        byte[] imageBytes = getByteArrayOfImageByPath(findUser.getProfileImagePath());
+        return new UserProfileDto(findUser.getId(), findUser.getNickname(), imageBytes);
     }
 }

@@ -6,19 +6,34 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FriendshipDataRepository extends JpaRepository<Friendship, Long> {
+
+    //친구 목록
     @Query("select f from Friendship f" +
             " join fetch f.fromUser" +
             " join fetch f.toUser" +
             " where (f.fromUser.id = :userId or f.toUser.id = :userId) and f.isFriend = true")
     List<Friendship> findFriendshipsById(@Param("userId") Long userId);
 
+    //친구 삭제
     @Query("delete from Friendship f" +
             " where f.isFriend = true and" +
             " ((f.fromUser.id =:userId and f.toUser.nickname =:nickname)" +
             " or (f.toUser.id =:userId and f.fromUser.nickname =:nickname))")
     void deleteFriendshipByFriendNicknameAndUserId(@Param("nickname") String friendNickname,
                                                    @Param("userId") Long userId);
+
+
+    /**
+     * FriendShip 엔티티 가져오기(fromUser가 사용자이고 isFriend가 true 일 때)
+     */
+    @Query("select f from Friendship f" +
+            " where f.fromUser.id = :userId" +
+            " and f.toUser.id =:friendId" +
+            " and f.isFriend = true")
+    Optional<Friendship> findFriendshipByIds(@Param("friendId") Long friendId,
+                                        @Param("userId") Long userId);
 }
 
