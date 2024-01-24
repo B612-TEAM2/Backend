@@ -38,7 +38,7 @@ public class UserService {
 
     @Transactional
     public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
-        
+
         //OAuthUser 생성을 위한 매핑
         String provider = userInfoMap.get("provider").toString();
         String providerId = userInfoMap.get("id").toString();
@@ -55,7 +55,7 @@ public class UserService {
 
         //db에 회원 등록이 되어있는지 확인후, 안되어 있다면 회원가입 시도
         User findUser = userDataRepository
-                .findByUsername(oAuthUser.getProvider() + "_" + oAuthUser.getProviderId())
+                .findByUsername(oAuthUser.getName())
                 .orElseGet(() -> {
                     User user = User.builder()
                             .provider(oAuthUser.getProvider())
@@ -67,7 +67,7 @@ public class UserService {
                     // 회원가입
                     return userDataRepository.save(user);
                 });
-        return new UserDto( findUser.getId(), findUser.getProvider(),
+        return new UserDto(findUser.getId(), findUser.getProvider(),
                 findUser.getProviderId(), findUser.getUsername());
 
     }
@@ -86,31 +86,48 @@ public class UserService {
         }
     }
 
-    //친구 목록 불러오기
-    public List<FriendDto> findFriendsById(Long id) {
-
-        //fromUser, toUser 페치 조인
-        List<Friendship> friendshipList = friendshipDataRepository.findFriendshipsById(id);
-        if (friendshipList.isEmpty()) {
-            return Collections.emptyList();
+    @Transactional
+    public void updateProfile(MultipartFile file, String nickname, Long userId) {
+        try {
+            User user = userDataRepository.findById(userId).orElseThrow(RuntimeException::new);
+            user.setNickname(nickname);
+            user.setProfileImagePath(saveProfileImage(file));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        List<FriendDto> friendDtos = new ArrayList<>();
-        for (Friendship friendship : friendshipList) {
-            User fromUser = friendship.getFromUser();
-            User toUser = friendship.getToUser();
+    }
 
-            //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
-            if (fromUser.getId().equals(id)) {
-                byte[] imageBytes = getByteArrayOfImageByPath(toUser.getProfileImagePath());
-                friendDtos.add(new FriendDto(imageBytes, toUser.getNickname()));
-                //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
-            } else {
-                byte[] imageBytes = getByteArrayOfImageByPath(fromUser.getProfileImagePath());
-                friendDtos.add(new FriendDto(imageBytes, fromUser.getNickname()));
-            }
+    public String saveProfileImage(MultipartFile file) throws IOException {
+        String imageName = UUID.randomUUID() + file.getOriginalFilename();
+        String path = profileImagePath;
+        File fileDir = new File(profileImagePath);
+
+        //지정한 디렉토리가 없으면 생성
+        if (!fileDir.exists()) {
+            fileDir.mkdirs();
         }
-        return friendDtos;
+
+        //새로운 파일로 변환해서 지정한 경로에 저장.
+        file.transferTo(new File(path, imageName));
+
+        //이미지 찾아올 때 모든 경로가 필요하기 때문에 아래와 같이 저장.
+        path = profileImagePath + "\\" + imageName;
+
+        return path;
+    }
+
+    //계정 삭제
+    @Transactional
+    public void deleteAccount(Long id) {
+        userDataRepository.deleteById(id);
+    }
+
+    public UserInfoDto userWithNicknameAndImage(Long id) {
+        User user = userDataRepository.findById(id).orElseThrow(RuntimeException::new);
+        String nickname = user.getNickname();
+        byte[] imageBytes = getByteArrayOfImageByPath(user.getProfileImagePath());
+        return new UserInfoDto(nickname, imageBytes);
     }
 
     public byte[] getByteArrayOfImageByPath(String imagePath) {
@@ -130,49 +147,5 @@ public class UserService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Transactional
-    public void updateProfile(MultipartFile file, String nickname, Long userId) {
-        try {
-            User user = userDataRepository.findById(userId).orElseThrow(RuntimeException::new);
-            user.setNickname(nickname);
-            user.setProfileImagePath(saveProfileImage(file));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    public String saveProfileImage(MultipartFile file) throws IOException {
-            String imageName = UUID.randomUUID() + file.getOriginalFilename();
-            String path = profileImagePath;
-            File fileDir = new File(profileImagePath);
-
-            //지정한 디렉토리가 없으면 생성
-            if (!fileDir.exists()) {
-                fileDir.mkdirs();
-            }
-
-            //새로운 파일로 변환해서 지정한 경로에 저장.
-            file.transferTo(new File(path, imageName));
-
-            //이미지 찾아올 때 모든 경로가 필요하기 때문에 아래와 같이 저장.
-            path = profileImagePath + "\\" + imageName;
-
-            return path;
-    }
-
-    //계정 삭제
-    @Transactional
-    public void deleteAccount(Long id) {
-        userDataRepository.deleteById(id);
-    }
-
-    public UserInfoDto userWithNicknameAndImage(Long id) {
-        User user = userDataRepository.findById(id).orElseThrow(RuntimeException::new);
-        String nickname = user.getNickname();
-        byte[] imageBytes = getByteArrayOfImageByPath(user.getProfileImagePath());
-        return new UserInfoDto(nickname, imageBytes);
     }
 }

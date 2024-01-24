@@ -97,7 +97,7 @@ public class RestApiController {
     @GetMapping("/friends")
     public ResponseEntity<Map<String, Object>> friends(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        List<FriendDto> friendsList = userService.findFriendsById(principalDetails.getUser().getId());
+        List<FriendDto> friendsList = friendshipService.findFriendsById(principalDetails.getUser().getId());
 
         Map<String, Object> data = new HashMap<>();
         data.put("friendsList", friendsList);
