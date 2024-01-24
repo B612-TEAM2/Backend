@@ -13,5 +13,12 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
             " join fetch f.toUser" +
             " where (f.fromUser.id = :userId or f.toUser.id = :userId) and f.isFriend = true")
     List<Friendship> findFriendshipsById(@Param("userId") Long userId);
+
+    @Query("delete from Friendship f" +
+            " where f.isFriend = true and" +
+            " (f.fromUser.id =:userId and f.toUser.nickname =:nickname)" +
+            " or (f.toUser.id =:userId and f.fromUser.nickname =:nickname)")
+    void deleteFriendshipByFriendNicknameAndUserId(@Param("friendNickname") String nickname,
+                                                   @Param("userId") Long userId);
 }
 
