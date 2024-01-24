@@ -4,6 +4,8 @@ import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
+import com.b6122.ping.repository.datajpa.UserDataRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -22,6 +24,7 @@ import java.util.List;
 public class FriendshipService {
 
     private final FriendshipDataRepository friendshipDataRepository;
+    private final UserDataRepository userDataRepository;
 
     /**
      * 친구의 고유 nickname으로 사용자의 친구 목록에서 삭제
@@ -85,5 +88,17 @@ public class FriendshipService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * nickname으로 친구 검색
+     * @param nickname 쿼리 파라미터로 넘어온 nickname
+     * @return FriendDto (nickname, profileImg)
+     * @throws EntityNotFoundException 리소스가 없을 경우 예외
+     */
+    public FriendDto findFriendByNickname(String nickname) {
+        User findUser = userDataRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
+        byte[] imageBytes = getByteArrayOfImageByPath(findUser.getProfileImagePath());
+        return new FriendDto(imageBytes, findUser.getNickname());
     }
 }
