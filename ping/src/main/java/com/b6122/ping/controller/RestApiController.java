@@ -86,7 +86,7 @@ public class RestApiController {
      * @param file : 사용자가 업로드한 이미지 파일 (form data)
      * @param nickname : 사용자가 설정한 고유 nickname
      */
-    @PostMapping("/nickname")
+    @PostMapping("/profile")
     public void setInitialProfile(@RequestParam("profileImg") MultipartFile file,
                             @RequestParam("nickname") String nickname,
                             Authentication authentication) {
@@ -96,7 +96,7 @@ public class RestApiController {
 
     }
 
-    //친구 목록
+    //친구 목록(nickname, profileImg 정보)
     @GetMapping("/friends")
     public ResponseEntity<Map<String, Object>> friends(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -135,7 +135,10 @@ public class RestApiController {
                 principalDetails.getUser().getId());
     }
 
-    //친구 삭제
+    /**
+     * 친구삭제
+     * @param request {"nickname" : "xxx"}
+     */
     @DeleteMapping("/friends")
     public void deleteFriend(@RequestBody Map<String, Object> request, Authentication authentication) {
         String friendNickname = request.get("nickname").toString();
