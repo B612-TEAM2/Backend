@@ -124,4 +124,14 @@ public class RestApiController {
 
         return ResponseEntity.ok().body(data);
     }
+
+    //회원정보 변경(일단 사진만, 닉네임까지 확장 가능)
+    @PostMapping("/account")
+    public void updateProfileImage(@RequestParam("profileImg") MultipartFile file,
+                                   Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        userService.updateProfile(file,
+                principalDetails.getUser().getNickname(),
+                principalDetails.getUser().getId());
+    }
 }
