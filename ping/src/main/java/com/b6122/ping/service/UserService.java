@@ -37,9 +37,9 @@ public class UserService {
     private String profileImagePath;
 
     /**
-     * 리소스 서버(ex: kakao, google)로 부터 사용자 정보를 받은 후 그것을 바탕으로 회원가입
+     * 리소스 서버(kakao, google)로 부터 사용자 정보를 받은 후 그것을 바탕으로 회원가입
      * @param userInfoMap 사용자 정보 Map
-     * @return UserDto
+     * @return UserDto (id, username)
      * @throws IOException
      */
     @Transactional

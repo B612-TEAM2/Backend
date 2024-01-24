@@ -21,6 +21,11 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JwtService {
 
+    /**
+     * 사용자 정보를 바탕으로 Jwt AccessToken 발급
+     * @param userDto UserDto 정보: id, username
+     * @return
+     */
     public Map<String, String> createJwtAccessToken(UserDto userDto) {
 
         //accessToken 생성
