@@ -82,7 +82,10 @@ public class RestApiController {
     }
 
 
-    //처음 소셜 로그인 후 바로 다음에 닉네임, 프로필 사진 설정 메소드
+    /**
+     * @param file : 사용자가 업로드한 이미지 파일 (form data)
+     * @param nickname : 사용자가 설정한 고유 nickname
+     */
     @PostMapping("/nickname")
     public void setInitialProfile(@RequestParam("profileImg") MultipartFile file,
                             @RequestParam("nickname") String nickname,

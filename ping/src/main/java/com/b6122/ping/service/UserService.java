@@ -31,11 +31,17 @@ import java.util.*;
 public class UserService {
 
     private final UserDataRepository userDataRepository;
-    private final FriendshipDataRepository friendshipDataRepository;
 
+    //서버가 받은 이미지가 저장되는 로컬 디스크 주소
     @Value("${profile.image.upload-path}")
     private String profileImagePath;
 
+    /**
+     * 리소스 서버(ex: kakao, google)로 부터 사용자 정보를 받은 후 그것을 바탕으로 회원가입
+     * @param userInfoMap 사용자 정보 Map
+     * @return UserDto
+     * @throws IOException
+     */
     @Transactional
     public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
 
@@ -86,6 +92,12 @@ public class UserService {
         }
     }
 
+    /**
+     * 요청 사용자의 프로필 업데이트(변경감지)
+     * @param file 사용자가 업로드한 이미지 데이터
+     * @param nickname 사용자가 설정한 닉네임
+     * @param userId 사용자의 id
+     */
     @Transactional
     public void updateProfile(MultipartFile file, String nickname, Long userId) {
         try {
@@ -98,7 +110,15 @@ public class UserService {
 
     }
 
+    /**
+     * 프로필 이미지를 서버 로컬 주소에 저장(배포 시 클라우드로 옮길 예정)
+     * @param file 사용자가 업로드한 이미지 파일
+     * @return 저장 장소의 절대 경로(디렉토리 경로 + 이미지 파일의 이름)
+     * @throws IOException
+     */
     public String saveProfileImage(MultipartFile file) throws IOException {
+
+        //이미지 경로의 중복 방지를 위해 랜덤값으로 파일 명 저장
         String imageName = UUID.randomUUID() + file.getOriginalFilename();
         String path = profileImagePath;
         File fileDir = new File(profileImagePath);
@@ -111,7 +131,7 @@ public class UserService {
         //새로운 파일로 변환해서 지정한 경로에 저장.
         file.transferTo(new File(path, imageName));
 
-        //이미지 찾아올 때 모든 경로가 필요하기 때문에 아래와 같이 저장.
+        //이미지 찾아올 때 파일 이름을 포함한 모든 경로가 필요하기 때문에 아래와 같이 저장.
         path = profileImagePath + "\\" + imageName;
 
         return path;
@@ -123,6 +143,11 @@ public class UserService {
         userDataRepository.deleteById(id);
     }
 
+    /**
+     * 사용자 정보(이미지, 닉네임) 가져오기
+     * @param id 사용자의 id
+     * @return 사용자 정보(UserInfoDto 정보: nickname, profileImg)
+     */
     public UserInfoDto userWithNicknameAndImage(Long id) {
         User user = userDataRepository.findById(id).orElseThrow(RuntimeException::new);
         String nickname = user.getNickname();
@@ -130,6 +155,10 @@ public class UserService {
         return new UserInfoDto(nickname, imageBytes);
     }
 
+    /**
+     * @param imagePath 서버의 이미지 저장 장소 경로
+     * @return 이미지의 byte 배열
+     */
     public byte[] getByteArrayOfImageByPath(String imagePath) {
         try {
             Resource resource = new UrlResource(Path.of(imagePath).toUri());
