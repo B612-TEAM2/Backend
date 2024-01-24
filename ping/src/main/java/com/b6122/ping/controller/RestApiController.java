@@ -86,7 +86,7 @@ public class RestApiController {
 
 
     //처음 소셜 로그인 후 바로 다음에 닉네임, 프로필 사진 설정 메소드
-    @PostMapping("/api/nickname")
+    @PostMapping("/nickname")
     public void setInitialProfile(@RequestParam("profileImg") MultipartFile file,
                             @RequestParam("nickname") String nickname,
                             Authentication authentication) {
@@ -97,7 +97,7 @@ public class RestApiController {
     }
 
     //친구 목록
-    @GetMapping("/api/friends")
+    @GetMapping("/friends")
     public ResponseEntity<Map<String, Object>> friends(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         List<FriendDto> friendsList = userService.findFriendsById(principalDetails.getUser().getId());
@@ -108,13 +108,14 @@ public class RestApiController {
     }
 
     //회원 탈퇴
-    @DeleteMapping("/api/account")
+    @DeleteMapping("/account")
     public void deleteAccount(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         userService.deleteAccount(principalDetails.getUser().getId());
     }
 
-    @GetMapping("/api/account")
+    //사용자 정보(닉네임, 사진) 가져오기
+    @GetMapping("/account")
     public ResponseEntity<Map<String, Object>> account(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         UserInfoDto userInfoDto = userService.userWithNicknameAndImage(principalDetails.getUser().getId());
