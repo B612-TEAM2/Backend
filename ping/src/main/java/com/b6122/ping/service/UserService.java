@@ -73,8 +73,7 @@ public class UserService {
                     // 회원가입
                     return userDataRepository.save(user);
                 });
-        return new UserDto(findUser.getId(), findUser.getProvider(),
-                findUser.getProviderId(), findUser.getUsername());
+        return new UserDto(findUser.getId(), findUser.getUsername());
 
     }
 
