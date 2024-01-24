@@ -6,10 +6,10 @@ import lombok.Data;
 public class UserInfoDto {
 
     private String nickname;
-    private byte[] imageBytes;
+    private byte[] profileImg;
 
-    public UserInfoDto(String nickname, byte[] imageBytes) {
+    public UserInfoDto(String nickname, byte[] profileImg) {
         this.nickname = nickname;
-        this.imageBytes = imageBytes;
+        this.profileImg = profileImg;
     }
 }
