@@ -56,16 +56,19 @@ public class FriendshipService {
         for (Friendship friendship : friendshipList) {
             User fromUser = friendship.getFromUser();
             User toUser = friendship.getToUser();
+            byte[] imageBytes;
+            FriendDto friendDto;
 
             //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
             if (fromUser.getId().equals(id)) {
-                byte[] imageBytes = getByteArrayOfImageByPath(toUser.getProfileImagePath());
-                friendDtos.add(new FriendDto(id, imageBytes, toUser.getNickname()));
+                imageBytes = getByteArrayOfImageByPath(toUser.getProfileImagePath());
+                friendDto = new FriendDto(id, imageBytes, toUser.getNickname());
                 //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
             } else {
-                byte[] imageBytes = getByteArrayOfImageByPath(fromUser.getProfileImagePath());
-                friendDtos.add(new FriendDto(fromUser.getId(), imageBytes, fromUser.getNickname()));
+                imageBytes = getByteArrayOfImageByPath(fromUser.getProfileImagePath());
+                friendDto = new FriendDto(fromUser.getId(), imageBytes, fromUser.getNickname());
             }
+            friendDtos.add(friendDto);
         }
         return friendDtos;
     }

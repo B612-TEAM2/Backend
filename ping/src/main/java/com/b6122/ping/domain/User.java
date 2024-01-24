@@ -34,6 +34,12 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.REMOVE)
+    private List<Friendship> sentFriendshipRequests = new ArrayList<>();
+
+    @OneToMany(mappedBy = "toUser", cascade = CascadeType.REMOVE)
+    private List<Friendship> receivedFriendshipRequests = new ArrayList<>();
+
     public void addPost(Post p) {//외부에서 post 생성시 posts list에 추가
         this.posts.add(p);
     }
