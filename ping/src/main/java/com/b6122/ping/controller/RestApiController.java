@@ -5,7 +5,9 @@ import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.dto.UserInfoDto;
 import com.b6122.ping.service.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @RestController
@@ -147,5 +150,23 @@ public class RestApiController {
 
         friendshipService.deleteFriend(friendNickname, userId);
 
+    }
+
+    /**
+     * 친구의 nickname을 검색하여 찾기
+     * @param nickname 쿼리 파라미터로 전달
+     * @return 친구 정보(FriendDto -> nickname, profileImg)
+     */
+    @GetMapping("/friends/search")
+    public ResponseEntity<Map<String, Object>> searchFriend(@RequestParam("nickname") String nickname) {
+        Map<String, Object> data = new HashMap<>();
+        try {
+           FriendDto result = friendshipService.findFriendByNickname(nickname);
+           data.put("friendInfo", result);
+           return ResponseEntity.ok().body(data);
+       } catch (EntityNotFoundException e) {
+           data.put("error", e.getMessage());
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
+       }
     }
 }
