@@ -1,9 +1,10 @@
 package com.b6122.ping.controller;
 
 import com.b6122.ping.auth.PrincipalDetails;
+import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
-import com.b6122.ping.dto.UserInfoDto;
+import com.b6122.ping.dto.UserProfileDto;
 import com.b6122.ping.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -86,13 +87,13 @@ public class RestApiController {
 
 
     /**
-     * @param file : 사용자가 업로드한 이미지 파일 (form data)
+     * @param file     : 사용자가 업로드한 이미지 파일 (form data)
      * @param nickname : 사용자가 설정한 고유 nickname
      */
     @PostMapping("/profile")
     public void setInitialProfile(@RequestParam("profileImg") MultipartFile file,
-                            @RequestParam("nickname") String nickname,
-                            Authentication authentication) {
+                                  @RequestParam("nickname") String nickname,
+                                  Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long userId = principalDetails.getUser().getId();
         userService.updateProfile(file, nickname, userId);
@@ -121,7 +122,7 @@ public class RestApiController {
     @GetMapping("/account")
     public ResponseEntity<Map<String, Object>> account(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserInfoDto userInfoDto = userService.userWithNicknameAndImage(principalDetails.getUser().getId());
+        UserProfileDto userInfoDto = userService.getUserProfile(principalDetails.getUser().getId());
         Map<String, Object> data = new HashMap<>();
         data.put("userInfo", userInfoDto);
 
@@ -140,6 +141,7 @@ public class RestApiController {
 
     /**
      * 친구삭제
+     *
      * @param request {"nickname" : "xxx"}
      */
     @DeleteMapping("/friends")
@@ -153,20 +155,26 @@ public class RestApiController {
     }
 
     /**
-     * 친구의 nickname을 검색하여 찾기
+     * 사용자의 nickname을 검색하여 찾기
+     *
      * @param nickname 쿼리 파라미터로 전달
-     * @return 친구 정보(FriendDto -> nickname, profileImg)
+     * @return 사용자 정보(UserProfileDto -> nickname, profileImg), 친구 여부
      */
     @GetMapping("/friends/search")
-    public ResponseEntity<Map<String, Object>> searchFriend(@RequestParam("nickname") String nickname) {
+    public ResponseEntity<Map<String, Object>> searchUser(@RequestParam("nickname") String nickname,
+                                                          Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Map<String, Object> data = new HashMap<>();
         try {
-           FriendDto result = friendshipService.findFriendByNickname(nickname);
-           data.put("friendInfo", result);
-           return ResponseEntity.ok().body(data);
-       } catch (EntityNotFoundException e) {
-           data.put("error", e.getMessage());
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
-       }
+            UserProfileDto result = userService.findUserByNickname(nickname);
+            Optional<Friendship> friendship =
+                    friendshipService.findFriendByIds(principalDetails.getUser().getId(), result.getId());
+            data.put("userInfo", result);
+            data.put("isFriendWithMe", friendship.isPresent());
+            return ResponseEntity.ok().body(data);
+        } catch (EntityNotFoundException e) {
+            data.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
+        }
     }
 }
