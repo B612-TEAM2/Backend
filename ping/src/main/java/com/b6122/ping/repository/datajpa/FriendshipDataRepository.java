@@ -16,8 +16,8 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
 
     @Query("delete from Friendship f" +
             " where f.isFriend = true and" +
-            " (f.fromUser.id =:userId and f.toUser.nickname =:nickname)" +
-            " or (f.toUser.id =:userId and f.fromUser.nickname =:nickname)")
+            " ((f.fromUser.id =:userId and f.toUser.nickname =:nickname)" +
+            " or (f.toUser.id =:userId and f.fromUser.nickname =:nickname))")
     void deleteFriendshipByFriendNicknameAndUserId(@Param("nickname") String friendNickname,
                                                    @Param("userId") Long userId);
 }
