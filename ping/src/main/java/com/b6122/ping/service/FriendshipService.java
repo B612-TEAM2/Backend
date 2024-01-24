@@ -3,6 +3,7 @@ package com.b6122.ping.service;
 import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.FriendDto;
+import com.b6122.ping.dto.UserProfileDto;
 import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -25,6 +26,7 @@ import java.util.Optional;
 public class FriendshipService {
 
     private final FriendshipDataRepository friendshipDataRepository;
+    private final UserService userService;
 
     /**
      * 친구의 고유 nickname으로 사용자의 친구 목록에서 삭제
@@ -33,7 +35,8 @@ public class FriendshipService {
      */
     @Transactional
     public void deleteFriend(String friendNickname, Long userId) {
-        friendshipDataRepository.deleteFriendshipByFriendNicknameAndUserId(friendNickname, userId);
+        UserProfileDto findUser = userService.findUserByNickname(friendNickname);
+        friendshipDataRepository.deleteFriendshipByIds(findUser.getId(), userId);
     }
 
     /**
