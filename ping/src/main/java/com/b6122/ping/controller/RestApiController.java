@@ -132,6 +132,7 @@ public class RestApiController {
                 principalDetails.getUser().getId());
     }
 
+    //친구 삭제
     @DeleteMapping("/friends")
     public void deleteFriend(@RequestBody Map<String, Object> request, Authentication authentication) {
         String friendNickname = request.get("nickname").toString();
