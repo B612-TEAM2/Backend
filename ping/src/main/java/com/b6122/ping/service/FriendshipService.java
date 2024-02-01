@@ -37,7 +37,8 @@ public class FriendshipService {
      */
     @Transactional
     public void deleteFriend(Long friendId, Long userId) {
-        friendshipDataRepository.deleteFriendshipByIds(friendId, userId);
+        Friendship findFriendship = friendshipDataRepository.findFriendshipByIds(friendId, userId).orElseThrow(RuntimeException::new);
+        friendshipDataRepository.delete(findFriendship);
     }
 
     /**

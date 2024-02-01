@@ -69,23 +69,6 @@ public class RestApiController {
         return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
     }
 
-    @CrossOrigin
-    @PostMapping("/oauth/jwt/naver")
-    public ResponseEntity<Map<String, String>> createJwtNaver(@RequestBody Map<String, Object> request) throws IOException {
-        // Frontend sends the authorization code, use it to request Naver for an access token
-        String accessToken = naverOAuthService.getNaverAccessToken(request.get("code").toString());
-
-        // Use the obtained access token to fetch Naver user information from Naver resource server
-        Map<String, Object> userInfo = naverOAuthService.getNaverUserInfo(accessToken);
-
-        // Based on the retrieved information, perform user registration
-        UserDto userDto = userService.joinOAuthUser(userInfo);
-
-        // Return the JWT access token to the React server
-        return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
-    }
-
-
     /**
      * @param file     : 사용자가 업로드한 이미지 파일 (form data)
      * @param nickname : 사용자가 설정한 고유 nickname
