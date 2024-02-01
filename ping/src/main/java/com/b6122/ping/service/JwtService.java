@@ -21,25 +21,52 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JwtService {
 
+    private final UserDataRepository userDataRepository;
+
     /**
      * 사용자 정보를 바탕으로 Jwt AccessToken 발급
      * @param userDto UserDto 정보: id, username
      * @return
      */
-    public Map<String, String> createJwtAccessToken(UserDto userDto) {
+    public Map<String, String> createJwtAccessAndRefreshToken(UserDto userDto) {
 
         //accessToken 생성
-        String jwtToken = JWT.create()
-                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.EXPIRATION_TIME))
+        String accessToken = JWT.create()
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME))
                 .withClaim("id", userDto.getId())
                 .withClaim("username", userDto.getUsername())
+                .withClaim("token_type", "access")
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+
+        //refreshToken 생성
+        String refreshToken = JWT.create()
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME))
+                .withClaim("id", userDto.getId())
+                .withClaim("username", userDto.getUsername())
+                .withClaim("token_type", "refresh")
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
         //responseBody에 값 저장해서 return
         Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("access_token", jwtToken);
-        responseBody.put("token_prefix", JwtProperties.TOKEN_PREFIX);
-        responseBody.put("expires_in", String.valueOf(JwtProperties.EXPIRATION_TIME));
+        responseBody.put("access_token", accessToken);
+        responseBody.put("refresh_token", refreshToken);
+
+        return responseBody;
+    }
+
+    public Map<String, String> createJwtAccessToken(UserDto userDto) {
+
+        //accessToken 생성
+        String accessToken = JWT.create()
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME))
+                .withClaim("id", userDto.getId())
+                .withClaim("username", userDto.getUsername())
+                .withClaim("token_type", "access")
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+
+        //responseBody에 값 저장해서 return
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("access_token", accessToken);
 
         return responseBody;
     }

@@ -46,12 +46,10 @@ public class SecurityConfig {
                 .httpBasic((httpBasic) -> httpBasic.disable()) //Bearer 방식을 사용하기 위해 basic 인증 비활성화
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers(new AntPathRequestMatcher("/oauth/jwt/**")).permitAll()
-                                .requestMatchers("/**").hasAnyRole("ADMIN", "USER")
+                                .requestMatchers("/oauth/jwt/**").permitAll()
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
+                                .requestMatchers("/**").hasAnyRole("ADMIN", "USER")
                                 .anyRequest().authenticated());
-
-
 
 
         return http.build();

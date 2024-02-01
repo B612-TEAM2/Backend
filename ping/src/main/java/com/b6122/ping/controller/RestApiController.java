@@ -48,7 +48,7 @@ public class RestApiController {
         UserDto userDto = userService.joinOAuthUser(userInfo);
 
         // jwt accessToken을 리액트 서버에 return
-        return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
+        return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
     }
 
     @PostMapping("/oauth/jwt/google")
@@ -66,7 +66,7 @@ public class RestApiController {
         UserDto userDto = userService.joinOAuthUser(userInfo);
 
         // Return the JWT access token to the React server
-        return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
+        return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
     }
 
     @CrossOrigin
@@ -82,7 +82,7 @@ public class RestApiController {
         UserDto userDto = userService.joinOAuthUser(userInfo);
 
         // Return the JWT access token to the React server
-        return ResponseEntity.ok().body(jwtService.createJwtAccessToken(userDto));
+        return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
     }
 
 
@@ -96,6 +96,11 @@ public class RestApiController {
                                   Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long userId = principalDetails.getUser().getId();
+        System.out.println("userId = " + userId);
+        System.out.println("userId = " + userId);
+        System.out.println("userId = " + userId);
+        System.out.println("userId = " + userId);
+
         userService.updateProfile(file, nickname, userId);
 
     }
