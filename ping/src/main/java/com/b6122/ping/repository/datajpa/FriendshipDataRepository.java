@@ -20,8 +20,8 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
     //친구 단건 삭제
     @Query("delete from Friendship f" +
             " where f.isFriend = true and" +
-            " ((f.fromUser.id =:userId and f.toUser.nickname =:friendId)" +
-            " or (f.toUser.id =:userId and f.fromUser.nickname =:friendId))")
+            " ((f.fromUser.id =:userId and f.toUser.id =:friendId)" +
+            " or (f.toUser.id =:userId and f.fromUser.id =:friendId))")
     void deleteFriendshipByIds(@Param("friendId") Long friendId,
                                                    @Param("userId") Long userId);
 
@@ -32,5 +32,15 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
             " or (f.toUser.id = :userId and f.fromUser.id = :friendId))")
     Optional<Friendship> findFriendshipByIds(@Param("friendId") Long friendId,
                                         @Param("userId") Long userId);
+
+    //내가(사용자, userId) 요청한 아직 대기 중인 친구 요청
+    @Query("select f from Friendship f" +
+            " where f.isFriend = false" +
+            " and f.requestStatus = com.b6122.ping.domain.FriendshipRequestStatus.PENDING" +
+            " and f.toUser.id = :friendId and f.fromUser.id = :userId ")
+    Optional<Friendship> findPendingFriendShip(@Param("friendId") Long friendId,
+            @Param("userId") Long userId);
+
+
 }
 

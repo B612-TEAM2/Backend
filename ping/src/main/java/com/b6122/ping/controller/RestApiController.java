@@ -96,24 +96,8 @@ public class RestApiController {
                                   Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long userId = principalDetails.getUser().getId();
-        System.out.println("userId = " + userId);
-        System.out.println("userId = " + userId);
-        System.out.println("userId = " + userId);
-        System.out.println("userId = " + userId);
-
         userService.updateProfile(file, nickname, userId);
 
-    }
-
-    //친구 목록(nickname, profileImg 정보)
-    @GetMapping("/friends")
-    public ResponseEntity<Map<String, Object>> friends(Authentication authentication) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        List<FriendDto> friendsList = friendshipService.findFriendsById(principalDetails.getUser().getId());
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("friendsList", friendsList);
-        return ResponseEntity.ok().body(data);
     }
 
     //회원 탈퇴
@@ -152,12 +136,16 @@ public class RestApiController {
     @DeleteMapping("/friends")
     public void deleteFriend(@RequestBody Map<String, Object> request, Authentication authentication) {
         String friendNickname = request.get("nickname").toString();
+        UserProfileDto findUserDto = userService.findUserByNickname(friendNickname);
+        Long friendId = findUserDto.getId();
+
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long userId = principalDetails.getUser().getId();
 
-        friendshipService.deleteFriend(friendNickname, userId);
+        friendshipService.deleteFriend(friendId, userId);
 
     }
+
 
     /**
      * 사용자의 nickname을 검색하여 찾기
@@ -181,5 +169,21 @@ public class RestApiController {
             data.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
         }
+    }
+
+    //친구 신청
+    @PostMapping("/friends/search")
+    public void sendFriendRequest(Authentication authentication,
+                                                                 @RequestParam("id") Long friendId) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long userId = principalDetails.getUser().getId();
+        friendshipService.sendRequest(userId, friendId);
+    }
+
+    //친구 요청 수락
+    @PostMapping("/friends/pendinglist")
+    public void acceptFriend(Authentication authentication, @RequestParam("nickname") String nickname) {
+        userService.findUserByNickname(nickname);
+
     }
 }
