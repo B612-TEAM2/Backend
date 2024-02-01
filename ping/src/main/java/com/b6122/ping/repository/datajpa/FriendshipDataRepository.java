@@ -17,14 +17,6 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
             " where (f.fromUser.id = :userId or f.toUser.id = :userId) and f.isFriend = true")
     List<Friendship> findFriendshipsById(@Param("userId") Long userId);
 
-    //친구 단건 삭제
-    @Query("delete from Friendship f" +
-            " where f.isFriend = true and" +
-            " ((f.fromUser.id =:userId and f.toUser.id =:friendId)" +
-            " or (f.toUser.id =:userId and f.fromUser.id =:friendId))")
-    void deleteFriendshipByIds(@Param("friendId") Long friendId,
-                                                   @Param("userId") Long userId);
-
     //친구 단건 조회
     @Query("select f from Friendship f" +
             " where f.isFriend = true" +
