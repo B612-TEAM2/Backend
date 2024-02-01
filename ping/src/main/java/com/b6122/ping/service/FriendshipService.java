@@ -1,6 +1,7 @@
 package com.b6122.ping.service;
 
 import com.b6122.ping.domain.Friendship;
+import com.b6122.ping.domain.FriendshipRequestStatus;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserProfileDto;
@@ -106,21 +107,33 @@ public class FriendshipService {
 
     /**
      * 친구 요청 보내기
-     * @param userId (보내는 사람, fromUser)
-     * @param friendId (받는 사람, toUser)
+     * @param fromUserId ->친구 요청 보낸 사람
+     * @param toUserId -> 친구 요청 받은 사람
      */
     @Transactional
-    public void sendRequest(Long userId, Long friendId) {
+    public void sendRequest(Long fromUserId, Long toUserId) {
 
-        User fromUser = userDataRepository.findById(userId).orElseThrow(RuntimeException::new);
-        User toUser = userDataRepository.findById(friendId).orElseThrow(RuntimeException::new);
+        User fromUser = userDataRepository.findById(fromUserId).orElseThrow(RuntimeException::new);
+        User toUser = userDataRepository.findById(toUserId).orElseThrow(RuntimeException::new);
 
         Friendship friendship = Friendship.createFriendship(fromUser, toUser);
 
-        Optional<Friendship> findFriendship = friendshipDataRepository.findPendingFriendShip(userId, friendId);
+        Optional<Friendship> findFriendship = friendshipDataRepository.findPendingFriendShip(fromUserId, toUserId);
         if (findFriendship.isEmpty()) {
             friendshipDataRepository.save(friendship);
         }
 
+    }
+
+    /**
+     * 친구 요청 수락
+     * @param toUserId (친구 요청 받은 사람)
+     * @param fromUserId (친구 요청 보낸 사람)
+     */
+    @Transactional
+    public void addFriend(Long toUserId, Long fromUserId) {
+        Friendship friendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId).orElseThrow(RuntimeException::new);
+        friendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
+        friendship.setIsFriend(true);
     }
 }

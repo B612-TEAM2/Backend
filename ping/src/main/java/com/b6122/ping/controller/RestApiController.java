@@ -174,16 +174,25 @@ public class RestApiController {
     //친구 신청
     @PostMapping("/friends/search")
     public void sendFriendRequest(Authentication authentication,
-                                                                 @RequestParam("id") Long friendId) {
+                                                                 @RequestParam("id") Long toUserId) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Long userId = principalDetails.getUser().getId();
-        friendshipService.sendRequest(userId, friendId);
+        Long fromUserId = principalDetails.getUser().getId();
+        //userId는 친구 신청 하는 유저, friendId는 친구 신청 받는 유저
+        friendshipService.sendRequest(fromUserId, toUserId);
     }
 
     //친구 요청 수락
     @PostMapping("/friends/pendinglist")
-    public void acceptFriend(Authentication authentication, @RequestParam("nickname") String nickname) {
-        userService.findUserByNickname(nickname);
+    public void addFriend(Authentication authentication, @RequestParam("nickname") String nickname) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long toUserId = principalDetails.getUser().getId();
+
+        UserProfileDto findUserDto = userService.findUserByNickname(nickname);
+        Long fromUserId = findUserDto.getId();
+
+        //toUserId -> 친구 요청을 받은 유저
+        //fromUserId -> 친구 요청을 보낸 유저
+        friendshipService.addFriend(toUserId, fromUserId);
 
     }
 }

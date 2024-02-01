@@ -33,13 +33,18 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
     Optional<Friendship> findFriendshipByIds(@Param("friendId") Long friendId,
                                         @Param("userId") Long userId);
 
-    //내가(사용자, userId) 요청한 아직 대기 중인 친구 요청
+    /**
+     * fromUser가 보낸 아직 대기 중인(PENDING) 친구 요청
+     * @param toUserId 친구 요청 받은 사람 id
+     * @param fromUserId 친구 요청 보낸 사람 id
+     * @return
+     */
     @Query("select f from Friendship f" +
             " where f.isFriend = false" +
             " and f.requestStatus = com.b6122.ping.domain.FriendshipRequestStatus.PENDING" +
-            " and f.toUser.id = :friendId and f.fromUser.id = :userId ")
-    Optional<Friendship> findPendingFriendShip(@Param("friendId") Long friendId,
-            @Param("userId") Long userId);
+            " and f.toUser.id = :toUserId and f.fromUser.id = :fromUserId ")
+    Optional<Friendship> findPendingFriendShip(@Param("toUserId") Long toUserId,
+            @Param("fromUserId") Long fromUserId);
 
 
 }
