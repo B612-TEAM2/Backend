@@ -33,6 +33,6 @@ JwtProperties.java
 /dist/
 /nbdist/
 /.nb-gradle/
-
+frontend/
 ### VS Code ###
 .vscode/
