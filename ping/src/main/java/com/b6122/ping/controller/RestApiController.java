@@ -7,6 +7,7 @@ import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.dto.UserProfileDto;
 import com.b6122.ping.service.*;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,45 +30,41 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RestApiController {
 
-    private final NaverOAuthService naverOAuthService;
     private final GoogleOAuthService googleOAuthService;
     private final JwtService jwtService;
     private final UserService userService;
     private final KakaoOAuthService kakaoOAuthService;
     private final FriendshipService friendshipService;
 
-    @PostMapping("/oauth/jwt/kakao")
-    public ResponseEntity<Map<String, String>> createJwt(@RequestBody Map<String, Object> request) throws IOException {
-        // 프론트엔드로부터 authorization code 받고 -> 그 code로 카카오에 accesstoken 요청
-        String accessToken = kakaoOAuthService.getKakaoAccessToken(request.get("code").toString());
+    //프론트엔드로부터 authorization code 받고 -> 그 code로 카카오에 accesstoken 요청
+    // 받아 온 access token으로 카카오 리소스 서버로부터 카카오 유저 정보 가져오기
+    // 가져온 정보를 기반으로 회원가입
+    // jwt accessToken을 리액트 서버에 return
+    @PostMapping("/oauth/jwt/{serverName}")
+    public ResponseEntity<Map<String, Object>> oauthLogin(@PathVariable("serverName") String server,
+                                                         @RequestBody Map<String, Object> request) throws IOException {
+        if ("kakao".equals(server)) {
+            System.out.println(server);
+            System.out.println(server);
+            String accessToken = kakaoOAuthService.getKakaoAccessToken(request.get("code").toString());
+            Map<String, Object> userInfo = kakaoOAuthService.getKakaoUserInfo(accessToken);
+            UserDto userDto = userService.joinOAuthUser(userInfo);
 
-        // 받아 온 access token으로 카카오 리소스 서버로부터 카카오 유저 정보 가져오기
-        Map<String, Object> userInfo = kakaoOAuthService.getKakaoUserInfo(accessToken);
+            return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
+        } else if ("google".equals(server)) {
+            String accessToken = googleOAuthService.getGoogleAccessToken(request.get("code").toString());
+            Map<String, Object> userInfo = googleOAuthService.getGoogleUserInfo(accessToken);
+            UserDto userDto = userService.joinOAuthUser(userInfo);
 
-        // 가져온 정보를 기반으로 회원가입
-        UserDto userDto = userService.joinOAuthUser(userInfo);
+            return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
+        } else {
+            Map<String, Object> data = new HashMap<>();
+            data.put("error", "Nothing matches to request");
 
-        // jwt accessToken을 리액트 서버에 return
-        return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
+            return ResponseEntity.badRequest().body(data);
+        }
     }
 
-    @PostMapping("/oauth/jwt/google")
-    public ResponseEntity<Map<String, String>> createGoogleJwt(@RequestBody Map<String, Object> request) throws IOException {
-        // Frontend sends the authorization code to the server
-        String authorizationCode = request.get("code").toString();
-
-        // Exchange the authorization code for an access token from Google
-        String accessToken = googleOAuthService.getGoogleAccessToken(authorizationCode);
-
-        // Use the access token to fetch user information from Google
-        Map<String, Object> userInfo = googleOAuthService.getGoogleUserInfo(accessToken);
-
-        // Process the user information and perform user registration if needed
-        UserDto userDto = userService.joinOAuthUser(userInfo);
-
-        // Return the JWT access token to the React server
-        return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
-    }
 
     /**
      * @param file     : 사용자가 업로드한 이미지 파일 (form data)

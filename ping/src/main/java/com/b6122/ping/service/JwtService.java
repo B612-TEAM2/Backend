@@ -28,7 +28,7 @@ public class JwtService {
      * @param userDto UserDto 정보: id, username
      * @return
      */
-    public Map<String, String> createJwtAccessAndRefreshToken(UserDto userDto) {
+    public Map<String, Object> createJwtAccessAndRefreshToken(UserDto userDto) {
 
         //accessToken 생성
         String accessToken = JWT.create()
@@ -47,7 +47,7 @@ public class JwtService {
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
         //responseBody에 값 저장해서 return
-        Map<String, String> responseBody = new HashMap<>();
+        Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("access_token", accessToken);
         responseBody.put("refresh_token", refreshToken);
 
