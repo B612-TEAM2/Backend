@@ -1,11 +1,11 @@
 package com.b6122.ping.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter@Setter
+@RequiredArgsConstructor
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "likes")
 public class Like {
 
@@ -16,9 +16,9 @@ public class Like {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Long uid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;
+    private Long pid;
 }
