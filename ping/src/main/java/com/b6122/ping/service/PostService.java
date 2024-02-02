@@ -31,8 +31,8 @@ public class PostService {
     public Long createPost(PostDto postDto){
         Post post;
         post = new Post();
-        post.setPid(postDto.getPid());
-        post.setUid(postDto.getUid());
+        post.setId(postDto.getId());
+        post.setId(postDto.getUid());
         post.setLocation(postDto.getLocation());
         post.setLatitude(postDto.getLatitude());
         post.setLongitude(postDto.getLongitude());
