@@ -1,5 +1,6 @@
 package com.b6122.ping.controller;
 
+import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.dto.PostDto;
 import com.b6122.ping.service.PostService;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class PostController {
 
     //Home-Map, 내 모든 글의 pin 반환
     @GetMapping
-    public ResponseEntity<List<PostDto>> showPostsHomeMap(@RequestParam("latitude") float latitude,
+    public ResponseEntity<List<PostDto>> showPinsHome(@RequestParam("latitude") float latitude,
                                                           @RequestParam("longitude") float longitude, Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long uid = principalDetails.getUser().getId();
