@@ -28,10 +28,10 @@ public class Post extends TimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
-    private long pid; //post id
+    private long id; //post id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private long uid; //사용자
+    private User uid; //사용자
     @Column
     private String location; //위치
     @Column

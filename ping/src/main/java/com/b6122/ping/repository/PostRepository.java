@@ -61,7 +61,7 @@ public class PostRepository{
     public long save(Post p) {
         return em.createQuery("INSERT INTO Post(pid, uid, likeCount, location, latitude, longitude, title, content, scope, createdDate) " +
                         "VALUES (:pid, :uid, :likeCount, :location, :latitude, :longitude, :title, :content, :scope, :createdDate)", Long.class)
-                .setParameter("pid", p.getPid())
+                .setParameter("pid", p.getId())
                 .setParameter("uid", p.getUid())
                 .setParameter("likeCount", p.getLikeCount())
                 .setParameter("location", p.getLocation())

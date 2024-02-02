@@ -46,6 +46,24 @@ public class PostService {
         return postRepository.save(post);
     }
 
+
+    public Long createPost(PostDto postDto){
+        Post post;
+        post = new Post();
+        post.setPid(postDto.getPid());
+        post.setUid(postDto.getUid());
+        post.setLocation(postDto.getLocation());
+        post.setLatitude(postDto.getLatitude());
+        post.setLongitude(postDto.getLongitude());
+        post.setTitle(postDto.getTitle());
+        post.setContent(postDto.getContent());
+        post.setScope(postDto.getScope());
+        post.setViewCount(postDto.getViewCount());
+        post.setLikeCount(postDto.getLikeCount());
+        post.setLikes(postDto.getLikes());
+
+        return postRepository.save(post);
+    }
     //Home-Map 클릭 전, 내가 작성한 모든 글의 pin띄우기
     public List<PostDto> getPinsHomeMap(long uid) {
         List<Post> posts = postRepository.findByUid(uid);
