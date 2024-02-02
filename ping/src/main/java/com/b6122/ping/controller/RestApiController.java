@@ -2,12 +2,10 @@ package com.b6122.ping.controller;
 
 import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.domain.Friendship;
-import com.b6122.ping.dto.FriendDto;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.dto.UserProfileDto;
 import com.b6122.ping.service.*;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -44,8 +41,6 @@ public class RestApiController {
     public ResponseEntity<Map<String, Object>> oauthLogin(@PathVariable("serverName") String server,
                                                          @RequestBody Map<String, Object> request) throws IOException {
         if ("kakao".equals(server)) {
-            System.out.println(server);
-            System.out.println(server);
             String accessToken = kakaoOAuthService.getKakaoAccessToken(request.get("code").toString());
             Map<String, Object> userInfo = kakaoOAuthService.getKakaoUserInfo(accessToken);
             UserDto userDto = userService.joinOAuthUser(userInfo);
