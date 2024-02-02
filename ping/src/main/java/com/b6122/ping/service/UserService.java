@@ -6,7 +6,6 @@ import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.dto.UserProfileDto;
 import com.b6122.ping.oauth.provider.GoogleUser;
 import com.b6122.ping.oauth.provider.KakaoUser;
-import com.b6122.ping.oauth.provider.NaverUser;
 import com.b6122.ping.oauth.provider.OAuthUser;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -82,8 +81,6 @@ public class UserService {
                 return new GoogleUser(userInfo);
             case "kakao":
                 return new KakaoUser(userInfo);
-            case "naver":
-                return new NaverUser(userInfo);
             default:
                 return null;
         }

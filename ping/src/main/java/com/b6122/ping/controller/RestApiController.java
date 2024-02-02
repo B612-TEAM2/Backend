@@ -44,7 +44,9 @@ public class RestApiController {
             String accessToken = kakaoOAuthService.getKakaoAccessToken(request.get("code").toString());
             Map<String, Object> userInfo = kakaoOAuthService.getKakaoUserInfo(accessToken);
             UserDto userDto = userService.joinOAuthUser(userInfo);
-
+            System.out.println(jwtService.createJwtAccessAndRefreshToken(userDto));
+            System.out.println(jwtService.createJwtAccessAndRefreshToken(userDto));
+            System.out.println(jwtService.createJwtAccessAndRefreshToken(userDto));
             return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
         } else if ("google".equals(server)) {
             String accessToken = googleOAuthService.getGoogleAccessToken(request.get("code").toString());
