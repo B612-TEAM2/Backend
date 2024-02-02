@@ -5,6 +5,7 @@ import com.b6122.ping.domain.User;
 import com.b6122.ping.repository.datajpa.PostDataRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class PostRepository{
+public class PostRepository {
 
     private final EntityManager em;
 
@@ -53,7 +54,7 @@ public class PostRepository{
                 .getSingleResult();
     }
 
-    @Query("SELECT p FROM Post p WHERE p.uid = :uid  ORDER BY p.createdDate DESC")
+    @Query("SELECT p FROM Post p WHERE p.user.id= :uid  ORDER BY p.createdDate DESC")
     public List<Post> findByUid(@Param("uid") long uid){
         return null;
     }
@@ -61,8 +62,8 @@ public class PostRepository{
     public long save(Post p) {
         return em.createQuery("INSERT INTO Post(pid, uid, likeCount, location, latitude, longitude, title, content, scope, createdDate) " +
                         "VALUES (:pid, :uid, :likeCount, :location, :latitude, :longitude, :title, :content, :scope, :createdDate)", Long.class)
-                .setParameter("pid", p.getPid())
-                .setParameter("uid", p.getUid())
+                .setParameter("pid", p.getId())
+                .setParameter("uid", p.getUser().getId())
                 .setParameter("likeCount", p.getLikeCount())
                 .setParameter("location", p.getLocation())
                 .setParameter("latitude", p.getLatitude())
