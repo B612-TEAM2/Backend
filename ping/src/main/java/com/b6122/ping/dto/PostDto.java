@@ -24,9 +24,9 @@ import java.util.List;
 @Getter @Setter
 @RequiredArgsConstructor
 public class PostDto {
-    private  long pid; //post id
+    private  Long id; //post id
 
-    private long uid; //사용자
+    private Long uid; //사용자
 
     private String location; //위치
 
@@ -60,7 +60,7 @@ public class PostDto {
     //Home-Map, 모든 글의 pin 보여주기
     public static PostDto pinHomeMap(Post post) {
         PostDto postDto = new PostDto();
-        postDto.setPid(post.getPid());
+        postDto.setId(post.getUser().getId());
         postDto.setLongitude(post.getLongitude());
         postDto.setLatitude(post.getLatitude());
         return postDto;
@@ -69,7 +69,7 @@ public class PostDto {
     //Home-Map 토글, pin클릭시 postPreview보여주기
     public static PostDto postPreviewHomeMap(Post post) {
         PostDto postDto = new PostDto();
-        postDto.setPid(post.getPid());
+        postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
         //postDto.setImageUrl(post.getImageUrl());  // Adjust based on your entity fields
         postDto.setScope(post.getScope());
@@ -82,12 +82,12 @@ public class PostDto {
     //Home-List 토글
     public static PostDto postPreviewHomeList(Post post, LikeRepository likeRepository) {
         PostDto postDto = new PostDto();
-        postDto.setPid(post.getPid());
+        postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
         //postDto.setImageUrl(post.getImageUrl());  // Adjust based on your entity fields
         postDto.setScope(post.getScope());
         postDto.setLikeCount(post.getLikeCount());
-        postDto.setMyLike(likeRepository.checkMyLike(post.getPid(), post.getUid()));//사용자가 post에 좋아요 눌렀다면 myLike == True
+        postDto.setMyLike(likeRepository.checkMyLike(post.getId(), post.getUser().getId()));//사용자가 post에 좋아요 눌렀다면 myLike == True
         postDto.setCreatedDate(post.getCreatedDate());
         postDto.setContentPreview(truncateContent(post.getContent(), 15)); // Adjust for content preview
         return postDto;
