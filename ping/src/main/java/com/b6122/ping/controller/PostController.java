@@ -21,13 +21,19 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    //글 작성, 수정 후 디비 저장
+    //글 작성 후 디비 저장
     @PostMapping("/store")
     public ResponseEntity getPost(@RequestBody @Validated PostDto postDto){
         Long pid = postService.createPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
     }
 
+    //글 수정 휴 디비 저장
+    @PostMapping("/edit")
+    public ResponseEntity modifyPost(@RequestBody @Validated PostDto postDto){
+        Long pid = postService.modifyPost(postDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(pid);
+    }
 
     //Home-Map, 내 모든 글의 pin 반환
     @GetMapping
@@ -64,6 +70,6 @@ public class PostController {
     //내 글 보기
 
     //친구 글 보기
-
+    //public 글 보기
 }
 
