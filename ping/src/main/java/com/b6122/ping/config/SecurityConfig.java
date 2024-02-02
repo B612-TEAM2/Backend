@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -45,11 +46,10 @@ public class SecurityConfig {
                 .httpBasic((httpBasic) -> httpBasic.disable()) //Bearer 방식을 사용하기 위해 basic 인증 비활성화
                 .authorizeHttpRequests((authorize) ->
                         authorize
-                                .requestMatchers("/user/**").hasAnyRole("ADMIN", "MANAGER", "USER")
+                                .requestMatchers("/oauth/jwt/**").permitAll()
                                 .requestMatchers("/admin/**").hasAnyRole("ADMIN")
-                                .anyRequest().permitAll());
-
-
+                                .requestMatchers("/**").hasAnyRole("ADMIN", "USER")
+                                .anyRequest().authenticated());
 
 
         return http.build();

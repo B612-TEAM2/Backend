@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Friendship {
 
@@ -25,12 +27,22 @@ public class Friendship {
     @Enumerated(EnumType.STRING)
     private FriendshipRequestStatus requestStatus; // PENDING, ACCEPTED, REJECTED
 
-    private boolean isFriend;
+    private boolean isFriend = false;
 
+    public void setIsFriend(boolean isFriend) {
+        this.isFriend = isFriend;
+    }
+
+    public void setRequestStatus(FriendshipRequestStatus requestStatus) {
+        this.requestStatus = requestStatus;
+    }
     //친구 요청 시 메소드
-    //fromUser와 toUser사이 정방향/역방향 레코드 모두 추가
-//    public static Friendship createFriendship() {
-//
-//    }
+    public static Friendship createFriendship(User fromUser, User toUser) {
+        Friendship friendship = new Friendship();
+        friendship.fromUser = fromUser;
+        friendship.toUser = toUser;
+        friendship.requestStatus = FriendshipRequestStatus.PENDING;
+        return friendship;
+    }
 }
 

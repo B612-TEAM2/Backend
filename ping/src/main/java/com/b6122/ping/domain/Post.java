@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +24,7 @@ import java.util.List;
 @Table(name = "post")
 @NoArgsConstructor
 public class Post extends TimeEntity{
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
@@ -53,8 +53,6 @@ public class Post extends TimeEntity{
     @OneToMany(mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
 
-
-
     //연관관계 매서드//
     public void setUser(User user) {
         user.addPost(this); //user의 posts list에 post(this) 추가
@@ -62,7 +60,6 @@ public class Post extends TimeEntity{
 
     /*
 
-    //like 눌렀을때
     public void pushLike(Long uid){
         postRepository.createLike(this.pid,uid);
         postRepository.updateLikeCount(this.getLikeCount()+1, this.pid);

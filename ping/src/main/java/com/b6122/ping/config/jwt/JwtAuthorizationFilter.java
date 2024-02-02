@@ -2,9 +2,14 @@ package com.b6122.ping.config.jwt;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.domain.User;
+import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.repository.UserRepository;
+import com.b6122.ping.repository.datajpa.UserDataRepository;
+import com.b6122.ping.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,10 +21,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private UserRepository userRepository;
+    private UserDataRepository userDataRepository;
+    private JwtService jwtService;
 
     public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
         super(authenticationManager);
@@ -38,9 +46,40 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         //토큰 검증(동일한 토큰인지, 만료시간은 안지났는지 com.auth0.jwt 라이브러리가 확인해줌)
+        //access token과 refresh token을 검증
+        String username = null;
         String token = request.getHeader(JwtProperties.HEADER_STRING).replace(JwtProperties.TOKEN_PREFIX, "");
-        String username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token)
-                .getClaim("username").asString();
+        String tokenType = JWT.decode(token).getClaim("token_type").asString();
+
+        if (tokenType.equals("access")) {
+
+            try {
+                username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token).getClaim("username").asString();
+
+            } catch(JWTVerificationException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Access token is not valid. Please send refersh token.");
+                return;
+            }
+        } else if (tokenType.equals("refresh")) {
+
+            try {
+                username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token).getClaim("username").asString();
+                User user = userDataRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+                UserDto userDto = new UserDto(user.getId(), user.getUsername());
+                Map<String, String> jwtAccessToken = jwtService.createJwtAccessToken(userDto);
+
+                //refersh token이 유효하면 access token 새로 발급
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().write("{\"access_token\": \"" + jwtAccessToken.get("access_token") + "\"}");
+                return;
+
+            } catch (JWTVerificationException e) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("Refresh token is not valid. Please login again.");
+                return;
+            }
+        }
 
         if (username != null) {
             User user = userRepository.findByUsername(username);

@@ -16,7 +16,6 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-
 public class PostRepository{
 
     private final EntityManager em;
@@ -34,6 +33,7 @@ public class PostRepository{
     public int updateViewCount(@Param("viewCount") int viewCount, @Param("id") Long id){
         return 0;
     }
+
 
     @Modifying
     @Query("update Post p set p.likeCount = :likeCount where p.id =:pid")

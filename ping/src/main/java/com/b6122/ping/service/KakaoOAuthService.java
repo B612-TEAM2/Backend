@@ -96,7 +96,9 @@ public class KakaoOAuthService {
                     response.append(line);
                 }
                 ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(response.toString(), Map.class);
+                Map<String, Object> userInfoMap = objectMapper.readValue(response.toString(), Map.class);
+                userInfoMap.put("provider", "kakao");
+                return userInfoMap;
             }
         } else {
             try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"))) {
