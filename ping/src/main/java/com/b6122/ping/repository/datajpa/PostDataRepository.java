@@ -12,9 +12,5 @@ public interface PostDataRepository extends JpaRepository<Post, Long> {
     @Modifying
     @Query("update Post p set p.viewCount = :viewCount where p.id =:id")
     int updateViewCount(@Param("viewCount") int viewCount, @Param("id") Long id);
-
-
-    List<Post> findByLocation(float latitude, float longitude);
-
 //likeCount update
 }
