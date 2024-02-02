@@ -22,7 +22,7 @@ public class GoogleUser implements OAuthUser {
 
     @Override
     public String getName() {
-        return (String)attribute.get("name");
+        return (String)attribute.get("username");
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Map;
 
 @Service
@@ -67,7 +68,6 @@ public class GoogleOAuthService {
 
     public Map<String, Object> getGoogleUserInfo(String accessToken) throws IOException {
         String requestEndpoint = "https://www.googleapis.com/oauth2/v1/userinfo";
-
         URL url = new URL(requestEndpoint);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestMethod("GET");
@@ -82,7 +82,9 @@ public class GoogleOAuthService {
                     response.append(line);
                 }
                 ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(response.toString(), Map.class);
+                Map<String, Object> userInfoMap = objectMapper.readValue(response.toString(), Map.class);
+                userInfoMap.put("provider", "google");
+                return userInfoMap;
             }
         } else {
             try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(connection.getErrorStream(), "UTF-8"))) {
