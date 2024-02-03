@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class PostService {
 
     private final UserDataRepository userDataRepository;
 
+    @Transactional
     public Long createPost(PostDto postDto){
         Post post;
         post = new Post();

@@ -103,6 +103,7 @@ public class FriendshipService {
      * 친구 단건 조회(FriendShip 엔티티 가져오기, isFriend가 true인 경우만)
      */
     public Optional<Friendship> findFriendByIds(Long userId, Long friendId) {
+
         return friendshipDataRepository.findFriendshipByIds(userId, friendId);
     }
 
@@ -136,5 +137,10 @@ public class FriendshipService {
         Friendship friendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId).orElseThrow(RuntimeException::new);
         friendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
         friendship.setIsFriend(true);
+    }
+
+
+    public void searchUserByNickname() {
+
     }
 }
