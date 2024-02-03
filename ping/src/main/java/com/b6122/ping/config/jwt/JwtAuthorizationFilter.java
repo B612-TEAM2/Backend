@@ -52,10 +52,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String tokenType = JWT.decode(token).getClaim("token_type").asString();
 
         if (tokenType.equals("access")) {
-
             try {
                 username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token).getClaim("username").asString();
-
             } catch(JWTVerificationException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Access token is not valid. Please send refersh token.");
@@ -71,7 +69,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
                 //refersh token이 유효하면 access token 새로 발급
                 response.setStatus(HttpServletResponse.SC_OK);
-                response.getWriter().write("{\"access_token\": \"" + jwtAccessToken.get("access_token") + "\"}");
+                response.getWriter().write("{\"access-token\": \"" + jwtAccessToken.get("access-token") + "\"}");
                 return;
 
             } catch (JWTVerificationException e) {
@@ -94,6 +92,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
             // -> 컨트롤러에서 Authentication 객체를 받아서(DI) 권한 처리를 할 수 있음.
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
+
         chain.doFilter(request, response);
     }
 
