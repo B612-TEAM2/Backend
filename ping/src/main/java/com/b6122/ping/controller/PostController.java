@@ -32,7 +32,7 @@ public class PostController {
     //Home-Map, 내 모든 글의 pin 반환
     @GetMapping
     public ResponseEntity<List<PostDto>> showPinsHome(@RequestParam("latitude") float latitude,
-                                                          @RequestParam("longitude") float longitude, Authentication authentication) {
+                                                      @RequestParam("longitude") float longitude, Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long uid = principalDetails.getUser().getId();
         List<PostDto> posts = postService.getPinsHomeMap(uid);
@@ -66,4 +66,3 @@ public class PostController {
     //친구 글 보기
 
 }
-

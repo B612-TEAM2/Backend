@@ -44,9 +44,6 @@ public class RestApiController {
             String accessToken = kakaoOAuthService.getKakaoAccessToken(request.get("code").toString());
             Map<String, Object> userInfo = kakaoOAuthService.getKakaoUserInfo(accessToken);
             UserDto userDto = userService.joinOAuthUser(userInfo);
-            System.out.println(jwtService.createJwtAccessAndRefreshToken(userDto));
-            System.out.println(jwtService.createJwtAccessAndRefreshToken(userDto));
-            System.out.println(jwtService.createJwtAccessAndRefreshToken(userDto));
             return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
         } else if ("google".equals(server)) {
             String accessToken = googleOAuthService.getGoogleAccessToken(request.get("code").toString());
@@ -74,7 +71,6 @@ public class RestApiController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long userId = principalDetails.getUser().getId();
         userService.updateProfile(file, nickname, userId);
-
     }
 
     //회원 탈퇴
@@ -139,13 +135,15 @@ public class RestApiController {
             UserProfileDto result = userService.findUserByNickname(nickname);
             Optional<Friendship> friendship =
                     friendshipService.findFriendByIds(principalDetails.getUser().getId(), result.getId());
-            data.put("userInfo", result);
-            data.put("isFriendWithMe", friendship.isPresent());
+            data.put("nickname", result.getNickname());
+            data.put("profileImg", result.getProfileImg());
+            data.put("isFriend", friendship.isPresent());
             return ResponseEntity.ok().body(data);
         } catch (EntityNotFoundException e) {
             data.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
         }
+
     }
 
     //친구 신청
