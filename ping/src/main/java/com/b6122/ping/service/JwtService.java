@@ -48,8 +48,8 @@ public class JwtService {
 
         //responseBody에 값 저장해서 return
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("access_token", accessToken);
-        responseBody.put("refresh_token", refreshToken);
+        responseBody.put("access-token", accessToken);
+        responseBody.put("refresh-token", refreshToken);
 
         return responseBody;
     }
@@ -66,7 +66,7 @@ public class JwtService {
 
         //responseBody에 값 저장해서 return
         Map<String, String> responseBody = new HashMap<>();
-        responseBody.put("access_token", accessToken);
+        responseBody.put("access-token", accessToken);
 
         return responseBody;
     }

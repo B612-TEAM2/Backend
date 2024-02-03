@@ -59,7 +59,6 @@ public class KakaoOAuthService {
 
                 ObjectMapper objectMapper = new ObjectMapper();
                 JsonNode jsonNode = objectMapper.readTree(response.toString());
-                System.out.println("jsonNode = " + jsonNode);
                 // access token 추출 후 컨트롤러로 전달
                 return jsonNode.get("access_token").asText();
             }

@@ -22,7 +22,7 @@ import org.springframework.web.filter.CorsFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CorsFilter corsFilter;
+    private final CorsConfig corsConfig;
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
 
@@ -34,12 +34,11 @@ public class SecurityConfig {
         sharedObject.userDetailsService(this.userDetailsService); //이 userDetailsService와 PrincipalDetailsService에서 상속받는 인터페이스는 서로 같음.
         AuthenticationManager authenticationManager = sharedObject.build();
         http.authenticationManager(authenticationManager);
-
-        http.csrf(AbstractHttpConfigurer::disable);
         //세션 만들지 않기.
         http
+                .addFilter(corsConfig.corsFilter())
+                .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilter(corsFilter)
                 .formLogin((formLogin) -> formLogin.disable())
 //                .addFilter(new JwtAuthenticationFilter((authenticationManager)))
                 .addFilter((new JwtAuthorizationFilter(authenticationManager, userRepository)))

@@ -9,11 +9,13 @@ import com.b6122.ping.repository.LikeRepository;
 import com.b6122.ping.repository.PostRepository;
 import com.b6122.ping.repository.datajpa.LikeDataRepository;
 import com.b6122.ping.repository.datajpa.PostDataRepository;
+import com.b6122.ping.repository.datajpa.UserDataRepository;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +30,14 @@ public class PostService {
     @Autowired
     private final LikeRepository likeRepository;
 
+    private final UserDataRepository userDataRepository;
+
     public Long createPost(PostDto postDto){
         Post post;
         post = new Post();
         post.setId(postDto.getId());
-        post.setId(postDto.getUid());
+        User user = userDataRepository.findById(postDto.getUid()).orElseThrow(RuntimeException::new);
+        post.setUser(user);
         post.setLocation(postDto.getLocation());
         post.setLatitude(postDto.getLatitude());
         post.setLongitude(postDto.getLongitude());

@@ -1,6 +1,5 @@
 package com.b6122.ping.domain;
 
-import com.b6122.ping.repository.PostRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
