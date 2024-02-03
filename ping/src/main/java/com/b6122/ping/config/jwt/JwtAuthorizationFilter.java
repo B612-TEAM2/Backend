@@ -54,7 +54,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         if (tokenType.equals("access")) {
             try {
                 username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token).getClaim("username").asString();
-                System.out.println("username = " + username);
             } catch(JWTVerificationException e) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.getWriter().write("Access token is not valid. Please send refersh token.");

@@ -32,7 +32,6 @@ public class PostService {
 
     private final UserDataRepository userDataRepository;
 
-    @Transactional
     public Long createPost(PostDto postDto){
         Post post;
         post = new Post();
