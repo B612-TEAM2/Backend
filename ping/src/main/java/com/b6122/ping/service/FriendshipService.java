@@ -138,9 +138,4 @@ public class FriendshipService {
         friendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
         friendship.setIsFriend(true);
     }
-
-
-    public void searchUserByNickname() {
-
-    }
 }
