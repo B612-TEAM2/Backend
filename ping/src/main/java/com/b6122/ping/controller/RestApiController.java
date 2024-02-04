@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -61,17 +62,17 @@ public class RestApiController {
     }
 
 
-    /**
-     * 회원가입 직후 프로필 설정
-     * @param reqDto
-     * @param authentication
-     */
+
     @PostMapping("/profile")
-    public void setInitialProfile(@RequestBody UserProfileReqDto reqDto,
+    public void setInitialProfile(@RequestParam("profileImg") MultipartFile profileImg,
+                                  @RequestParam("nickname") String nickname,
                                   Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Long userId = principalDetails.getUser().getId();
-        reqDto.setId(userId);
+        UserProfileReqDto reqDto = new UserProfileReqDto();
+        reqDto.setId(principalDetails.getUser().getId());
+        reqDto.setNickname(nickname);
+        reqDto.setProfileImg(profileImg);
+
         userService.updateProfile(reqDto);
     }
 
@@ -86,11 +87,12 @@ public class RestApiController {
     @GetMapping("/account")
     public ResponseEntity<Map<String, Object>> account(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserProfileResDto userInfoDto = userService.getUserProfile(principalDetails.getUser().getId());
+        UserProfileResDto resDto = userService.getUserProfile(principalDetails.getUser().getId());
+
         Map<String, Object> data = new HashMap<>();
-        data.put("nickname", userInfoDto.getNickname());
-        data.put("profileImg", userInfoDto.getProfileImg());
-        data.put("id", userInfoDto.getId());
+        data.put("nickname", resDto.getNickname());
+        data.put("profileImg", resDto.getProfileImg());
+        data.put("id", resDto.getId());
 
         return ResponseEntity.ok().body(data);
     }
@@ -102,6 +104,21 @@ public class RestApiController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         reqDto.setId(principalDetails.getUser().getId());
         userService.updateProfile(reqDto);
+    }
+
+
+    /**
+     * 친구 목록 불러오기 (자기 친구)
+     * @param authentication
+     * @return
+     */
+    @GetMapping("/friends")
+    public ResponseEntity<Map<String, Object>> getFriendsList(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        List<UserProfileResDto> result = friendshipService.findFriendsById(principalDetails.getUser().getId());
+        Map<String, Object> data = new HashMap<>();
+        data.put("list", result);
+        return ResponseEntity.ok().body(data);
     }
 
     /**
@@ -135,11 +152,11 @@ public class RestApiController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Map<String, Object> data = new HashMap<>();
         try {
-            UserProfileResDto result = userService.findUserByNickname(nickname);
+            UserProfileResDto resDto = userService.findUserByNickname(nickname);
             Optional<Friendship> friendship =
-                    friendshipService.findFriendByIds(principalDetails.getUser().getId(), result.getId());
-            data.put("nickname", result.getNickname());
-            data.put("profileImg", result.getProfileImg());
+                    friendshipService.findFriendByIds(principalDetails.getUser().getId(), resDto.getId());
+            data.put("nickname", resDto.getNickname());
+            data.put("profileImg", resDto.getProfileImg());
             data.put("isFriend", friendship.isPresent());
             return ResponseEntity.ok().body(data);
         } catch (EntityNotFoundException e) {

@@ -151,6 +151,7 @@ public class UserService {
      */
     public byte[] getByteArrayOfImageByPath(String imagePath) {
         try {
+            System.out.println("imagePath = " + imagePath);
             Resource resource = new UrlResource(Path.of(imagePath).toUri());
             if (resource.exists() && resource.isReadable()) {
                 // InputStream을 사용하여 byte 배열로 변환
