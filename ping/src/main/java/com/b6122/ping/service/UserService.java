@@ -48,11 +48,6 @@ public class UserService {
         String provider = userInfoMap.get("provider").toString();
         String providerId = userInfoMap.get("id").toString();
         String username = provider + "_" + providerId;
-
-        userInfoMap = new HashMap<>();
-
-        userInfoMap.put("provider", provider);
-        userInfoMap.put("providerId", providerId);
         userInfoMap.put("username", username);
 
         //OAuthUser 생성 -> 나중에 프로바이더마다 다른 회원가입 정책을 할 수도 있기 때문에 추상화
