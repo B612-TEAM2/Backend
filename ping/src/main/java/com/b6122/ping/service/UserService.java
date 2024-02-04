@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -150,6 +151,7 @@ public class UserService {
      * @return 이미지의 byte 배열
      */
     public byte[] getByteArrayOfImageByPath(String imagePath) {
+//        byte[] fileByteArray = Files.readAllBytes("파일의 절대경로");
         try {
             System.out.println("imagePath = " + imagePath);
             Resource resource = new UrlResource(Path.of(imagePath).toUri());

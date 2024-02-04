@@ -26,7 +26,7 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
                                         @Param("userId") Long userId);
 
     /**
-     * fromUser가 보낸 아직 대기 중인(PENDING) 친구 요청
+     * fromUser가 보낸 아직 대기 중인(PENDING) 친구 요청 (fromUser,toUser 상관 없이 전부 쿼리)
      * @param toUserId 친구 요청 받은 사람 id
      * @param fromUserId 친구 요청 보낸 사람 id
      * @return
@@ -38,6 +38,16 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
     Optional<Friendship> findPendingFriendShip(@Param("toUserId") Long toUserId,
             @Param("fromUserId") Long fromUserId);
 
-
+    /**
+     * 나에게 온 대기 상태의 친구 요청 찾기 (toUserId가 내 id)
+     * @param toUserId
+     * @return
+     */
+    @Query("select f from Friendship f" +
+            " join fetch f.fromUser" +
+            " where f.isFriend = false" +
+            " and f.requestStatus = com.b6122.ping.domain.FriendshipRequestStatus.PENDING" +
+            " and f.toUser.id = :toUserId")
+    List<Friendship> findPendingFriendShipsToMe(@Param("userId") Long toUserId);
 }
 
