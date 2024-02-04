@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -172,12 +173,23 @@ public class RestApiController {
                                                                  @RequestParam("id") Long toUserId) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long fromUserId = principalDetails.getUser().getId();
-        //userId는 친구 신청 하는 유저, friendId는 친구 신청 받는 유저
+        //fromUserId -> 친구 신청한 사람 id, toUserId -> 친구 신청 상대방 id
         friendshipService.sendRequest(fromUserId, toUserId);
     }
 
+
+    //친구 요청 온 거 리스트
+    @GetMapping("/friends/pending")
+    public ResponseEntity<Map<String, Object>> friendsRequestList(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        List<UserProfileResDto> list = friendshipService.findPendingFriendsToMe(principalDetails.getUser().getId());
+        Map<String, Object> data = new HashMap<>();
+        data.put("data", list);
+        return ResponseEntity.ok().body(data);
+    }
+
     //친구 요청 수락
-    @PostMapping("/friends/pendinglist")
+    @PostMapping("/friends/pending")
     public void addFriend(Authentication authentication, @RequestParam("nickname") String nickname) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long toUserId = principalDetails.getUser().getId();
