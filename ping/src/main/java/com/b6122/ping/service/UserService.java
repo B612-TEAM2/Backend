@@ -3,6 +3,7 @@ package com.b6122.ping.service;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.domain.UserRole;
 import com.b6122.ping.dto.UserDto;
+import com.b6122.ping.dto.UserProfileReqDto;
 import com.b6122.ping.dto.UserProfileResDto;
 import com.b6122.ping.oauth.provider.GoogleUser;
 import com.b6122.ping.oauth.provider.KakaoUser;
@@ -86,18 +87,13 @@ public class UserService {
         }
     }
 
-    /**
-     * 요청 사용자의 프로필 업데이트(변경감지)
-     * @param file 사용자가 업로드한 이미지 데이터
-     * @param nickname 사용자가 설정한 닉네임
-     * @param userId 사용자의 id
-     */
+
     @Transactional
-    public void updateProfile(MultipartFile file, String nickname, Long userId) {
+    public void updateProfile(UserProfileReqDto reqDto) {
         try {
-            User user = userDataRepository.findById(userId).orElseThrow(RuntimeException::new);
-            user.setNickname(nickname);
-            user.setProfileImagePath(saveProfileImage(file));
+            User user = userDataRepository.findById(reqDto.getId()).orElseThrow(RuntimeException::new);
+            user.setNickname(reqDto.getNickname());
+            user.setProfileImagePath(saveProfileImage(reqDto.getProfileImg()));
         } catch (IOException e) {
             e.printStackTrace();
         }
