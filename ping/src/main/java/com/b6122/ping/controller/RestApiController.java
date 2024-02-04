@@ -86,7 +86,9 @@ public class RestApiController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         UserProfileDto userInfoDto = userService.getUserProfile(principalDetails.getUser().getId());
         Map<String, Object> data = new HashMap<>();
-        data.put("userInfo", userInfoDto);
+        data.put("nickname", userInfoDto.getNickname());
+        data.put("profileImg", userInfoDto.getProfileImg());
+        data.put("id", userInfoDto.getId());
 
         return ResponseEntity.ok().body(data);
     }
