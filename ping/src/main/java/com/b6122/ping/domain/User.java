@@ -40,6 +40,12 @@ public class User {
     @OneToMany(mappedBy = "toUser", cascade = CascadeType.REMOVE)
     private List<Friendship> receivedFriendshipRequests = new ArrayList<>();
 
+    public static User createUser(String nickname, String profileImagePath) {
+        User user = new User();
+        user.setNickname(nickname);
+        user.setProfileImagePath(profileImagePath);
+        return user;
+    }
     public void addPost(Post p) {//외부에서 post 생성시 posts list에 추가
         this.posts.add(p);
     }
