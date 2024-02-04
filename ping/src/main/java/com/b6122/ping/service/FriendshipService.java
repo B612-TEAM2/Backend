@@ -4,9 +4,11 @@ import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.domain.FriendshipRequestStatus;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.FriendDto;
+import com.b6122.ping.dto.UserProfileReqDto;
 import com.b6122.ping.dto.UserProfileResDto;
 import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -54,7 +56,6 @@ public class FriendshipService {
             return Collections.emptyList();
         }
 
-        //FriendDto 전부 UserProfileResDto로 변경해야됨
         List<UserProfileResDto> friendDtos = new ArrayList<>();
         for (Friendship friendship : friendshipList) {
             User fromUser = friendship.getFromUser();
@@ -138,5 +139,24 @@ public class FriendshipService {
         Friendship friendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId).orElseThrow(RuntimeException::new);
         friendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
         friendship.setIsFriend(true);
+    }
+
+    /**
+     * 나에게 친구 요청 상태인 유저정보 리스트 반환
+     * @param userId (내 id)
+     * @return
+     */
+    public List<UserProfileResDto> findPendingFriendsToMe(Long userId) {
+        List<Friendship> pendingFriendShipsToMe = friendshipDataRepository.findPendingFriendShipsToMe(userId);
+        List<UserProfileResDto> resDtos = new ArrayList<>();
+        for (Friendship friendship : pendingFriendShipsToMe) {
+            Long id = friendship.getFromUser().getId();
+            byte[] profileImg = userService.getByteArrayOfImageByPath(friendship.getFromUser().getProfileImagePath());
+            String nickname = friendship.getFromUser().getNickname();
+
+            UserProfileResDto dto = new UserProfileResDto(id, nickname, profileImg);
+            resDtos.add(dto);
+        }
+        return resDtos;
     }
 }
