@@ -3,7 +3,8 @@ package com.b6122.ping.controller;
 import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.dto.UserDto;
-import com.b6122.ping.dto.UserProfileDto;
+import com.b6122.ping.dto.UserProfileReqDto;
+import com.b6122.ping.dto.UserProfileResDto;
 import com.b6122.ping.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -61,16 +62,17 @@ public class RestApiController {
 
 
     /**
-     * @param file     : 사용자가 업로드한 이미지 파일 (form data)
-     * @param nickname : 사용자가 설정한 고유 nickname
+     * 회원가입 직후 프로필 설정
+     * @param reqDto
+     * @param authentication
      */
     @PostMapping("/profile")
-    public void setInitialProfile(@RequestParam("profileImg") MultipartFile file,
-                                  @RequestParam("nickname") String nickname,
+    public void setInitialProfile(@RequestBody UserProfileReqDto reqDto,
                                   Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long userId = principalDetails.getUser().getId();
-        userService.updateProfile(file, nickname, userId);
+        reqDto.setId(userId);
+        userService.updateProfile(reqDto);
     }
 
     //회원 탈퇴
@@ -84,7 +86,7 @@ public class RestApiController {
     @GetMapping("/account")
     public ResponseEntity<Map<String, Object>> account(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserProfileDto userInfoDto = userService.getUserProfile(principalDetails.getUser().getId());
+        UserProfileResDto userInfoDto = userService.getUserProfile(principalDetails.getUser().getId());
         Map<String, Object> data = new HashMap<>();
         data.put("nickname", userInfoDto.getNickname());
         data.put("profileImg", userInfoDto.getProfileImg());
@@ -111,7 +113,7 @@ public class RestApiController {
     @DeleteMapping("/friends")
     public void deleteFriend(@RequestBody Map<String, Object> request, Authentication authentication) {
         String friendNickname = request.get("nickname").toString();
-        UserProfileDto findUserDto = userService.findUserByNickname(friendNickname);
+        UserProfileResDto findUserDto = userService.findUserByNickname(friendNickname);
         Long friendId = findUserDto.getId();
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -134,7 +136,7 @@ public class RestApiController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Map<String, Object> data = new HashMap<>();
         try {
-            UserProfileDto result = userService.findUserByNickname(nickname);
+            UserProfileResDto result = userService.findUserByNickname(nickname);
             Optional<Friendship> friendship =
                     friendshipService.findFriendByIds(principalDetails.getUser().getId(), result.getId());
             data.put("nickname", result.getNickname());
@@ -164,7 +166,7 @@ public class RestApiController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long toUserId = principalDetails.getUser().getId();
 
-        UserProfileDto findUserDto = userService.findUserByNickname(nickname);
+        UserProfileResDto findUserDto = userService.findUserByNickname(nickname);
         Long fromUserId = findUserDto.getId();
 
         //toUserId -> 친구 요청을 받은 유저

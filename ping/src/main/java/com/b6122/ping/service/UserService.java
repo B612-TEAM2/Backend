@@ -3,7 +3,7 @@ package com.b6122.ping.service;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.domain.UserRole;
 import com.b6122.ping.dto.UserDto;
-import com.b6122.ping.dto.UserProfileDto;
+import com.b6122.ping.dto.UserProfileResDto;
 import com.b6122.ping.oauth.provider.GoogleUser;
 import com.b6122.ping.oauth.provider.KakaoUser;
 import com.b6122.ping.oauth.provider.OAuthUser;
@@ -142,11 +142,11 @@ public class UserService {
      * @param id 사용자의 id
      * @return 사용자 정보(UserInfoDto 정보: nickname, profileImg)
      */
-    public UserProfileDto getUserProfile(Long id) {
+    public UserProfileResDto getUserProfile(Long id) {
         User user = userDataRepository.findById(id).orElseThrow(RuntimeException::new);
         String nickname = user.getNickname();
         byte[] imageBytes = getByteArrayOfImageByPath(user.getProfileImagePath());
-        return new UserProfileDto(id, nickname, imageBytes);
+        return new UserProfileResDto(id, nickname, imageBytes);
     }
 
     /**
@@ -177,9 +177,9 @@ public class UserService {
      * @param nickname
      * @return UserInfoDto(nickname, profileImg)
      */
-    public UserProfileDto findUserByNickname(String nickname) {
+    public UserProfileResDto findUserByNickname(String nickname) {
         User findUser = userDataRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
         byte[] imageBytes = getByteArrayOfImageByPath(findUser.getProfileImagePath());
-        return new UserProfileDto(findUser.getId(), findUser.getNickname(), imageBytes);
+        return new UserProfileResDto(findUser.getId(), findUser.getNickname(), imageBytes);
     }
 }
