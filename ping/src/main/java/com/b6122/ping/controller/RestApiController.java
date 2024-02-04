@@ -97,12 +97,11 @@ public class RestApiController {
 
     //회원정보 변경(일단 사진만, 닉네임까지 확장 가능)
     @PostMapping("/account")
-    public void updateProfileImage(@RequestParam("profileImg") MultipartFile file,
+    public void updateProfileImage(@RequestBody UserProfileReqDto reqDto,
                                    Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        userService.updateProfile(file,
-                principalDetails.getUser().getNickname(),
-                principalDetails.getUser().getId());
+        reqDto.setId(principalDetails.getUser().getId());
+        userService.updateProfile(reqDto);
     }
 
     /**
