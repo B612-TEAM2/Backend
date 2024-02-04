@@ -4,6 +4,7 @@ import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.domain.FriendshipRequestStatus;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.FriendDto;
+import com.b6122.ping.dto.UserProfileResDto;
 import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import lombok.RequiredArgsConstructor;
@@ -44,31 +45,33 @@ public class FriendshipService {
      * @param id 요청한 사용자의 id
      * @return 친구 목록 (FriendDto 정보: nickname, profileImg)
      */
-    public List<FriendDto> findFriendsById(Long id) {
+    public List<UserProfileResDto> findFriendsById(Long id) {
 
         //fromUser, toUser 페치 조인해서 가져옴
+        //Friendship 이거 dto로 변경 해야됨.
         List<Friendship> friendshipList = friendshipDataRepository.findFriendshipsById(id);
         if (friendshipList.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<FriendDto> friendDtos = new ArrayList<>();
+        //FriendDto 전부 UserProfileResDto로 변경해야됨
+        List<UserProfileResDto> friendDtos = new ArrayList<>();
         for (Friendship friendship : friendshipList) {
             User fromUser = friendship.getFromUser();
             User toUser = friendship.getToUser();
             byte[] imageBytes;
-            FriendDto friendDto;
+            UserProfileResDto resDto;
 
             //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
             if (fromUser.getId().equals(id)) {
                 imageBytes = getByteArrayOfImageByPath(toUser.getProfileImagePath());
-                friendDto = new FriendDto(id, imageBytes, toUser.getNickname());
+                resDto = new UserProfileResDto(id, toUser.getNickname(), imageBytes);
                 //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
             } else {
                 imageBytes = getByteArrayOfImageByPath(fromUser.getProfileImagePath());
-                friendDto = new FriendDto(fromUser.getId(), imageBytes, fromUser.getNickname());
+                resDto = new UserProfileResDto(fromUser.getId(), fromUser.getNickname(), imageBytes);
             }
-            friendDtos.add(friendDto);
+            friendDtos.add(resDto);
         }
         return friendDtos;
     }
