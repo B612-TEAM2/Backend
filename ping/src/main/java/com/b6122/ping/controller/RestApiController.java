@@ -62,18 +62,13 @@ public class RestApiController {
         }
     }
 
-
-
     @PostMapping("/profile")
     public void setInitialProfile(@RequestParam("profileImg") MultipartFile profileImg,
                                   @RequestParam("nickname") String nickname,
                                   Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserProfileReqDto reqDto = new UserProfileReqDto();
-        reqDto.setId(principalDetails.getUser().getId());
-        reqDto.setNickname(nickname);
-        reqDto.setProfileImg(profileImg);
-
+        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg,
+                principalDetails.getUser().getId());
         userService.updateProfile(reqDto);
     }
 
@@ -86,28 +81,20 @@ public class RestApiController {
 
     //사용자 정보(닉네임, 사진) 가져오기
     @GetMapping("/account")
-    public ResponseEntity<Map<String, Object>> account(Authentication authentication) {
+    public ResponseEntity<UserProfileResDto> account(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         UserProfileResDto resDto = userService.getUserProfile(principalDetails.getUser().getId());
-
-        Map<String, Object> data = new HashMap<>();
-        data.put("nickname", resDto.getNickname());
-        data.put("profileImg", resDto.getProfileImg());
-        data.put("id", resDto.getId());
-
-        return ResponseEntity.ok().body(data);
+        return ResponseEntity.ok().body(resDto);
     }
 
     //회원정보 변경(일단 사진만, 닉네임까지 확장 가능)
     @PostMapping("/account")
-    public void updateProfileImage(@RequestParam("profileImg") MultipartFile profileImg,
+    public void updateProfile(@RequestParam("profileImg") MultipartFile profileImg,
                                    @RequestParam("nickname") String nickname,
                                    Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserProfileReqDto reqDto = new UserProfileReqDto();
-        reqDto.setProfileImg(profileImg);
-        reqDto.setNickname(nickname);
-        reqDto.setId(principalDetails.getUser().getId());
+        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg,
+                principalDetails.getUser().getId());
         userService.updateProfile(reqDto);
     }
 
@@ -117,12 +104,10 @@ public class RestApiController {
      * @return
      */
     @GetMapping("/friends")
-    public ResponseEntity<Map<String, Object>> getFriendsList(Authentication authentication) {
+    public ResponseEntity<List<UserProfileResDto>> getFriendsList(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         List<UserProfileResDto> result = friendshipService.findFriendsById(principalDetails.getUser().getId());
-        Map<String, Object> data = new HashMap<>();
-        data.put("list", result);
-        return ResponseEntity.ok().body(data);
+        return ResponseEntity.ok().body(result);
     }
 
     /**
