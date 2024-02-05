@@ -3,13 +3,13 @@ package com.b6122.ping.config.jwt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.repository.UserRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import com.b6122.ping.service.JwtService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,13 +25,12 @@ import java.util.Map;
 
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
-    private UserRepository userRepository;
     private UserDataRepository userDataRepository;
     private JwtService jwtService;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserDataRepository userDataRepository) {
         super(authenticationManager);
-        this.userRepository = userRepository;
+        this.userDataRepository = userDataRepository;
     }
 
     @Override
@@ -63,7 +62,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
             try {
                 username = JWT.require(Algorithm.HMAC512(JwtProperties.SECRET)).build().verify(token).getClaim("username").asString();
-                User user = userDataRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+                User user = userDataRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
                 UserDto userDto = new UserDto(user.getId(), user.getUsername());
                 Map<String, String> jwtAccessToken = jwtService.createJwtAccessToken(userDto);
 
@@ -80,7 +79,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         }
 
         if (username != null) {
-            User user = userRepository.findByUsername(username);
+            User user = userDataRepository.findByUsername(username).orElseThrow(EntityNotFoundException::new);
 
             // 인증은 토큰 검증시 끝. 인증을 하기 위해서가 아닌 스프링 시큐리티가 수행해주는 권한 처리를 위해
             // 아래와 같이 토큰을 만들어서 Authentication 객체를 강제로 만들고 그걸 세션에 저장
