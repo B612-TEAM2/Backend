@@ -7,7 +7,13 @@
     <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/CreateJwtRequestDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/FriendDto.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/PostDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/PostDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/FriendshipDataRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/FriendshipDataRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/FriendshipService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/FriendshipService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +101,7 @@
       <updated>1704176766234</updated>
       <workItem from="1704176767281" duration="80000" />
       <workItem from="1707023420156" duration="2448000" />
-      <workItem from="1707106014591" duration="5373000" />
+      <workItem from="1707106014591" duration="8505000" />
     </task>
     <task id="LOCAL-00001" summary="Post 수정, google 로그인 구현">
       <created>1705639450008</created>
