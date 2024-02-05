@@ -46,11 +46,11 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
-    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.REMOVE)
-    private List<Friendship> sentFriendshipRequests = new ArrayList<>();
-
-    @OneToMany(mappedBy = "toUser", cascade = CascadeType.REMOVE)
-    private List<Friendship> receivedFriendshipRequests = new ArrayList<>();
+//    @OneToMany(mappedBy = "fromUser", cascade = CascadeType.REMOVE)
+//    private List<Friendship> sentFriendshipRequests = new ArrayList<>();
+//
+//    @OneToMany(mappedBy = "toUser", cascade = CascadeType.REMOVE)
+//    private List<Friendship> receivedFriendshipRequests = new ArrayList<>();
 
     //더미 데이터 용
     public static User createUser() {
