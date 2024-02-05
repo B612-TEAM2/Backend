@@ -45,12 +45,11 @@ public class FriendshipService {
     /**
      * 사용자의 id로 친구 목록 반환
      * @param id 요청한 사용자의 id
-     * @return 친구 목록 (FriendDto 정보: nickname, profileImg)
+     * @return 친구 목록 (FriendDto 정보: nickname, profileImg, id)
      */
     public List<UserProfileResDto> findFriendsById(Long id) {
 
         //fromUser, toUser 페치 조인해서 가져옴
-        //Friendship 이거 dto로 변경 해야됨.
         List<Friendship> friendshipList = friendshipDataRepository.findFriendshipsById(id);
         if (friendshipList.isEmpty()) {
             return Collections.emptyList();
@@ -135,22 +134,35 @@ public class FriendshipService {
      * @param fromUserId (친구 요청 보낸 사람)
      */
     @Transactional
-    public void addFriend(Long toUserId, Long fromUserId) {
+    public void addFriendAccept(Long toUserId, Long fromUserId) {
         Friendship friendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId).orElseThrow(RuntimeException::new);
         friendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
         friendship.setIsFriend(true);
     }
 
+
+    /**
+     * 친구 요청 거절
+     * @param toUserId (친구 요청 받은 사람)
+     * @param fromUserId (친구 요청 보낸 사람)
+     */
+    @Transactional
+    public void addFriendReject(Long toUserId, Long fromUserId) {
+        Friendship friendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId).orElseThrow(RuntimeException::new);
+        friendship.setRequestStatus(FriendshipRequestStatus.REJECTED);
+    }
+
     /**
      * 나에게 친구 요청 상태인 유저정보 리스트 반환
-     * @param userId (내 id)
+     * @param toUserId (내 id)
      * @return
      */
-    public List<UserProfileResDto> findPendingFriendsToMe(Long userId) {
-        List<Friendship> pendingFriendShipsToMe = friendshipDataRepository.findPendingFriendShipsToMe(userId);
+    public List<UserProfileResDto> findPendingFriendsToMe(Long toUserId) {
+        List<Friendship> pendingFriendShipsToMe = friendshipDataRepository.findPendingFriendShipsToMe(toUserId);
         List<UserProfileResDto> resDtos = new ArrayList<>();
         for (Friendship friendship : pendingFriendShipsToMe) {
             Long id = friendship.getFromUser().getId();
+
             byte[] profileImg = userService.getByteArrayOfImageByPath(friendship.getFromUser().getProfileImagePath());
             String nickname = friendship.getFromUser().getNickname();
 

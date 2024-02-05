@@ -48,10 +48,15 @@ public class UserService {
         String provider = userInfoMap.get("provider").toString();
         String providerId = userInfoMap.get("id").toString();
         String username = provider + "_" + providerId;
-        userInfoMap.put("username", username);
+
+        Map<String, Object> userInfo = new HashMap<>();
+
+        userInfo.put("username", username);
+        userInfo.put("provider", provider);
+        userInfo.put("providerId", providerId);
 
         //OAuthUser 생성 -> 나중에 프로바이더마다 다른 회원가입 정책을 할 수도 있기 때문에 추상화
-        OAuthUser oAuthUser = createOAuthUser(provider, userInfoMap);
+        OAuthUser oAuthUser = createOAuthUser(provider, userInfo);
 
         //db에 회원 등록이 되어있는지 확인후, 안되어 있다면 회원가입 시도
         User findUser = userDataRepository

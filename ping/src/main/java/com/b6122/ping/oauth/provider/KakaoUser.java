@@ -12,7 +12,7 @@ public class KakaoUser implements OAuthUser {
 
     @Override
     public String getProviderId() {
-        return (String)attribute.get("id");
+        return (String)attribute.get("providerId");
     }
 
     @Override
