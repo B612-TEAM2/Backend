@@ -22,8 +22,8 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
             " where f.isFriend = true" +
             " and ((f.toUser.id =:friendId and f.fromUser.id = :userId)" +
             " or (f.toUser.id = :userId and f.fromUser.id = :friendId))")
-    Optional<Friendship> findFriendshipByIds(@Param("friendId") Long toUserId,
-                                        @Param("userId") Long fromUserId);
+    Optional<Friendship> findFriendshipByIds(@Param("friendId") Long friendId,
+                                        @Param("userId") Long userId);
 
     /**
      * 아직 대기 중인(PENDING) 친구 요청
