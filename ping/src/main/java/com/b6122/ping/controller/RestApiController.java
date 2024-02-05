@@ -140,10 +140,8 @@ public class RestApiController {
 
     }
 
-
     /**
      * 사용자의 nickname을 검색하여 찾기
-     *
      * @param nickname 쿼리 파라미터로 전달
      * @return 사용자 정보(UserProfileDto -> nickname, profileImg), 친구 여부
      */
@@ -152,19 +150,18 @@ public class RestApiController {
                                                           Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Map<String, Object> data = new HashMap<>();
-        try {
-            UserProfileResDto resDto = userService.findUserByNickname(nickname);
-            Optional<Friendship> friendship =
-                    friendshipService.findFriendByIds(principalDetails.getUser().getId(), resDto.getId());
-            data.put("nickname", resDto.getNickname());
-            data.put("profileImg", resDto.getProfileImg());
-            data.put("isFriend", friendship.isPresent());
-            return ResponseEntity.ok().body(data);
-        } catch (EntityNotFoundException e) {
-            data.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(data);
-        }
+        UserProfileResDto resDto = userService.findUserByNickname(nickname);
 
+        try {
+            friendshipService.findFriendByIds(principalDetails.getUser().getId(), resDto.getId());
+            data.put("isFriend", "true");
+        } catch (EntityNotFoundException e) {
+            data.put("isFriend", "false");
+        }
+        data.put("nickname", resDto.getNickname());
+        data.put("profileImg", resDto.getProfileImg());
+
+        return ResponseEntity.ok().body(data);
     }
 
     //친구 신청
