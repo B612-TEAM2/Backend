@@ -1,15 +1,12 @@
 package com.b6122.ping.controller;
 
 import com.b6122.ping.auth.PrincipalDetails;
-import com.b6122.ping.domain.Friendship;
-import com.b6122.ping.domain.User;
+import com.b6122.ping.dto.SearchUserResDto;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.dto.UserProfileReqDto;
 import com.b6122.ping.dto.UserProfileResDto;
 import com.b6122.ping.service.*;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +17,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 @RestController
@@ -92,7 +87,7 @@ public class RestApiController {
     @GetMapping("/friends")
     public ResponseEntity<List<UserProfileResDto>> getFriendsList(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        List<UserProfileResDto> result = friendshipService.findFriendsById(principalDetails.getUser().getId());
+        List<UserProfileResDto> result = friendshipService.getFriendsProfile(principalDetails.getUser().getId());
         return ResponseEntity.ok().body(result);
     }
 
@@ -119,23 +114,13 @@ public class RestApiController {
      * @return 사용자 정보(UserProfileResDto -> nickname, profileImg, id), 친구 여부
      */
     @GetMapping("/friends/search")
-    public ResponseEntity<Map<String, Object>> searchUser(@RequestParam("nickname") String nickname,
-                                                          Authentication authentication) {
+    public ResponseEntity<SearchUserResDto> searchUser(@RequestParam("nickname") String nickname,
+                                                       Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Map<String, Object> data = new HashMap<>();
-        UserProfileResDto resDto = userService.findUserByNickname(nickname);
 
-        Optional<Friendship> findFriendship =
-                friendshipService.findFriendByIds(principalDetails.getUser().getId(), resDto.getId());
-        if(findFriendship.isPresent()) {
-            data.put("isFriend", "true");
-        } else {
-            data.put("isFriend", "false");
-        }
-        data.put("nickname", resDto.getNickname());
-        data.put("profileImg", resDto.getProfileImg());
-
-        return ResponseEntity.ok().body(data);
+        SearchUserResDto searchUserResDto = friendshipService
+                .searchUser(nickname, principalDetails.getUser().getId());
+        return ResponseEntity.ok().body(searchUserResDto);
     }
 
     /**
@@ -156,12 +141,11 @@ public class RestApiController {
      * @return
      */
     @GetMapping("/friends/pending")
-    public ResponseEntity<Map<String, Object>> friendsRequestList(Authentication authentication) {
+    public ResponseEntity<List<UserProfileResDto>> friendsRequestList(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         List<UserProfileResDto> result = friendshipService.findPendingFriendsToMe(principalDetails.getUser().getId());
-        Map<String, Object> data = new HashMap<>();
-        data.put("data", result);
-        return ResponseEntity.ok().body(data);
+
+        return ResponseEntity.ok().body(result);
     }
 
     /**
