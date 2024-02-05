@@ -3,19 +3,13 @@ package com.b6122.ping.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.b6122.ping.config.jwt.JwtProperties;
-import com.b6122.ping.domain.User;
-import com.b6122.ping.domain.UserRole;
-import com.b6122.ping.dto.CreateJwtRequestDto;
 import com.b6122.ping.dto.UserDto;
-import com.b6122.ping.oauth.provider.OAuthUser;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

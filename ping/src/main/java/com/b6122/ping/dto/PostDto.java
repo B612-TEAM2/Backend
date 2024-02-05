@@ -107,7 +107,4 @@ public class PostDto {
             return content.substring(0, maxLength) + "...";
         }
     }
-
-
-
 }

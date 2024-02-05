@@ -3,8 +3,6 @@ package com.b6122.ping.service;
 import com.b6122.ping.domain.Friendship;
 import com.b6122.ping.domain.FriendshipRequestStatus;
 import com.b6122.ping.domain.User;
-import com.b6122.ping.dto.FriendDto;
-import com.b6122.ping.dto.UserProfileReqDto;
 import com.b6122.ping.dto.UserProfileResDto;
 import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
@@ -49,7 +47,7 @@ public class FriendshipService {
      */
     public List<UserProfileResDto> findFriendsById(Long id) {
 
-        //fromUser, toUser 페치 조인해서 가져옴
+        //fromUser, toUser 페치 조인
         List<Friendship> friendshipList = friendshipDataRepository.findFriendshipsById(id);
         if (friendshipList.isEmpty()) {
             return Collections.emptyList();
@@ -117,8 +115,8 @@ public class FriendshipService {
     @Transactional
     public void sendRequest(Long fromUserId, Long toUserId) {
 
-        User fromUser = userDataRepository.findById(fromUserId).orElseThrow(RuntimeException::new);
-        User toUser = userDataRepository.findById(toUserId).orElseThrow(RuntimeException::new);
+        User fromUser = userDataRepository.findById(fromUserId).orElseThrow(EntityNotFoundException::new);
+        User toUser = userDataRepository.findById(toUserId).orElseThrow(EntityNotFoundException::new);
 
         Friendship friendship = Friendship.createFriendship(fromUser, toUser);
 
@@ -162,12 +160,13 @@ public class FriendshipService {
         List<Friendship> pendingFriendShipsToMe = friendshipDataRepository.findPendingFriendShipsToMe(toUserId);
         List<UserProfileResDto> resDtos = new ArrayList<>();
         for (Friendship friendship : pendingFriendShipsToMe) {
-            Long id = friendship.getFromUser().getId();
+            User fromUser = friendship.getFromUser();
 
-            byte[] profileImg = userService.getByteArrayOfImageByPath(friendship.getFromUser().getProfileImagePath());
-            String nickname = friendship.getFromUser().getNickname();
+            Long fromUserId = fromUser.getId();
+            byte[] profileImg = userService.getByteArrayOfImageByPath(fromUser.getProfileImagePath());
+            String nickname = fromUser.getNickname();
 
-            UserProfileResDto dto = new UserProfileResDto(id, nickname, profileImg);
+            UserProfileResDto dto = new UserProfileResDto(fromUserId, nickname, profileImg);
             resDtos.add(dto);
         }
         return resDtos;
