@@ -30,14 +30,14 @@ public class FriendshipService {
     private final UserDataRepository userDataRepository;
 
     /**
-     * 친구의 고유 nickname으로 사용자의 친구 목록에서 삭제
-     * @param fromUserId 전달 받은 삭제할 친구의 id
-     * @param toUserId 요청한 사용자의 id
+     * 사용자의 친구 목록에서 삭제
      */
     @Transactional
-    public void deleteFriend(Long fromUserId, Long toUserId) {
-        Friendship findFriendship = friendshipDataRepository.findFriendshipByIds(fromUserId, toUserId).orElseThrow(RuntimeException::new);
-        friendshipDataRepository.delete(findFriendship);
+    public void deleteFriend(Long userId, Long friendId) {
+        Optional<Friendship> findFriendship = findFriendByIds(userId, friendId);
+        if(findFriendship.isPresent()) {
+            friendshipDataRepository.delete(findFriendship.get());
+        }
     }
 
     /**
@@ -97,14 +97,11 @@ public class FriendshipService {
         }
     }
 
-
     /**
      * 친구 단건 조회(FriendShip 엔티티 가져오기, isFriend가 true인 경우만)
      */
-    public Friendship findFriendByIds(Long toUserId, Long fromUserId) {
-
-        return friendshipDataRepository.findFriendshipByIds(toUserId, fromUserId)
-                .orElseThrow(EntityNotFoundException::new);
+    public Optional<Friendship> findFriendByIds(Long userId, Long friendId) {
+        return friendshipDataRepository.findFriendshipByIds(userId, friendId);
     }
 
     /**
@@ -116,7 +113,7 @@ public class FriendshipService {
     public void sendRequest(Long fromUserId, Long toUserId) {
 
         //중복 방지
-        Optional<Friendship> findFriendShip = friendshipDataRepository.findFriendshipByIds(toUserId, fromUserId);
+        Optional<Friendship> findFriendShip = findFriendByIds(fromUserId, toUserId);
         if(findFriendShip.isEmpty()) {
             Optional<Friendship> findPendingFriendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId);
             if (findPendingFriendship.isEmpty()) {
