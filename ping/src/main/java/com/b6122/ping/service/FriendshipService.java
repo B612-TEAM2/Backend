@@ -63,7 +63,7 @@ public class FriendshipService {
             //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
             if (fromUser.getId().equals(id)) {
                 imageBytes = getByteArrayOfImageByPath(toUser.getProfileImagePath());
-                resDto = new UserProfileResDto(id, toUser.getNickname(), imageBytes);
+                resDto = new UserProfileResDto(toUser.getId(), toUser.getNickname(), imageBytes);
                 //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
             } else {
                 imageBytes = getByteArrayOfImageByPath(fromUser.getProfileImagePath());
@@ -109,7 +109,7 @@ public class FriendshipService {
 
     /**
      * 친구 요청 보내기
-     * @param fromUserId ->친구 요청 보낸 사람
+     * @param fromUserId ->친구 요청 보낸 사람 (사용자)
      * @param toUserId -> 친구 요청 받은 사람
      */
     @Transactional
@@ -117,26 +117,41 @@ public class FriendshipService {
 
         User fromUser = userDataRepository.findById(fromUserId).orElseThrow(EntityNotFoundException::new);
         User toUser = userDataRepository.findById(toUserId).orElseThrow(EntityNotFoundException::new);
+        Long friendId = toUserId;
+        Long userId = fromUserId;
 
-        Friendship friendship = Friendship.createFriendship(fromUser, toUser);
-
-        Optional<Friendship> findFriendship = friendshipDataRepository.findPendingFriendShip(fromUserId, toUserId);
-        if (findFriendship.isEmpty()) {
-            friendshipDataRepository.save(friendship);
+        //중복 방지
+        Optional<Friendship> findFriendShip = friendshipDataRepository.findFriendshipByIds(friendId, userId);
+        if(findFriendShip.isEmpty()) {
+            Optional<Friendship> findPendingFriendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId);
+            if (findPendingFriendship.isEmpty()) {
+                Friendship friendship = Friendship.createFriendship(fromUser, toUser);
+                friendshipDataRepository.save(friendship);
+            }
         }
-
     }
 
     /**
      * 친구 요청 수락
-     * @param toUserId (친구 요청 받은 사람)
+     * @param toUserId (친구 요청 받은 사람, 사용자 id)
      * @param fromUserId (친구 요청 보낸 사람)
      */
     @Transactional
     public void addFriendAccept(Long toUserId, Long fromUserId) {
-        Friendship friendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId).orElseThrow(RuntimeException::new);
-        friendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
-        friendship.setIsFriend(true);
+        //toUser와 fromUser가 반대의 PENDING 상태 데이터 삭제
+        deleteCounterPartPendingFriendship(toUserId, fromUserId);
+
+        Friendship pendingFriendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId)
+                .orElseThrow(RuntimeException::new);
+        pendingFriendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
+        pendingFriendship.setIsFriend(true);
+    }
+
+    public void deleteCounterPartPendingFriendship(Long toUserIdArg, Long fromUserIdArg) throws RuntimeException {
+        Long toUserId = fromUserIdArg;
+        Long fromUserId = toUserIdArg;
+        Optional<Friendship> pendingFriendShip = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId);
+        pendingFriendShip.ifPresent(friendshipDataRepository::delete);
     }
 
 
