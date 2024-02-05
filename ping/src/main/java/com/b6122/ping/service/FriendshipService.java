@@ -31,12 +31,12 @@ public class FriendshipService {
 
     /**
      * 친구의 고유 nickname으로 사용자의 친구 목록에서 삭제
-     * @param friendId 전달 받은 삭제할 친구의 id
-     * @param userId 요청한 사용자의 id
+     * @param fromUserId 전달 받은 삭제할 친구의 id
+     * @param toUserId 요청한 사용자의 id
      */
     @Transactional
-    public void deleteFriend(Long friendId, Long userId) {
-        Friendship findFriendship = friendshipDataRepository.findFriendshipByIds(friendId, userId).orElseThrow(RuntimeException::new);
+    public void deleteFriend(Long fromUserId, Long toUserId) {
+        Friendship findFriendship = friendshipDataRepository.findFriendshipByIds(fromUserId, toUserId).orElseThrow(RuntimeException::new);
         friendshipDataRepository.delete(findFriendship);
     }
 
@@ -101,9 +101,9 @@ public class FriendshipService {
     /**
      * 친구 단건 조회(FriendShip 엔티티 가져오기, isFriend가 true인 경우만)
      */
-    public Friendship findFriendByIds(Long userId, Long friendId) {
+    public Friendship findFriendByIds(Long toUserId, Long fromUserId) {
 
-        return friendshipDataRepository.findFriendshipByIds(userId, friendId)
+        return friendshipDataRepository.findFriendshipByIds(toUserId, fromUserId)
                 .orElseThrow(EntityNotFoundException::new);
     }
 
@@ -115,16 +115,13 @@ public class FriendshipService {
     @Transactional
     public void sendRequest(Long fromUserId, Long toUserId) {
 
-        User fromUser = userDataRepository.findById(fromUserId).orElseThrow(EntityNotFoundException::new);
-        User toUser = userDataRepository.findById(toUserId).orElseThrow(EntityNotFoundException::new);
-        Long friendId = toUserId;
-        Long userId = fromUserId;
-
         //중복 방지
-        Optional<Friendship> findFriendShip = friendshipDataRepository.findFriendshipByIds(friendId, userId);
+        Optional<Friendship> findFriendShip = friendshipDataRepository.findFriendshipByIds(toUserId, fromUserId);
         if(findFriendShip.isEmpty()) {
             Optional<Friendship> findPendingFriendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId);
             if (findPendingFriendship.isEmpty()) {
+                User fromUser = userDataRepository.findById(fromUserId).orElseThrow(EntityNotFoundException::new);
+                User toUser = userDataRepository.findById(toUserId).orElseThrow(EntityNotFoundException::new);
                 Friendship friendship = Friendship.createFriendship(fromUser, toUser);
                 friendshipDataRepository.save(friendship);
             }
