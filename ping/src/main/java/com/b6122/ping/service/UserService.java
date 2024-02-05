@@ -137,7 +137,7 @@ public class UserService {
     /**
      * 사용자 정보(이미지, 닉네임) 가져오기
      * @param id 사용자의 id
-     * @return 사용자 정보(UserInfoDto 정보: nickname, profileImg)
+     * @return 사용자 정보(UserProfileResDto 정보: nickname, profileImg, id)
      */
     public UserProfileResDto getUserProfile(Long id) {
         User user = userDataRepository.findById(id).orElseThrow(RuntimeException::new);
@@ -174,7 +174,7 @@ public class UserService {
     /**
      * nickname으로 유저 검색
      * @param nickname
-     * @return UserInfoDto(nickname, profileImg)
+     * @return UserProfileResDto(nickname, profileImg, id)
      */
     public UserProfileResDto findUserByNickname(String nickname) {
         User findUser = userDataRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);

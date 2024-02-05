@@ -110,7 +110,6 @@ public class RestApiController {
 
     /**
      * 친구 목록 불러오기 (자기 친구)
-     * @param authentication
      * @return
      */
     @GetMapping("/friends")
@@ -124,7 +123,6 @@ public class RestApiController {
 
     /**
      * 친구삭제
-     *
      * @param request {"nickname" : "xxx"}
      */
     @DeleteMapping("/friends")
@@ -143,7 +141,7 @@ public class RestApiController {
     /**
      * 사용자의 nickname을 검색하여 찾기
      * @param nickname 쿼리 파라미터로 전달
-     * @return 사용자 정보(UserProfileDto -> nickname, profileImg), 친구 여부
+     * @return 사용자 정보(UserProfileResDto -> nickname, profileImg, id), 친구 여부
      */
     @GetMapping("/friends/search")
     public ResponseEntity<Map<String, Object>> searchUser(@RequestParam("nickname") String nickname,
@@ -164,7 +162,10 @@ public class RestApiController {
         return ResponseEntity.ok().body(data);
     }
 
-    //친구 신청
+    /**
+     * 친구 신청하기
+     * @param toUserId 친구 신청 대상(상대방) id
+     */
     @PostMapping("/friends/search")
     public void sendFriendRequest(Authentication authentication,
                                                                  @RequestParam("id") Long toUserId) {
@@ -174,24 +175,29 @@ public class RestApiController {
         friendshipService.sendRequest(fromUserId, toUserId);
     }
 
-
-    //친구 요청 온 거 리스트
+    /**
+     * 나에게 온 친구 요청(대기중 PENDING) 리스트
+     * @return
+     */
     @GetMapping("/friends/pending")
     public ResponseEntity<Map<String, Object>> friendsRequestList(Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        List<UserProfileResDto> list = friendshipService.findPendingFriendsToMe(principalDetails.getUser().getId());
+        List<UserProfileResDto> result = friendshipService.findPendingFriendsToMe(principalDetails.getUser().getId());
         Map<String, Object> data = new HashMap<>();
-        data.put("data", list);
+        data.put("data", result);
         return ResponseEntity.ok().body(data);
     }
 
-    //친구 요청 수락
+    /**
+     * 친구 요청 수락 또는 거절
+     * @param nickname 친구 요청한 사람 nickname
+     * @param status 'reject' or 'accpet'
+     */
     @PostMapping("/friends/pending")
     public void addFriend(Authentication authentication,
                           @RequestParam("nickname") String nickname,
                           @RequestParam("status") String status
                           ) {
-
         //toUserId -> 친구 요청을 받은 유저
         //fromUserId -> 친구 요청을 보낸 유저
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -205,6 +211,5 @@ public class RestApiController {
         } else if ("reject".equals(status)) {
             friendshipService.addFriendReject(toUserId, fromUserId);
         }
-
     }
 }
