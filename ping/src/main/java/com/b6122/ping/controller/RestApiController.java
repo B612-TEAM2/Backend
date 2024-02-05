@@ -2,6 +2,7 @@ package com.b6122.ping.controller;
 
 import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.domain.Friendship;
+import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.UserDto;
 import com.b6122.ping.dto.UserProfileReqDto;
 import com.b6122.ping.dto.UserProfileResDto;
@@ -30,11 +31,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class RestApiController {
 
-    private final GoogleOAuthService googleOAuthService;
     private final JwtService jwtService;
     private final UserService userService;
-    private final KakaoOAuthService kakaoOAuthService;
     private final FriendshipService friendshipService;
+    private final OauthService oauthService;
 
     //프론트엔드로부터 authorization code 받고 -> 그 code로 카카오에 accesstoken 요청
     // 받아 온 access token으로 카카오 리소스 서버로부터 카카오 유저 정보 가져오기
@@ -43,23 +43,9 @@ public class RestApiController {
     @PostMapping("/oauth/jwt/{serverName}")
     public ResponseEntity<Map<String, Object>> oauthLogin(@PathVariable("serverName") String server,
                                                          @RequestBody Map<String, Object> request) throws IOException {
-        if ("kakao".equals(server)) {
-            String accessToken = kakaoOAuthService.getKakaoAccessToken(request.get("code").toString());
-            Map<String, Object> userInfo = kakaoOAuthService.getKakaoUserInfo(accessToken);
-            UserDto userDto = userService.joinOAuthUser(userInfo);
-            return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
-        } else if ("google".equals(server)) {
-            String accessToken = googleOAuthService.getGoogleAccessToken(request.get("code").toString());
-            Map<String, Object> userInfo = googleOAuthService.getGoogleUserInfo(accessToken);
-            UserDto userDto = userService.joinOAuthUser(userInfo);
 
-            return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(userDto));
-        } else {
-            Map<String, Object> data = new HashMap<>();
-            data.put("error", "Nothing matches to request");
-
-            return ResponseEntity.badRequest().body(data);
-        }
+        UserDto joinedUser = oauthService.join(server, request.get("code").toString());
+        return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(joinedUser));
     }
 
     @PostMapping("/profile")
