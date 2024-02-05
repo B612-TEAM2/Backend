@@ -53,6 +53,7 @@ public class FriendshipService {
             return Collections.emptyList();
         }
 
+
         List<UserProfileResDto> friendDtos = new ArrayList<>();
         for (Friendship friendship : friendshipList) {
             User fromUser = friendship.getFromUser();
@@ -139,6 +140,7 @@ public class FriendshipService {
                 .orElseThrow(RuntimeException::new);
         pendingFriendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
         pendingFriendship.setIsFriend(true);
+
     }
 
     public void deleteCounterPartPendingFriendship(Long toUserIdArg, Long fromUserIdArg) throws RuntimeException {
