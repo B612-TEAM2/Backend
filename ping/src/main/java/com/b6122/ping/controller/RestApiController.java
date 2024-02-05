@@ -190,16 +190,24 @@ public class RestApiController {
 
     //친구 요청 수락
     @PostMapping("/friends/pending")
-    public void addFriend(Authentication authentication, @RequestParam("nickname") String nickname) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Long toUserId = principalDetails.getUser().getId();
-
-        UserProfileResDto findUserDto = userService.findUserByNickname(nickname);
-        Long fromUserId = findUserDto.getId();
+    public void addFriend(Authentication authentication,
+                          @RequestParam("nickname") String nickname,
+                          @RequestParam("status") String status
+                          ) {
 
         //toUserId -> 친구 요청을 받은 유저
         //fromUserId -> 친구 요청을 보낸 유저
-        friendshipService.addFriend(toUserId, fromUserId);
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long toUserId = principalDetails.getUser().getId();
+
+        UserProfileResDto fromUserDto = userService.findUserByNickname(nickname);
+        Long fromUserId = fromUserDto.getId();
+
+        if ("accept".equals(status)) {
+            friendshipService.addFriendAccept(toUserId, fromUserId);
+        } else if ("reject".equals(status)) {
+            friendshipService.addFriendReject(toUserId, fromUserId);
+        }
 
     }
 }
