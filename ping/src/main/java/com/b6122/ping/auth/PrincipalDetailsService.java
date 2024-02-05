@@ -1,7 +1,6 @@
 package com.b6122.ping.auth;
 
 import com.b6122.ping.domain.User;
-import com.b6122.ping.repository.UserRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

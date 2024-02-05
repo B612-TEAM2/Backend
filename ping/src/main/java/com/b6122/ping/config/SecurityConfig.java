@@ -1,7 +1,6 @@
 package com.b6122.ping.config;
 
 import com.b6122.ping.config.jwt.JwtAuthorizationFilter;
-import com.b6122.ping.repository.UserRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -14,9 +13,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.filter.CorsFilter;
+
 
 @Configuration
 @EnableWebSecurity
