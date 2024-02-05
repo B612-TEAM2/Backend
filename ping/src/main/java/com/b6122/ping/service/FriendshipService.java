@@ -63,11 +63,11 @@ public class FriendshipService {
             //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
             if (fromUser.getId().equals(id)) {
                 imageBytes = getByteArrayOfImageByPath(toUser.getProfileImagePath());
-                resDto = new UserProfileResDto(toUser.getId(), toUser.getNickname(), imageBytes);
+                resDto = new UserProfileResDto(toUser.getNickname(), imageBytes, toUser.getId());
                 //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
             } else {
                 imageBytes = getByteArrayOfImageByPath(fromUser.getProfileImagePath());
-                resDto = new UserProfileResDto(fromUser.getId(), fromUser.getNickname(), imageBytes);
+                resDto = new UserProfileResDto(fromUser.getNickname(), imageBytes, fromUser.getId());
             }
             friendDtos.add(resDto);
         }
@@ -172,10 +172,10 @@ public class FriendshipService {
             User fromUser = friendship.getFromUser();
 
             Long fromUserId = fromUser.getId();
-            byte[] profileImg = userService.getByteArrayOfImageByPath(fromUser.getProfileImagePath());
+            byte[] profileImg = fromUser.getByteArrayOfProfileImgByPath();
             String nickname = fromUser.getNickname();
 
-            UserProfileResDto dto = new UserProfileResDto(fromUserId, nickname, profileImg);
+            UserProfileResDto dto = new UserProfileResDto(nickname, profileImg, fromUserId);
             resDtos.add(dto);
         }
         return resDtos;
