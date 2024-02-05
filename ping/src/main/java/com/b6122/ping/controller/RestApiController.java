@@ -172,7 +172,7 @@ public class RestApiController {
      */
     @PostMapping("/friends/search")
     public void sendFriendRequest(Authentication authentication,
-                                                                 @RequestParam("id") Long toUserId) {
+                                  @RequestParam("id") Long toUserId) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long fromUserId = principalDetails.getUser().getId();
         //fromUserId -> 친구 신청한 사람 id, toUserId -> 친구 신청 상대방 id
