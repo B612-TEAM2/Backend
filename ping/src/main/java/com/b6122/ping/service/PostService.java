@@ -1,23 +1,15 @@
 package com.b6122.ping.service;
 
-import com.b6122.ping.domain.Like;
 import com.b6122.ping.domain.Post;
-import com.b6122.ping.domain.PostScope;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.PostDto;
 import com.b6122.ping.repository.LikeRepository;
 import com.b6122.ping.repository.PostRepository;
-import com.b6122.ping.repository.datajpa.LikeDataRepository;
-import com.b6122.ping.repository.datajpa.PostDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
-import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -48,6 +48,6 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
             " where f.isFriend = false" +
             " and f.requestStatus = com.b6122.ping.domain.FriendshipRequestStatus.PENDING" +
             " and f.toUser.id = :toUserId")
-    List<Friendship> findPendingFriendShipsToMe(@Param("userId") Long toUserId);
+    List<Friendship> findPendingFriendShipsToMe(@Param("toUserId") Long toUserId);
 }
 
