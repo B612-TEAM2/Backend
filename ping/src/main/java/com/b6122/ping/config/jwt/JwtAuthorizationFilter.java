@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.b6122.ping.auth.PrincipalDetails;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.UserDto;
-import com.b6122.ping.repository.UserRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import com.b6122.ping.service.JwtService;
 import jakarta.persistence.EntityNotFoundException;
