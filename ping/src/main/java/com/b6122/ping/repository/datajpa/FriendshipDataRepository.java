@@ -12,9 +12,9 @@ public interface FriendshipDataRepository extends JpaRepository<Friendship, Long
 
     //친구 목록 조회
     @Query("select f from Friendship f" +
-            " join fetch f.fromUser" +
-            " join fetch f.toUser" +
-            " where (f.fromUser.id = :userId or f.toUser.id = :userId) and f.isFriend = true")
+            " join fetch f.fromUser fu" +
+            " join fetch f.toUser tu" +
+            " where (fu.id = :userId or tu.id = :userId) and f.isFriend = true")
     List<Friendship> findFriendshipsById(@Param("userId") Long userId);
 
     //친구 단건 조회
