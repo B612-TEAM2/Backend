@@ -31,63 +31,6 @@ public class UserService {
 
     private final UserDataRepository userDataRepository;
 
-    //서버가 받은 이미지가 저장되는 로컬 디스크 주소
-    @Value("${profile.image.upload-path}")
-    private String profileImagePath;
-
-    /**
-     * 리소스 서버(kakao, google)로 부터 사용자 정보를 받은 후 그것을 바탕으로 회원가입
-     * @param userInfoMap 사용자 정보 Map
-     * @return UserDto (id, username)
-     * @throws IOException
-     */
-    @Transactional
-    public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
-
-        //OAuthUser 생성을 위한 매핑
-        String provider = userInfoMap.get("provider").toString();
-        String providerId = userInfoMap.get("id").toString();
-        String username = provider + "_" + providerId;
-
-        Map<String, Object> userInfo = new HashMap<>();
-
-        userInfo.put("username", username);
-        userInfo.put("provider", provider);
-        userInfo.put("providerId", providerId);
-
-        //OAuthUser 생성 -> 나중에 프로바이더마다 다른 회원가입 정책을 할 수도 있기 때문에 추상화
-        OAuthUser oAuthUser = createOAuthUser(provider, userInfo);
-
-        //db에 회원 등록이 되어있는지 확인후, 안되어 있다면 회원가입 시도
-        User findUser = userDataRepository
-                .findByUsername(oAuthUser.getName())
-                .orElseGet(() -> {
-                    User user = User.builder()
-                            .provider(oAuthUser.getProvider())
-                            .providerId(oAuthUser.getProviderId())
-                            .username(oAuthUser.getName())
-                            .role(UserRole.ROLE_USER)
-                            .build();
-
-                    // 회원가입
-                    return userDataRepository.save(user);
-                });
-        return new UserDto(findUser.getId(), findUser.getUsername());
-
-    }
-
-    //OAuthUser 생성 메소드. 리소스 서버에 따라 분기.
-    protected OAuthUser createOAuthUser(String provider, Map<String, Object> userInfo) {
-        switch (provider) {
-            case "google":
-                return new GoogleUser(userInfo);
-            case "kakao":
-                return new KakaoUser(userInfo);
-            default:
-                return null;
-        }
-    }
-
     @Transactional
     public void updateProfile(UserProfileReqDto reqDto) {
         User user = userDataRepository.findById(reqDto.getId()).orElseThrow(RuntimeException::new);
