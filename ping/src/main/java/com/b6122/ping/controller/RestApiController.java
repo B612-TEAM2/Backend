@@ -138,7 +138,7 @@ public class RestApiController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long userId = principalDetails.getUser().getId();
 
-        friendshipService.deleteFriend(friendId, userId);
+        friendshipService.deleteFriend(userId, friendId);
 
     }
 
@@ -154,10 +154,11 @@ public class RestApiController {
         Map<String, Object> data = new HashMap<>();
         UserProfileResDto resDto = userService.findUserByNickname(nickname);
 
-        try {
-            friendshipService.findFriendByIds(principalDetails.getUser().getId(), resDto.getId());
+        Optional<Friendship> findFriendship =
+                friendshipService.findFriendByIds(principalDetails.getUser().getId(), resDto.getId());
+        if(findFriendship.isPresent()) {
             data.put("isFriend", "true");
-        } catch (EntityNotFoundException e) {
+        } else {
             data.put("isFriend", "false");
         }
         data.put("nickname", resDto.getNickname());
