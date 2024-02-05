@@ -2,6 +2,7 @@ package com.b6122.ping.config;
 
 import com.b6122.ping.config.jwt.JwtAuthorizationFilter;
 import com.b6122.ping.repository.UserRepository;
+import com.b6122.ping.repository.datajpa.UserDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,7 @@ public class SecurityConfig {
 
     private final CorsConfig corsConfig;
     private final UserDetailsService userDetailsService;
-    private final UserRepository userRepository;
+    private final UserDataRepository userDataRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -41,7 +42,7 @@ public class SecurityConfig {
                 .sessionManagement((sessionManagement) -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin((formLogin) -> formLogin.disable())
 //                .addFilter(new JwtAuthenticationFilter((authenticationManager)))
-                .addFilter((new JwtAuthorizationFilter(authenticationManager, userRepository)))
+                .addFilter((new JwtAuthorizationFilter(authenticationManager, userDataRepository)))
                 .httpBasic((httpBasic) -> httpBasic.disable()) //Bearer 방식을 사용하기 위해 basic 인증 비활성화
                 .authorizeHttpRequests((authorize) ->
                         authorize
