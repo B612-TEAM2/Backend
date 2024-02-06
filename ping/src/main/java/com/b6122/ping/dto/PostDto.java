@@ -3,22 +3,14 @@ package com.b6122.ping.dto;
 import com.b6122.ping.domain.Like;
 import com.b6122.ping.domain.Post;
 import com.b6122.ping.domain.PostScope;
-import com.b6122.ping.domain.User;
 import com.b6122.ping.repository.LikeRepository;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Getter @Setter
@@ -34,7 +26,7 @@ public class PostDto {
 
     private float longitude; //경도
 
-    private char title; // 제목
+    private String title; // 제목
 
     private String content;
 
@@ -46,11 +38,11 @@ public class PostDto {
 
     private boolean myLike; //본인이 글에 좋아요 눌렀는지
 
-    private LocalDateTime createdDate;
+    private LocalDateTime createdDate; //생성 날짜
 
-    private LocalDateTime modifiedDate;
+    private LocalDateTime modifiedDate; //수정 날짜
 
-    private String contentPreview;
+    private String contentPreview; //미리보기 152자
 
     @OneToMany(mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
@@ -96,7 +88,20 @@ public class PostDto {
 
     //Friends-List 토글
 
-    //글 보기 페이지
+    //글 보기
+    public static PostDto postInfo(Post post, LikeRepository likeRepository) {
+        PostDto postDto = new PostDto();
+        postDto.setId(post.getId());
+        postDto.setTitle(post.getTitle());
+        //postDto.setImageUrl(post.getImageUrl());  // Adjust based on your entity fields
+        postDto.setScope(post.getScope());
+        postDto.setLikeCount(post.getLikeCount());
+        postDto.setMyLike(likeRepository.checkMyLike(post.getId(), post.getUser().getId()));//사용자가 post에 좋아요 눌렀다면 myLike == True
+        postDto.setCreatedDate(post.getCreatedDate());
+        postDto.setCreatedDate(post.getModifiedDate());
+        postDto.setContent(post.getContent());
+        return postDto;
+    }
 
     //글 작성 페이지-정보 저장
 

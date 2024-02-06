@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.stereotype.Repository;
 
 import java.lang.management.RuntimeMXBean;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -60,8 +61,8 @@ public class PostRepository {
     }
 
     public long save(Post p) {
-        return em.createQuery("INSERT INTO Post(pid, uid, likeCount, location, latitude, longitude, title, content, scope, createdDate) " +
-                        "VALUES (:pid, :uid, :likeCount, :location, :latitude, :longitude, :title, :content, :scope, :createdDate)", Long.class)
+        return em.createQuery("INSERT INTO Post(pid, uid, likeCount, location, latitude, longitude, title, content, scope,) " +
+                        "VALUES (:pid, :uid, :likeCount, :location, :latitude, :longitude, :title, :content, :scope)", Long.class)
                 .setParameter("pid", p.getId())
                 .setParameter("uid", p.getUser().getId())
                 .setParameter("likeCount", p.getLikeCount())
@@ -71,7 +72,18 @@ public class PostRepository {
                 .setParameter("title", p.getTitle())
                 .setParameter("content", p.getContent())
                 .setParameter("scope", p.getScope())
-                .setParameter("createdDate", p.getCreatedDate())
+                .executeUpdate();
+    }
+
+    public long updatePost(Post p) {
+        return em.createQuery("update Post p set pid =:pid, location =:location, latitude =:latitude, longitude =:longitude, title =:title, content =:content, scope =:scope)", Long.class)
+                .setParameter("pid", p.getId())
+                .setParameter("location", p.getLocation())
+                .setParameter("latitude", p.getLatitude())
+                .setParameter("longitude", p.getLongitude())
+                .setParameter("title", p.getTitle())
+                .setParameter("content", p.getContent())
+                .setParameter("scope", p.getScope())
                 .executeUpdate();
     }
 }
