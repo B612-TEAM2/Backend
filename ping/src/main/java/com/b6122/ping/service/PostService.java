@@ -9,6 +9,7 @@ import com.b6122.ping.repository.datajpa.UserDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,10 +25,10 @@ public class PostService {
 
     private final UserDataRepository userDataRepository;
 
+    @Transactional
     public Long createPost(PostDto postDto){
         Post post;
         post = new Post();
-        post.setId(postDto.getId());
         User user = userDataRepository.findById(postDto.getUid()).orElseThrow(RuntimeException::new);
         post.setUser(user);
         post.setLocation(postDto.getLocation());
@@ -39,7 +40,7 @@ public class PostService {
         post.setViewCount(postDto.getViewCount());
         post.setLikeCount(postDto.getLikeCount());
         post.setLikes(postDto.getLikes());
-
+        //post.setImagepath(); -->해야됨
         return postRepository.save(post);
     }
 

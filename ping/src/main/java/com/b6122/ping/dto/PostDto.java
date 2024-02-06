@@ -34,7 +34,7 @@ public class PostDto {
 
     private float longitude; //경도
 
-    private char title; // 제목
+    private String title; // 제목
 
     private String content;
 
