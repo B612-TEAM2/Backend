@@ -17,7 +17,7 @@ public class GoogleUser implements OAuthUser {
 
     @Override
     public String getProvider() {
-        return "google";
+        return (String)attribute.get("provider");
     }
 
     @Override

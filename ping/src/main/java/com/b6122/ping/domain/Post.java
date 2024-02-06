@@ -1,6 +1,5 @@
 package com.b6122.ping.domain;
 
-import com.b6122.ping.repository.PostRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,6 +59,7 @@ public class Post extends TimeEntity{
 
     //연관관계 매서드//
     public void setUser(User user) {
+        this.user = user;
         user.addPost(this); //user의 posts list에 post(this) 추가
     }
 

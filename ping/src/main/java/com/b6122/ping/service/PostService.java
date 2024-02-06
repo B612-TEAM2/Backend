@@ -7,13 +7,11 @@ import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.PostDto;
 import com.b6122.ping.repository.LikeRepository;
 import com.b6122.ping.repository.PostRepository;
-import com.b6122.ping.repository.datajpa.LikeDataRepository;
-import com.b6122.ping.repository.datajpa.PostDataRepository;
-import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotEmpty;
+import com.b6122.ping.repository.datajpa.UserDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,11 +27,14 @@ public class PostService {
     @Autowired
     private final LikeRepository likeRepository;
 
+    private final UserDataRepository userDataRepository;
+
+    @Transactional
     public Long createPost(PostDto postDto){
         Post post;
         post = new Post();
-        post.setId(postDto.getId());
-        post.setUser(postDto.getUser());
+        User user = userDataRepository.findById(postDto.getUid()).orElseThrow(RuntimeException::new);
+        post.setUser(user);
         post.setLocation(postDto.getLocation());
         post.setLatitude(postDto.getLatitude());
         post.setLongitude(postDto.getLongitude());
@@ -43,7 +44,7 @@ public class PostService {
         post.setViewCount(postDto.getViewCount());
         post.setLikeCount(postDto.getLikeCount());
         post.setLikes(postDto.getLikes());
-
+        //post.setImagepath(); -->해야됨
         return postRepository.save(post);
     }
 
