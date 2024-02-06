@@ -125,15 +125,16 @@ public class RestApiController {
 
     /**
      * 친구 신청하기
-     * @param toUserId 친구 신청 대상(상대방) id
+     * @param nickname 친구 신청 대상(상대방) 닉네임
      */
     @PostMapping("/friends/search")
     public void sendFriendRequest(Authentication authentication,
-                                  @RequestParam("id") Long toUserId) {
+                                  @RequestParam("nickname") String nickname) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long fromUserId = principalDetails.getUser().getId();
+        UserProfileResDto toUser = userService.findUserByNickname(nickname);
         //fromUserId -> 친구 신청한 사람 id, toUserId -> 친구 신청 상대방 id
-        friendshipService.sendRequest(fromUserId, toUserId);
+        friendshipService.sendRequest(fromUserId, toUser.getId());
     }
 
     /**
@@ -150,12 +151,11 @@ public class RestApiController {
 
     /**
      * 친구 요청 수락 또는 거절
-     * @param nickname 친구 요청한 사람 nickname
      * @param status 'reject' or 'accpet'
      */
     @PostMapping("/friends/pending")
     public void addFriend(Authentication authentication,
-                          @RequestParam("nickname") String nickname,
+                          @RequestBody Map<String, Object> data,
                           @RequestParam("status") String status
                           ) {
         //toUserId -> 친구 요청을 받은 유저
@@ -163,7 +163,8 @@ public class RestApiController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long toUserId = principalDetails.getUser().getId();
 
-        UserProfileResDto fromUserDto = userService.findUserByNickname(nickname);
+        UserProfileResDto fromUserDto = userService.
+                findUserByNickname(data.get("nickname").toString());
         Long fromUserId = fromUserDto.getId();
 
         if ("accept".equals(status)) {
