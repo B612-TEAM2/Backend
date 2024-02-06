@@ -20,8 +20,8 @@ public class LikeRepository {
 
 
     //특정post에 좋아요를 눌렀는지 확인
-    public boolean checkMyLike(@Param("pid") long pid, @Param("uid") long uid) {
-        TypedQuery<Like> query = em.createQuery("SELECT l FROM Like l WHERE l.pid = :pid AND l.uid = :uid", Like.class);
+    public boolean checkMyLike(Long pid, Long uid) {
+        TypedQuery<Like> query = em.createQuery("SELECT l FROM Like l WHERE l.post.id = :pid AND l.user.id = :uid", Like.class);
         query.setParameter("pid", pid);
         query.setParameter("uid", uid);
 

@@ -59,7 +59,7 @@ public class PostController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long uid = principalDetails.getUser().getId();
         List<PostDto> posts = postService.getPostsHomeList(uid);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok().body(posts);
     }
     //글 수정 요청시 디비에서 반환
 

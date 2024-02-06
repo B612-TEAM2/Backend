@@ -58,7 +58,7 @@ public class PostService {
     }
 
     //Home-List 토글, postList 반환
-    public List<PostDto> getPostsHomeList(long uid) {
+    public List<PostDto> getPostsHomeList(Long uid) {
         List<Post> posts = postRepository.findByUid(uid);
         return posts.stream()
                 .map(post-> PostDto.postPreviewHomeList(post, likeRepository))
