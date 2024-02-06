@@ -65,21 +65,19 @@ public class PostRepository {
     }
 
     public Long save(Post p) {
-//        return em.createQuery("INSERT INTO Post(pid, uid, likeCount, location, latitude, longitude, title, content, scope, createdDate) " +
-//                        "VALUES (:pid, :uid, :likeCount, :location, :latitude, :longitude, :title, :content, :scope, :createdDate)", Long.class)
-//                .setParameter("pid", p.getId())
-//                .setParameter("uid", p.getUser().getId())
-//                .setParameter("likeCount", p.getLikeCount())
-//                .setParameter("location", p.getLocation())
-//                .setParameter("latitude", p.getLatitude())
-//                .setParameter("longitude", p.getLongitude())
-//                .setParameter("title", p.getTitle())
-//                .setParameter("content", p.getContent())
-//                .setParameter("scope", p.getScope())
-//                .setParameter("createdDate", p.getCreatedDate())
-//                .executeUpdate();
-
         em.persist(p);
         return p.getId();
+    }
+
+    public long updatePost(Post p) {
+        return em.createQuery("update Post p set pid =:pid, location =:location, latitude =:latitude, longitude =:longitude, title =:title, content =:content, scope =:scope)", Long.class)
+                .setParameter("pid", p.getId())
+                .setParameter("location", p.getLocation())
+                .setParameter("latitude", p.getLatitude())
+                .setParameter("longitude", p.getLongitude())
+                .setParameter("title", p.getTitle())
+                .setParameter("content", p.getContent())
+                .setParameter("scope", p.getScope())
+                .executeUpdate();
     }
 }
