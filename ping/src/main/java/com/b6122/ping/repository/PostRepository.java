@@ -66,7 +66,7 @@ public class PostRepository {
     }
 
     public long updatePost(Post p) {
-        return em.createQuery("update Post p set pid =:pid, location =:location, latitude =:latitude, longitude =:longitude, title =:title, content =:content, scope =:scope)", Long.class)
+        return em.createQuery("update Post p set pid =:pid, location =:location, latitude =:latitude, longitude =:longitude, title =:title, content =:content, scope =:scope, imgPaths =:imgPaths )", Long.class)
                 .setParameter("pid", p.getId())
                 .setParameter("location", p.getLocation())
                 .setParameter("latitude", p.getLatitude())
@@ -74,6 +74,7 @@ public class PostRepository {
                 .setParameter("title", p.getTitle())
                 .setParameter("content", p.getContent())
                 .setParameter("scope", p.getScope())
+                .setParameter("imgPaths", p.getImgPaths())
                 .executeUpdate();
     }
 }

@@ -14,6 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.repository.query.Param;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,8 +52,19 @@ public class PostDto {
 
     private String contentPreview; //미리보기 15자
 
+    //프론트에서 이미지 파일 받을때
+    private List<MultipartFile> imgs;
+    private MultipartFile firstImg;
+
+
+    //프론트로 이미지 파일 전달
+    private byte[] imgByte;
+    private List<byte[]> imgsByte;
+
     @OneToMany(mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
+
+
 
 
     //pin- 위도, 경도,postId
@@ -70,10 +82,10 @@ public class PostDto {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
-        //postDto.setImageUrl(post.getImageUrl());  // Adjust based on your entity fields
         postDto.setScope(post.getScope());
         postDto.setCreatedDate(post.getCreatedDate());
         postDto.setContentPreview(truncateContent(post.getContent(), 15)); // Adjust for content preview
+        postDto.setImgByte(post.getByteArrayOfFirstImgByPath()); //대표 이미지 가져오기
         return postDto;
     }
 
@@ -83,34 +95,36 @@ public class PostDto {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
-        //postDto.setImageUrl(post.getImageUrl());  // Adjust based on your entity fields
         postDto.setScope(post.getScope());
         postDto.setLikeCount(post.getLikeCount());
         postDto.setMyLike(likeRepository.checkMyLike(post.getId(), post.getUser().getId()));//사용자가 post에 좋아요 눌렀다면 myLike == True
         postDto.setCreatedDate(post.getCreatedDate());
         postDto.setContentPreview(truncateContent(post.getContent(), 15)); // Adjust for content preview
+        postDto.setImgByte(post.getByteArrayOfFirstImgByPath()); //대표 이미지 가져오기
         return postDto;
     }
-    //Friends-Map 토글
 
-    //Friends-List 토글
 
     //글 보기
     public static PostDto postInfo(Post post, LikeRepository likeRepository) {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
-        //postDto.setImageUrl(post.getImageUrl());  // Adjust based on your entity fields
         postDto.setScope(post.getScope());
         postDto.setLikeCount(post.getLikeCount());
         postDto.setMyLike(likeRepository.checkMyLike(post.getId(), post.getUser().getId()));//사용자가 post에 좋아요 눌렀다면 myLike == True
         postDto.setCreatedDate(post.getCreatedDate());
         postDto.setCreatedDate(post.getModifiedDate());
         postDto.setContent(post.getContent());
+        postDto.setImgsByte(post.getByteArraysOfImgsByPaths()); //모든 이미지 반환
         return postDto;
     }
 
     //글 작성 페이지-정보 저장
+    //Friends-Map 토글
+
+    //Friends-List 토글
+
 
     private static String truncateContent(String content, int maxLength) {
         if (content.length() <= maxLength) {
