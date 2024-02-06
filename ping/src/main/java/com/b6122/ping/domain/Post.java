@@ -17,6 +17,7 @@ import java.util.List;
 //friend map: 받은 위치정보에 해당하는 글을 찾아 같은 주소로 이미지, 냉ㅇ,공개 범위, 날짜, 제목
 //public : 공개범위가 public인 글만
 //위치 string
+@RequiredArgsConstructor
 @Entity
 @Getter @Setter
 @Table(name = "post")
@@ -62,21 +63,4 @@ public class Post extends TimeEntity{
         user.addPost(this); //user의 posts list에 post(this) 추가
     }
 
-    /*
-
-    public void pushLike(Long uid){
-        postRepository.createLike(this.pid,uid);
-        postRepository.updateLikeCount(this.getLikeCount()+1, this.pid);
-    }
-
-
-
-    //요청한 post를 반환하고 viewCount++
-    public Post getPost(Long id) {
-        Post post = postRepository.findById(id);
-        postRepository.updateViewCount(post.getViewCount() + 1, post.getPid());//중복 방지 구현 필요
-
-        return post;
-    }
-*/
 }
