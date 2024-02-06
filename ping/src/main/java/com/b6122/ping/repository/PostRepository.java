@@ -22,11 +22,11 @@ public class PostRepository {
 
     private final EntityManager em;
 
-    @Query("SELECT p FROM Post p WHERE p.latitude = :latitude AND p.longitude = :longitude ORDER BY p.creadDate DESC")
+    @Query("SELECT p FROM Post p WHERE p.latitude = :latitude AND p.longitude = :longitude ORDER BY p.createdDate DESC")
     public List<Post> findByLocation(@Param("latitude") float latitude, @Param("longitude") float longitude) {
         return null;
     }
-    @Query("SELECT p FROM Post p WHERE p.latitude = :latitude AND p.longitude = :longitude AND p.uid = :uid ORDER BY p.creadDate DESC")
+    @Query("SELECT p FROM Post p WHERE p.latitude = :latitude AND p.longitude = :longitude AND p.user.id = :uid ORDER BY p.createdDate DESC")
     public List<Post> findByLocationUser(@Param("latitude") float latitude, @Param("longitude") float longitude, @Param("uid") long uid) {
         return null;
     }
@@ -49,8 +49,8 @@ public class PostRepository {
         return 0;
     }
 
-    public  Post findById(long id){
-        return em.createQuery("select P from Post p where p.id = :id", Post.class)
+    public  Post findById(Long id){
+        return em.createQuery("select p from Post p where p.id = :id", Post.class)
                 .setParameter("id", id)
                 .getSingleResult();
     }
@@ -70,8 +70,7 @@ public class PostRepository {
     }
 
     public long updatePost(Post p) {
-        return em.createQuery("update Post p set pid =:pid, location =:location, latitude =:latitude, longitude =:longitude, title =:title, content =:content, scope =:scope, imgPaths =:imgPaths )", Long.class)
-                .setParameter("pid", p.getId())
+        return em.createQuery("update Post p set location =:location, latitude =:latitude, longitude =:longitude, title =:title, content =:content, scope =:scope, imgPaths =:imgPaths", Long.class)
                 .setParameter("location", p.getLocation())
                 .setParameter("latitude", p.getLatitude())
                 .setParameter("longitude", p.getLongitude())
