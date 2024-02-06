@@ -1,22 +1,31 @@
 package com.b6122.ping.domain;
 
+import com.b6122.ping.ImgPathProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-//위치 정보 추가
-//생성날짜 추가
+
 //이미지 파일 가져오기
 //friend 글 목록 페이지: 이미지 , 제몯, 냉ㅇ 15자, 공개범위, 날짜, 좋앙, 요청 id가 좋앙 눌러는지, 최신순
 //탈퇴 시 글 삭제
 //friend map: 받은 위치정보에 해당하는 글을 찾아 같은 주소로 이미지, 냉ㅇ,공개 범위, 날짜, 제목
 //public : 공개범위가 public인 글만
-//위치 string
+
 @RequiredArgsConstructor
 @Entity
 @Getter @Setter
@@ -57,10 +66,94 @@ public class Post extends TimeEntity{
     @OneToMany(mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
 
+    @Column
+    private List<String> imgPaths = new ArrayList<>();
+
+
     //연관관계 매서드//
     public void setUser(User user) {
         this.user = user;
         user.addPost(this); //user의 posts list에 post(this) 추가
     }
+
+
+    //이미지 파일 저장
+    public List<String> saveImagesInStorage(List<MultipartFile> images) {
+        List<String> savedImageNames = new ArrayList<>();
+
+        for (MultipartFile image : images) {
+            // Generate a random file name to prevent duplicate file names
+            String randomFileName = UUID.randomUUID().toString();
+
+            // Get the original file extension
+            String originalFilename = image.getOriginalFilename();
+            String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
+
+            // Generate the full file path with the random file name and original file extension
+            String imagePath = "/path/to/your/directory/" + randomFileName + fileExtension;
+
+            // Save the file
+            try {
+                image.transferTo(new File(imagePath));
+                savedImageNames.add(imagePath);
+            } catch (IOException e) {
+                // Handle file saving error
+                e.printStackTrace();
+            }
+        }
+
+        return savedImageNames; //local storage path list return
+    }
+
+    //대표 이미지 반환
+    public byte[] getByteArrayOfFirstImgByPath() {
+//        byte[] fileByteArray = Files.readAllBytes("파일의 절대경로");
+        try {
+            Resource resource = new UrlResource(Path.of(this.getImgPaths().get(0)).toUri());
+            if (resource.exists() && resource.isReadable()) {
+                // InputStream을 사용하여 byte 배열로 변환
+                try (InputStream inputStream = resource.getInputStream()) {
+                    byte[] data = new byte[inputStream.available()];
+                    inputStream.read(data);
+                    return data;
+                }
+            } else {
+                // 이미지를 찾을 수 없는 경우 예외 또는 다른 처리 방법을 선택
+                throw new RuntimeException("Image not found");
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //모든 이미지 반환
+    public List<byte[]> getByteArraysOfImgsByPaths() {
+
+        List<String> imagePaths = this.getImgPaths();
+        List<byte[]> byteArrays = new ArrayList<>();
+
+        for (String imagePath : imagePaths) {
+            try {
+                Resource resource = new UrlResource(Path.of(imagePath).toUri());
+                if (resource.exists() && resource.isReadable()) {
+                    // InputStream을 사용하여 byte 배열로 변환
+                    try (InputStream inputStream = resource.getInputStream()) {
+                        byte[] data = inputStream.readAllBytes();
+                        byteArrays.add(data);
+                    }
+                } else {
+                    // 이미지를 찾을 수 없는 경우 예외 또는 다른 처리 방법을 선택
+                    throw new RuntimeException("Image not found: " + imagePath);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException("Error reading image: " + imagePath, e);
+            }
+        }
+
+        return byteArrays;
+    }
+
+
+
 
 }
