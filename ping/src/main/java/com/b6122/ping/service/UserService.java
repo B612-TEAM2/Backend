@@ -61,7 +61,6 @@ public class UserService {
      */
     public UserProfileResDto findUserByNickname(String nickname) {
         User findUser = userDataRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
-        byte[] imageBytes = findUser.getByteArrayOfProfileImgByPath();
-        return new UserProfileResDto(findUser.getNickname(), imageBytes, findUser.getId());
+        return findUser.getProfileInfo();
     }
 }

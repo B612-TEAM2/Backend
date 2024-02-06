@@ -55,9 +55,13 @@ public class PostRepository {
                 .getSingleResult();
     }
 
-    @Query("SELECT p FROM Post p WHERE p.user.id= :uid  ORDER BY p.createdDate DESC")
-    public List<Post> findByUid(@Param("uid") long uid){
-        return null;
+//    @Query("SELECT p FROM Post p WHERE p.user.id= :uid  ORDER BY p.createdDate DESC")
+    public List<Post> findByUid(Long uid){
+        return em.createQuery("select p from Post p" +
+                        " where p.user.id = :uid" +
+                        " order by p.createdDate desc", Post.class)
+                .setParameter("uid", uid)
+                .getResultList();
     }
 
     public Long save(Post p) {
