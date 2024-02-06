@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/PostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/LikeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/LikeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/PostService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,7 +96,7 @@
       <workItem from="1704176767281" duration="80000" />
       <workItem from="1707023420156" duration="2448000" />
       <workItem from="1707106014591" duration="47507000" />
-      <workItem from="1707195425103" duration="6460000" />
+      <workItem from="1707195425103" duration="7251000" />
     </task>
     <task id="LOCAL-00001" summary="Post 수정, google 로그인 구현">
       <created>1705639450008</created>
