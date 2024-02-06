@@ -44,7 +44,7 @@ public class Post extends TimeEntity{
     private float longitude; //경도
 
     @Column(name = "title")
-    private char title; // 제목
+    private String title; // 제목
     @Column(name = "content", nullable = false)
     private String content;
     @Enumerated(EnumType.STRING)
@@ -63,21 +63,4 @@ public class Post extends TimeEntity{
         user.addPost(this); //user의 posts list에 post(this) 추가
     }
 
-    /*
-
-    public void pushLike(Long uid){
-        postRepository.createLike(this.pid,uid);
-        postRepository.updateLikeCount(this.getLikeCount()+1, this.pid);
-    }
-
-
-
-    //요청한 post를 반환하고 viewCount++
-    public Post getPost(Long id) {
-        Post post = postRepository.findById(id);
-        postRepository.updateViewCount(post.getViewCount() + 1, post.getPid());//중복 방지 구현 필요
-
-        return post;
-    }
-*/
 }

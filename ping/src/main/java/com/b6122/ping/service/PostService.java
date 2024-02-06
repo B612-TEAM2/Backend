@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +33,7 @@ public class PostService {
         Post post;
         post = new Post();
         post.setId(postDto.getId());
-        post.setId(postDto.getUid());
+        post.setUser(postDto.getUser());
         post.setLocation(postDto.getLocation());
         post.setLatitude(postDto.getLatitude());
         post.setLongitude(postDto.getLongitude());
@@ -46,24 +47,20 @@ public class PostService {
         return postRepository.save(post);
     }
 
-
-    public Long createPost(PostDto postDto){
+//post 수정
+    public Long modifyPost(PostDto postDto){
         Post post;
         post = new Post();
-        post.setPid(postDto.getPid());
-        post.setUid(postDto.getUid());
+        post.setId(postDto.getId());
         post.setLocation(postDto.getLocation());
         post.setLatitude(postDto.getLatitude());
         post.setLongitude(postDto.getLongitude());
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post.setScope(postDto.getScope());
-        post.setViewCount(postDto.getViewCount());
-        post.setLikeCount(postDto.getLikeCount());
-        post.setLikes(postDto.getLikes());
-
-        return postRepository.save(post);
+        return postRepository.updatePost(post);
     }
+
     //Home-Map 클릭 전, 내가 작성한 모든 글의 pin띄우기
     public List<PostDto> getPinsHomeMap(long uid) {
         List<Post> posts = postRepository.findByUid(uid);
@@ -84,4 +81,35 @@ public class PostService {
                 .map(post-> PostDto.postPreviewHomeList(post, likeRepository))
                 .collect(Collectors.toList());
     }
+
+    //글 전체보기 요청
+    public PostDto getPostInfo(Long pid, Long uid) {
+        Post post = postRepository.findById(pid);
+
+        if(post.getUser().getId()!=uid) {//사용자와 글 작성자와 다른 경우만 viewCount++
+            postRepository.updateViewCount(post.getViewCount() + 1, post.getId());
+        }
+
+        return PostDto.postInfo(post, likeRepository);
+    }
+
+
+    public void toggleLike(long postId, long userId) {
+        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, userId);
+
+        if (existingLike.isPresent()) {
+            // If like exists, delete it
+            likeRepository.delete(existingLike.get().getId());
+        }
+
+        else {
+            // If like does not exist, create it
+            Like newLike = new Like();
+            newLike.getPost().setId(postId);
+            newLike.getUser().setId(userId);
+            likeRepository.save(newLike);
+        }
+    }
+
+
 }
