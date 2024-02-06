@@ -49,8 +49,8 @@ public class PostRepository {
         return 0;
     }
 
-    public  Post findById(long id){
-        return em.createQuery("select P from Post p where p.id = :id", Post.class)
+    public  Post findById(Long id){
+        return em.createQuery("select p from Post p where p.id = :id", Post.class)
                 .setParameter("id", id)
                 .getSingleResult();
     }
