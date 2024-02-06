@@ -5,22 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
-    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Post수정">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-<<<<<<< HEAD
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/PostController.java" afterDir="false" />
-
       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/PostController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/PostDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/PostDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/PostDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/PostDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/LikeRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/LikeRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/PostService.java" afterDir="false" />
->>>>>>> 84ec06163dd91c6f3974c7ec142fb0de7d46c945
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +40,7 @@
       <list>
         <option value="Interface" />
         <option value="Class" />
+        <option value="JUnit5 Test Class" />
       </list>
     </option>
   </component>
@@ -72,37 +61,37 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;KimHwanJun&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/B612project_backend/Backend&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,
-    &quot;spring.configuration.checksum&quot;: &quot;cc8741b3fc961a1221529fe862d8a73f&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "KimHwanJun",
+    "last_opened_file_path": "C:/Users/Administrator/Desktop/B612project_backend/Backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "configurable.group.build",
+    "spring.configuration.checksum": "cc8741b3fc961a1221529fe862d8a73f",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager">
-    <configuration name="PingApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-      <module name="ping.main" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.b6122.ping.PingApplication" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="com.b6122.ping.service" />
+    </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.PingApplication">
     <configuration name="ping" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -120,8 +109,28 @@
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="PingApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="ping.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.b6122.ping.PingApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.b6122.ping.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Spring Boot.PingApplication" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -190,7 +199,6 @@
     <MESSAGE value="Post 수정, google 로그인 구현" />
     <MESSAGE value="likeCount 수정" />
     <MESSAGE value="Naver 소셜로그인 구현" />
-    <option name="LAST_COMMIT_MESSAGE" value="Naver 소셜로그인 구현" />
     <MESSAGE value="Post수정" />
     <option name="LAST_COMMIT_MESSAGE" value="Post수정" />
   </component>

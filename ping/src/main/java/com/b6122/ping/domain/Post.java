@@ -17,7 +17,6 @@ import java.util.List;
 //friend map: 받은 위치정보에 해당하는 글을 찾아 같은 주소로 이미지, 냉ㅇ,공개 범위, 날짜, 제목
 //public : 공개범위가 public인 글만
 //위치 string
-@RequiredArgsConstructor
 @Entity
 @Getter @Setter
 @Table(name = "post")
