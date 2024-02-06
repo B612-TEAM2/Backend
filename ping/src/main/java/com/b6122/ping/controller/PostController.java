@@ -64,7 +64,7 @@ public class PostController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long uid = principalDetails.getUser().getId();
         List<PostDto> posts = postService.getPostsHomeList(uid);
-        return ResponseEntity.ok(posts);
+        return ResponseEntity.ok().body(posts);
     }
     //글 정보 반환, 조회수 ++
     @GetMapping("/postInfo")
