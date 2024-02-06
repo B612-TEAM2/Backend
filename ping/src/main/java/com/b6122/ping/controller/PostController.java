@@ -23,7 +23,10 @@ public class PostController {
 
     //글 작성 후 디비 저장
     @PostMapping("/posts/home/store")
-    public ResponseEntity getPost(@RequestBody @Validated PostDto postDto){
+    public ResponseEntity<Long> getPost(@RequestBody @Validated PostDto postDto,
+                                        Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        postDto.setUid(principalDetails.getUser().getId());
         Long pid = postService.createPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
     }
@@ -72,6 +75,7 @@ public class PostController {
         return ResponseEntity.ok(pd);
     }
 
+    //좋아요 update
     @PostMapping("/likeToggle")
     public ResponseEntity<String> toggleLike(@RequestParam long pid, @RequestParam long uid) {
         postService.toggleLike(pid, uid);

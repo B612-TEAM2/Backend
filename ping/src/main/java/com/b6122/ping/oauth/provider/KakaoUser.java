@@ -17,7 +17,7 @@ public class KakaoUser implements OAuthUser {
 
     @Override
     public String getProvider() {
-        return "kakao";
+        return (String)attribute.get("provider");
     }
 
     @Override

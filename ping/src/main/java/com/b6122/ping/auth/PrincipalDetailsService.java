@@ -1,7 +1,7 @@
 package com.b6122.ping.auth;
 
 import com.b6122.ping.domain.User;
-import com.b6122.ping.repository.UserRepository;
+import com.b6122.ping.repository.datajpa.UserDataRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,11 +16,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PrincipalDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserDataRepository userDataRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userEntity = userRepository.findByUsername(username);
+        User userEntity = userDataRepository.findByUsername(username).orElseThrow();
         return new PrincipalDetails(userEntity);
     }
 }

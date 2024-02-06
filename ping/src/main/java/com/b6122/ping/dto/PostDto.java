@@ -5,20 +5,27 @@ import com.b6122.ping.domain.Post;
 import com.b6122.ping.domain.PostScope;
 import com.b6122.ping.repository.LikeRepository;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Getter @Setter
 @RequiredArgsConstructor
 public class PostDto {
-    private  long id; //post id
+    private  Long id; //post id
 
-    private long uid; //사용자
+    private Long uid; //사용자
 
     private String location; //위치
 
@@ -42,7 +49,7 @@ public class PostDto {
 
     private LocalDateTime modifiedDate; //수정 날짜
 
-    private String contentPreview; //미리보기 152자
+    private String contentPreview; //미리보기 15자
 
     @OneToMany(mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
@@ -112,7 +119,4 @@ public class PostDto {
             return content.substring(0, maxLength) + "...";
         }
     }
-
-
-
 }

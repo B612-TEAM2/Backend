@@ -11,9 +11,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.management.RuntimeMXBean;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
@@ -60,19 +60,9 @@ public class PostRepository {
         return null;
     }
 
-    public long save(Post p) {
-        return em.createQuery("INSERT INTO Post(pid, uid, likeCount, location, latitude, longitude, title, content, scope,) " +
-                        "VALUES (:pid, :uid, :likeCount, :location, :latitude, :longitude, :title, :content, :scope)", Long.class)
-                .setParameter("pid", p.getId())
-                .setParameter("uid", p.getUser().getId())
-                .setParameter("likeCount", p.getLikeCount())
-                .setParameter("location", p.getLocation())
-                .setParameter("latitude", p.getLatitude())
-                .setParameter("longitude", p.getLongitude())
-                .setParameter("title", p.getTitle())
-                .setParameter("content", p.getContent())
-                .setParameter("scope", p.getScope())
-                .executeUpdate();
+    public Long save(Post p) {
+        em.persist(p);
+        return p.getId();
     }
 
     public long updatePost(Post p) {
