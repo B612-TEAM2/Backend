@@ -42,7 +42,7 @@ public class Post extends TimeEntity{
     private float longitude; //경도
 
     @Column(name = "title")
-    private char title; // 제목
+    private String title; // 제목
     @Column(name = "content", nullable = false)
     private String content;
     @Enumerated(EnumType.STRING)
@@ -58,6 +58,7 @@ public class Post extends TimeEntity{
 
     //연관관계 매서드//
     public void setUser(User user) {
+        this.user = user;
         user.addPost(this); //user의 posts list에 post(this) 추가
     }
 

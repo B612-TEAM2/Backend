@@ -23,14 +23,17 @@ public class PostController {
 
     //글 작성, 수정 후 디비 저장
     @PostMapping("/store")
-    public ResponseEntity getPost(@RequestBody @Validated PostDto postDto){
+    public ResponseEntity<Long> getPost(@RequestBody @Validated PostDto postDto,
+                                        Authentication authentication){
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        postDto.setUid(principalDetails.getUser().getId());
         Long pid = postService.createPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
     }
 
 
     //Home-Map, 내 모든 글의 pin 반환
-    @GetMapping
+    @GetMapping("/pins")
     public ResponseEntity<List<PostDto>> showPinsHome(@RequestParam("latitude") float latitude,
                                                       @RequestParam("longitude") float longitude, Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
