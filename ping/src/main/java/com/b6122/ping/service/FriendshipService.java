@@ -144,11 +144,11 @@ public class FriendshipService {
     }
 
     public SearchUserResDto searchUser(String nickname, Long userId) {
-        UserProfileResDto resDto = userService.findUserByNickname(nickname);
-
-        Optional<Friendship> findFriendship = findFriendByIds(userId, resDto.getId());
+        Long friendId = userService.findUserByNickname(nickname);
+        User friendEntity = userDataRepository.findById(friendId).orElseThrow(RuntimeException::new);
+        Optional<Friendship> findFriendship = findFriendByIds(userId, friendId);
         boolean isFriend = findFriendship.isPresent();
 
-        return new SearchUserResDto(nickname, resDto.getProfileImg(), isFriend);
+        return new SearchUserResDto(nickname, friendEntity.getByteArrayOfProfileImgByPath(), isFriend);
     }
 }
