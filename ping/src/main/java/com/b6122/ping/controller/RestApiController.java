@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,8 +94,7 @@ public class RestApiController {
     @DeleteMapping("/friends")
     public void deleteFriend(@RequestBody Map<String, Object> request, Authentication authentication) {
         String friendNickname = request.get("nickname").toString();
-        UserProfileResDto findUserDto = userService.findUserByNickname(friendNickname);
-        Long friendId = findUserDto.getId();
+        Long friendId = userService.findUserByNickname(friendNickname);
 
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long userId = principalDetails.getUser().getId();
@@ -125,12 +123,12 @@ public class RestApiController {
      */
     @PostMapping("/friends/search")
     public void sendFriendRequest(Authentication authentication,
-                                  @RequestBody FriendRegisterReqDto reqDto) {
+                                  @RequestBody SendFriendReqDto reqDto) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long fromUserId = principalDetails.getUser().getId();
-        UserProfileResDto toUser = userService.findUserByNickname(reqDto.getNickname());
+        Long toUserId = userService.findUserByNickname(reqDto.getNickname());
         //fromUserId -> 친구 신청한 사람 id, toUserId -> 친구 신청 상대방 id
-        friendshipService.sendRequest(fromUserId, toUser.getId());
+        friendshipService.sendRequest(fromUserId, toUserId);
     }
 
     /**
@@ -156,9 +154,12 @@ public class RestApiController {
         //fromUserId -> 친구 요청을 보낸 유저
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long toUserId = principalDetails.getUser().getId();
-        UserProfileResDto fromUserDto = userService.
+        System.out.println(reqDto.getNickname());
+        System.out.println(reqDto.getNickname());
+        System.out.println(reqDto.getNickname());
+        System.out.println(reqDto.getNickname());
+        Long fromUserId = userService.
                 findUserByNickname(reqDto.getNickname());
-        Long fromUserId = fromUserDto.getId();
 
         if ("accept".equals(reqDto.getStatus())) {
             friendshipService.addFriendAccept(toUserId, fromUserId);

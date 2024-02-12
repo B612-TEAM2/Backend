@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
-      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/AddFriendReqDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/FriendRegisterReqDto.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/FriendRegisterReqDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/SendFriendReqDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/FriendshipService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/FriendshipService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +72,7 @@
     "WebServerToolWindowFactoryState": "false",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
     "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "KimHwanJun",
     "last_opened_file_path": "C:/Users/Administrator/Desktop/B612project_backend/Backend",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
