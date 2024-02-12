@@ -42,17 +42,15 @@ public class Friendship {
     public UserProfileResDto getUserProfileOfFriendship(Long userId) {
         User fromUser = this.getFromUser();
         User toUser = this.getToUser();
-        byte[] imageBytes;
         UserProfileResDto resDto;
 
         //사용자가 친구 요청을 했을 경우 친구 상대방은 toUser
         if (fromUser.getId().equals(userId)) {
-            imageBytes = toUser.getByteArrayOfProfileImgByPath();
-            resDto = new UserProfileResDto(toUser.getNickname(), imageBytes, toUser.getId());
-            //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
+            resDto = toUser.getProfileInfo();
+
+        //사용자가 친구 요청을 받았을 경우 친구 상대방은 fromUser
         } else {
-            imageBytes = fromUser.getByteArrayOfProfileImgByPath();
-            resDto = new UserProfileResDto(fromUser.getNickname(), imageBytes, fromUser.getId());
+            resDto = fromUser.getProfileInfo();
         }
         return resDto;
     }
