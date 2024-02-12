@@ -107,8 +107,10 @@ public class PostService {
         else {
             // If like does not exist, create it
             Like newLike = new Like();
-            newLike.getPost().setId(postId);
-            newLike.getUser().setId(userId);
+//            newLike.getPost().setId(postId);
+//            newLike.getUser().setId(userId);
+            newLike.setPost(postRepository.findById(postId));
+            newLike.setUser(userDataRepository.findById(userId).orElseThrow(RuntimeException::new));
             likeRepository.save(newLike);
         }
     }

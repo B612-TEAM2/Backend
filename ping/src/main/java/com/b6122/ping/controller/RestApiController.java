@@ -78,7 +78,6 @@ public class RestApiController {
 
     /**
      * 친구 목록 불러오기 (자기 친구)
-     * @return
      */
     @GetMapping("/friends")
     public ResponseEntity<List<UserProfileResDto>> getFriendsList(Authentication authentication) {
