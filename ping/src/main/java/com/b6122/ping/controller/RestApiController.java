@@ -152,14 +152,8 @@ public class RestApiController {
         //toUserId -> 친구 요청을 받은 유저
         //fromUserId -> 친구 요청을 보낸 유저
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Long toUserId = principalDetails.getUser().getId();
-        Long fromUserId = userService.
-                findUserByNickname(reqDto.getNickname());
-
-        if ("accept".equals(reqDto.getStatus())) {
-            friendshipService.addFriendAccept(toUserId, fromUserId);
-        } else if ("reject".equals(reqDto.getStatus())) {
-            friendshipService.addFriendReject(toUserId, fromUserId);
-        }
+        Long userId = principalDetails.getUser().getId();
+        reqDto.setToUserId(userId);
+        friendshipService.addFriend(reqDto);
     }
 }
