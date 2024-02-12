@@ -1,21 +1,14 @@
 package com.b6122.ping.domain;
 
+import com.b6122.ping.dto.AddFriendReqDto;
 import com.b6122.ping.dto.UserProfileResDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Friendship {
 
@@ -36,13 +29,6 @@ public class Friendship {
 
     private boolean isFriend = false;
 
-    public void setIsFriend(boolean isFriend) {
-        this.isFriend = isFriend;
-    }
-
-    public void setRequestStatus(FriendshipRequestStatus requestStatus) {
-        this.requestStatus = requestStatus;
-    }
     //친구 요청 시 메소드
     public static Friendship createFriendship(User fromUser, User toUser) {
         Friendship friendship = new Friendship();
@@ -53,7 +39,7 @@ public class Friendship {
     }
 
     //친구 상대방 유저 정보
-    public UserProfileResDto getUserProfile(Long userId) {
+    public UserProfileResDto getUserProfileOfFriendship(Long userId) {
         User fromUser = this.getFromUser();
         User toUser = this.getToUser();
         byte[] imageBytes;
@@ -69,6 +55,20 @@ public class Friendship {
             resDto = new UserProfileResDto(fromUser.getNickname(), imageBytes, fromUser.getId());
         }
         return resDto;
+    }
+
+    /**
+     * 친구 거절 또는 수락 시
+     * @param reqDto String nickname, String status, Long toUserId;
+     */
+    public void updateFriendship(AddFriendReqDto reqDto) {
+        if ("accept".equals(reqDto.getStatus())) {
+            this.requestStatus = FriendshipRequestStatus.ACCEPTED;
+            this.isFriend = true;
+        } else {
+            this.requestStatus = FriendshipRequestStatus.REJECTED;
+        }
+
     }
 }
 
