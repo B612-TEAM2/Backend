@@ -154,10 +154,6 @@ public class RestApiController {
         //fromUserId -> 친구 요청을 보낸 유저
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long toUserId = principalDetails.getUser().getId();
-        System.out.println(reqDto.getNickname());
-        System.out.println(reqDto.getNickname());
-        System.out.println(reqDto.getNickname());
-        System.out.println(reqDto.getNickname());
         Long fromUserId = userService.
                 findUserByNickname(reqDto.getNickname());
 
