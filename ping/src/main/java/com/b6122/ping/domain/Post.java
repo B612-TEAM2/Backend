@@ -1,5 +1,6 @@
 package com.b6122.ping.domain;
 
+import com.b6122.ping.ImgPathProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +52,7 @@ public class Post extends TimeEntity{
 
     @Column(name = "title")
     private String title; // 제목
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, length = 1000)
     private String content;
     @Enumerated(EnumType.STRING)
     private PostScope scope; //공개 범위 [private, friends, public]
@@ -79,20 +80,30 @@ public class Post extends TimeEntity{
     public List<String> saveImagesInStorage(List<MultipartFile> images) {
         List<String> savedImageNames = new ArrayList<>();
 
+
+
         for (MultipartFile image : images) {
             // Generate a random file name to prevent duplicate file names
             String randomFileName = UUID.randomUUID().toString();
 
             // Get the original file extension
             String originalFilename = image.getOriginalFilename();
-            String fileExtension = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
 
             // Generate the full file path with the random file name and original file extension
-            String imagePath = "/path/to/your/directory/" + randomFileName + fileExtension;
+            String imagePath = ImgPathProperties.postImgPath;
+            File file = new File(imagePath);
+
+            String imageName = randomFileName + originalFilename;
+            //지정한 디렉토리가 없으면 생성
+            if (!file.exists()) {
+                file.mkdirs();
+            }
 
             // Save the file
             try {
-                image.transferTo(new File(imagePath));
+
+                image.transferTo(new File(imagePath, imageName));
+                imagePath = imagePath + imageName;
                 savedImageNames.add(imagePath);
             } catch (IOException e) {
                 // Handle file saving error
