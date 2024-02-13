@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,9 +24,25 @@ public class PostController {
 
     //글 작성 후 디비 저장
     @PostMapping("/posts/home/store")
-    public ResponseEntity<Long> getPost(@RequestBody @Validated PostDto postDto,
+    public ResponseEntity<Long> getPost(@RequestParam("title") String title,
+                                        @RequestParam("content") String content,
+                                        @RequestParam("latitude") float latitude,
+                                        @RequestParam("longitude") float longitude,
+                                        @RequestParam("imgs") List<MultipartFile> imgs,
                                         Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+//        System.out.println("title = " + title);
+//        System.out.println("content = " + content);
+//        System.out.println("latitude = " + latitude);
+//        System.out.println("longitude = " + longitude);
+//        System.out.println("imgs = " + imgs);
+
+        PostDto postDto = new PostDto();
+        postDto.setTitle(title);
+        postDto.setContent(content);
+        postDto.setLatitude(latitude);
+        postDto.setLongitude(longitude);
+        postDto.setImgs(imgs);
         postDto.setUid(principalDetails.getUser().getId());
         Long pid = postService.createPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
