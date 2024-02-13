@@ -111,9 +111,9 @@ public class RestApiController {
     public ResponseEntity<SearchUserResDto> searchUser(@RequestParam("nickname") String nickname,
                                                        Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-
+        Long friendId = userService.findUserByNickname(nickname);
         SearchUserResDto searchUserResDto = friendshipService
-                .searchUser(nickname, principalDetails.getUser().getId());
+                .searchUser(friendId, principalDetails.getUser().getId());
         return ResponseEntity.ok().body(searchUserResDto);
     }
 
