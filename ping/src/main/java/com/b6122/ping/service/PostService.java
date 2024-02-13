@@ -154,13 +154,13 @@ public class PostService {
 
 
     //Public
-    public List<PostDto> getPinsPublicMap() {
-        List<Post> posts = postRepository.findPublicPosts();
+    public List<PostDto> getPinsPublicMap(float longitude, float latitude) {
+        List<Post> posts = postRepository.findPublicPosts(longitude,latitude);
         return posts.stream().map(PostDto::pinMap).collect(Collectors.toList());
     }
 
-    public List<PostDto> getPostsPublicList(){
-        List<Post> posts = postRepository.findPublicPosts();
+    public List<PostDto> getPostsPublicList(float longitude, float latitude){
+        List<Post> posts = postRepository.findPublicPosts(longitude,latitude);
 
         return posts.stream()
                 .map(post-> PostDto.postPreviewList(post, likeRepository))
