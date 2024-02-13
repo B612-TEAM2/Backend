@@ -44,7 +44,9 @@ public class PostService {
         post.setViewCount(postDto.getViewCount());
         post.setLikeCount(postDto.getLikeCount());
         post.setLikes(postDto.getLikes());
-        post.saveImagesInStorage(postDto.getImgs()); //이미지 저장 MultiPartfile->path
+        if(!postDto.getImgs().isEmpty()) {
+            post.saveImagesInStorage(postDto.getImgs()); //이미지 저장 MultiPartfile->path
+        }
         return postRepository.save(post);
     }
 
@@ -62,6 +64,13 @@ public class PostService {
         post.saveImagesInStorage(postDto.getImgs()); //이미지 저장 MultiPartfile->path
         return postRepository.updatePost(post);
     }
+
+
+    //글 삭제
+    public void deletePost(Long pid) {
+        postRepository.deletePost(pid);
+    }
+
 
     //글 전체보기 요청
     public PostDto getPostInfo(Long pid, Long uid) {
@@ -154,16 +163,17 @@ public class PostService {
 
 
     //Public
-    public List<PostDto> getPinsPublicMap() {
-        List<Post> posts = postRepository.findPublicPosts();
+    public List<PostDto> getPinsPublicMap(float longitude, float latitude) {
+        List<Post> posts = postRepository.findPublicPosts(longitude,latitude);
         return posts.stream().map(PostDto::pinMap).collect(Collectors.toList());
     }
 
-    public List<PostDto> getPostsPublicList(){
-        List<Post> posts = postRepository.findPublicPosts();
+    public List<PostDto> getPostsPublicList(float longitude, float latitude){
+        List<Post> posts = postRepository.findPublicPosts(longitude,latitude);
 
         return posts.stream()
                 .map(post-> PostDto.postPreviewList(post, likeRepository))
                 .collect(Collectors.toList());
     }
+
 }

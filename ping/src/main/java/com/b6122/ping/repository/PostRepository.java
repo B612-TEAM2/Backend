@@ -29,6 +29,10 @@ public class PostRepository {
         return null;
     }
 
+    @Query("Delete FROM Post p WHERE p.pid = :pid")
+    public List<Post> deletePost(@Param("pid") Long pid) {
+        return null;
+    }
 
     @Modifying// 조회수 중복 방지 추가 구현
     @Query("update Post p set p.viewCount = :viewCount where p.id =:id")
@@ -90,9 +94,9 @@ public class PostRepository {
                 .getResultList();
     }
 
-    public List<Post> findPublicPosts() {
+    public List<Post> findPublicPosts(float longitude, float latitude) {
         return em.createQuery("select p form post p"+
-                "where p.scope = \"public\""+
+                "where p.scope = \"public\" and ST_Distance_Sphere(POINT(p.longitude, p.latitude), POINT(longitude, latitude)) <= 2000"+
                 "order by p.createdDate, post.class")
                 .getResultList();
     }
