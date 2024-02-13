@@ -22,7 +22,6 @@ import java.util.Optional;
 public class FriendshipService {
 
     private final FriendshipDataRepository friendshipDataRepository;
-    private final UserService userService;
     private final UserDataRepository userDataRepository;
 
     /**
@@ -131,9 +130,9 @@ public class FriendshipService {
         return userProfiles;
     }
 
-    public SearchUserResDto searchUser (String nickname, Long userId){
-        Long friendId = userService.findUserByNickname(nickname);
+    public SearchUserResDto searchUser (Long friendId, Long userId){
         User friendEntity = userDataRepository.findById(friendId).orElseThrow(RuntimeException::new);
+        String nickname = friendEntity.getNickname();
         Optional<Friendship> findFriendship = findFriendByIds(userId, friendId);
         boolean isFriend = findFriendship.isPresent();
 
