@@ -57,10 +57,10 @@ public class UserService {
     /**
      * nickname으로 유저 검색
      * @param nickname
-     * @return UserProfileResDto(nickname, profileImg, id)
+     * @return Long id of find user
      */
-    public UserProfileResDto findUserByNickname(String nickname) {
+    public Long findUserByNickname(String nickname) {
         User findUser = userDataRepository.findByNickname(nickname).orElseThrow(EntityNotFoundException::new);
-        return findUser.getProfileInfo();
+        return findUser.getId();
     }
 }
