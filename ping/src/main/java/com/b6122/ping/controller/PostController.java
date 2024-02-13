@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -53,6 +54,13 @@ public class PostController {
     public ResponseEntity modifyPost(@RequestBody @Validated PostDto postDto){
         Long pid = postService.modifyPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
+    }
+
+    //글 삭제
+    @PostMapping("/post/delete")
+        public ResponseEntity deletepost(@RequestParam("pid") Long pid){
+        postService.deletePost(pid);
+        return ResponseEntity.ok(pid);
     }
 
     //글 정보 반환, 조회수 ++
