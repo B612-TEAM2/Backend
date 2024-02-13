@@ -28,21 +28,21 @@ public class PostController {
                                         @RequestParam("content") String content,
                                         @RequestParam("latitude") float latitude,
                                         @RequestParam("longitude") float longitude,
-                                        @RequestParam("imgs") List<MultipartFile> imgs,
+                                        @RequestParam("img") List<MultipartFile> img,
                                         Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-//        System.out.println("title = " + title);
-//        System.out.println("content = " + content);
-//        System.out.println("latitude = " + latitude);
-//        System.out.println("longitude = " + longitude);
-//        System.out.println("imgs = " + imgs);
+        System.out.println("title = " + title);
+        System.out.println("content = " + content);
+        System.out.println("latitude = " + latitude);
+        System.out.println("longitude = " + longitude);
+        System.out.println("img = " + img);
 
         PostDto postDto = new PostDto();
         postDto.setTitle(title);
         postDto.setContent(content);
         postDto.setLatitude(latitude);
         postDto.setLongitude(longitude);
-        postDto.setImgs(imgs);
+        postDto.setImgs(img);
         postDto.setUid(principalDetails.getUser().getId());
         Long pid = postService.createPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
