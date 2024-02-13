@@ -5,22 +5,20 @@ import com.b6122.ping.domain.Post;
 import com.b6122.ping.domain.PostScope;
 import com.b6122.ping.repository.LikeRepository;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotEmpty;
+
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.repository.query.Param;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
+
 import java.util.List;
 
+//dto 분리,메모리 효율을 위해
 @Getter @Setter
 @RequiredArgsConstructor
 public class PostDto {
@@ -68,8 +66,8 @@ public class PostDto {
 
 
     //pin- 위도, 경도,postId
-    //Home-Map, 모든 글의 pin 보여주기
-    public static PostDto pinHomeMap(Post post) {
+    //Map위에 pin 보여주기
+    public static PostDto pinMap(Post post) {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setLongitude(post.getLongitude());
@@ -78,7 +76,7 @@ public class PostDto {
     }
 
     //Home-Map 토글, pin클릭시 postPreview보여주기
-    public static PostDto postPreviewHomeMap(Post post) {
+    public static PostDto postPreviewMap(Post post) {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
@@ -91,7 +89,7 @@ public class PostDto {
 
 
     //Home-List 토글
-    public static PostDto postPreviewHomeList(Post post, LikeRepository likeRepository) {
+    public static PostDto postPreviewList(Post post, LikeRepository likeRepository) {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
         postDto.setTitle(post.getTitle());
@@ -119,11 +117,6 @@ public class PostDto {
         postDto.setImgsByte(post.getByteArraysOfImgsByPaths()); //모든 이미지 반환
         return postDto;
     }
-
-    //글 작성 페이지-정보 저장
-    //Friends-Map 토글
-
-    //Friends-List 토글
 
 
     private static String truncateContent(String content, int maxLength) {
