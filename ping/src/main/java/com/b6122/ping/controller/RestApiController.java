@@ -1,6 +1,7 @@
 package com.b6122.ping.controller;
 
 import com.b6122.ping.auth.PrincipalDetails;
+import com.b6122.ping.domain.Post;
 import com.b6122.ping.dto.*;
 import com.b6122.ping.service.*;
 import lombok.RequiredArgsConstructor;
@@ -156,4 +157,17 @@ public class RestApiController {
         reqDto.setToUserId(userId);
         friendshipService.addFriend(reqDto);
     }
+
+    //내 친구들의 모든 글 목록
+//    @GetMapping("/friends/posts")
+//    public List<Post> getFriendsPosts(Authentication authentication) {
+//        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+//        Long userId = principalDetails.getUser().getId();
+//
+//        //친구 목록 불러오기
+//        List<UserProfileResDto> result = friendshipService.getFriendsProfile(userId);
+//
+//        //친구 한 사람씩 작성한 글 목록 가져오기
+//        friendshipService.getFriendPosts(result);
+//    }
 }
