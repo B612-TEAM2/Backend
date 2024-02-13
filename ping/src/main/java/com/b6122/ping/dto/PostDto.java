@@ -107,6 +107,7 @@ public class PostDto {
     public static PostDto postInfo(Post post, LikeRepository likeRepository) {
         PostDto postDto = new PostDto();
         postDto.setId(post.getId());
+        postDto.setUid(post.getUser().getId());
         postDto.setTitle(post.getTitle());
         postDto.setScope(post.getScope());
         postDto.setLikeCount(post.getLikeCount());

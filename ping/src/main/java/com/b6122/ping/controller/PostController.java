@@ -7,11 +7,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,9 +25,20 @@ public class PostController {
 
     //글 작성 후 디비 저장
     @PostMapping("/posts/home/store")
-    public ResponseEntity<Long> getPost(@RequestBody @Validated PostDto postDto,
+    public ResponseEntity<Long> getPost(@RequestParam("title") String title,
+                                        @RequestParam("content") String content,
+                                        @RequestParam("latitude") float latitude,
+                                        @RequestParam("longitude") float longitude,
+                                        @RequestParam("img") List<MultipartFile> img,
                                         Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        PostDto postDto = new PostDto();
+        postDto.setTitle(title);
+        postDto.setContent(content);
+        postDto.setLatitude(latitude);
+        postDto.setLongitude(longitude);
+        postDto.setImgs(img);
         postDto.setUid(principalDetails.getUser().getId());
         Long pid = postService.createPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
@@ -36,6 +49,13 @@ public class PostController {
     public ResponseEntity modifyPost(@RequestBody @Validated PostDto postDto){
         Long pid = postService.modifyPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
+    }
+
+    //글 삭제
+    @PostMapping("/post/delete")
+        public ResponseEntity deletepost(@RequestParam("pid") Long pid){
+        postService.deletePost(pid);
+        return ResponseEntity.ok(pid);
     }
 
     //글 정보 반환, 조회수 ++
@@ -57,7 +77,7 @@ public class PostController {
 
     //pin클릭 시 글 목록 반환, pid 리스트를 받아 반환, home friends public 동일
     @GetMapping("/posts/clickPin")//map -> clickPin 변경
-    public ResponseEntity<List<PostDto>> postsPreviewPin(List<Long> pids){
+    public ResponseEntity<List<PostDto>> postsPreviewPin(@RequestParam List<Long> pids){
         List<PostDto> posts = postService.getPostsPreviewPin(pids);
         return ResponseEntity.ok(posts);
     }
@@ -107,19 +127,19 @@ public class PostController {
 
     //public
 
-    //public pin반환, public인 모든 글 반환? // 조건은 나중에 결정. 일단 모두 반환
+    //public pin반환, 반경 2km 내에 있는 글 반환
     @GetMapping("/posts/public/pins")
-    public ResponseEntity<List<PostDto>> showPinsPubic() {
-        List<PostDto> posts = postService.getPinsPublicMap();
+    public ResponseEntity<List<PostDto>> showPinsPubic(@RequestParam float longitude, @RequestParam float latitude) {
+        List<PostDto> posts = postService.getPinsPublicMap(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
 
 
-    //public list 반환, //조건은 나중에 결정
+    //public list 반환,반경 2km 내에 있는 글 반환
 
     @GetMapping("/posts/public/list")
-    public ResponseEntity<List<PostDto>> showPostsPubicList() {
-        List<PostDto> posts = postService.getPostsPublicList();
+    public ResponseEntity<List<PostDto>> showPostsPubicList(@RequestParam float longitude, @RequestParam float latitude) {
+        List<PostDto> posts = postService.getPostsPublicList(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
 }
