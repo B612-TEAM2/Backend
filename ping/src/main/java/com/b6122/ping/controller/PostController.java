@@ -32,12 +32,6 @@ public class PostController {
                                         @RequestParam("img") List<MultipartFile> img,
                                         Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        System.out.println("title = " + title);
-        System.out.println("content = " + content);
-        System.out.println("latitude = " + latitude);
-        System.out.println("longitude = " + longitude);
-        System.out.println("img = " + img);
-
         PostDto postDto = new PostDto();
         postDto.setTitle(title);
         postDto.setContent(content);

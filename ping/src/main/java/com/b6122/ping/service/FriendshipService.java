@@ -140,9 +140,4 @@ public class FriendshipService {
         return new SearchUserResDto(nickname, friendEntity.getByteArrayOfProfileImgByPath(), isFriend);
     }
 
-
-//    public List<Post> getFriendPosts(List<UserProfileResDto> resDto) {
-//
-//
-//    }
 }
