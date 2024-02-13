@@ -48,7 +48,7 @@ public class PostService {
         return postRepository.save(post);
     }
 
-//post 수정
+    //post 수정
     public Long modifyPost(PostDto postDto){
         Post post;
         post = new Post();
@@ -63,38 +63,16 @@ public class PostService {
         return postRepository.updatePost(post);
     }
 
-    //Home-Map 클릭 전, 내가 작성한 모든 글의 pin띄우기
-    public List<PostDto> getPinsHomeMap(long uid) {
-        List<Post> posts = postRepository.findByUid(uid);
-        return posts.stream().map(PostDto::pinHomeMap).collect(Collectors.toList());
-    }
-
-
-    //Home-Map 토글, pin 클릭시 해당 위치의 postList 반환
-    public List<PostDto> getPostsHomeMap(float latitude, float longitude, long uid) {
-        List<Post> posts = postRepository.findByLocationUser(latitude, longitude,uid);
-        return posts.stream().map(PostDto::postPreviewHomeMap).collect(Collectors.toList());
-    }
-
-    //Home-List 토글, postList 반환
-    public List<PostDto> getPostsHomeList(Long uid) {
-        List<Post> posts = postRepository.findByUid(uid);
-        return posts.stream()
-                .map(post-> PostDto.postPreviewHomeList(post, likeRepository))
-                .collect(Collectors.toList());
-    }
-
     //글 전체보기 요청
     public PostDto getPostInfo(Long pid, Long uid) {
         Post post = postRepository.findById(pid);
 
-        if(post.getUser().getId()!=uid) {//사용자와 글 작성자와 다른 경우만 viewCount++
+        if(post.getUser().getId().equals(uid)) {//사용자와 글 작성자와 다른 경우만 viewCount++
             postRepository.updateViewCount(post.getViewCount() + 1, post.getId());
         }
 
         return PostDto.postInfo(post, likeRepository);
     }
-
 
     public void toggleLike(long postId, long userId) {
         Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, userId);
@@ -102,6 +80,7 @@ public class PostService {
         if (existingLike.isPresent()) {
             // If like exists, delete it
             likeRepository.delete(existingLike.get().getId());
+            postRepository.downLikeCount(postId);
         }
 
         else {
@@ -110,8 +89,79 @@ public class PostService {
             newLike.getPost().setId(postId);
             newLike.getUser().setId(userId);
             likeRepository.save(newLike);
+            postRepository.upLikeCount(postId);
         }
     }
 
 
+    //pin 클릭시 해당 위치의 postList 반환,home friend public 동일한 함수 사용
+    public List<PostDto> getPostsPreviewPin(List<Long> pids ) {
+        List<Post> posts = null;
+
+        for(Long pid : pids){
+            posts.add(postRepository.findById(pid));
+        }
+
+        return posts.stream().map(PostDto::postPreviewMap).collect(Collectors.toList());
+    }
+
+
+
+    //Home
+    //Home-Map 클릭 전, 내가 작성한 모든 글의 pin띄우기
+    public List<PostDto> getPinsHomeMap(long uid) {
+        List<Post> posts = postRepository.findByUid(uid);
+        return posts.stream().map(PostDto::pinMap).collect(Collectors.toList());
+    }
+
+    //Home-List 토글, postList 반환
+    public List<PostDto> getPostsHomeList(Long uid) {
+        List<Post> posts = postRepository.findByUid(uid);
+        return posts.stream()
+                .map(post-> PostDto.postPreviewList(post, likeRepository))
+                .collect(Collectors.toList());
+    }
+
+
+
+
+    //Friends
+    //친구가 작성한 글의 pin 반환
+    public List<PostDto> getPinsFriendsMap(List<Long> uids) {
+        List<Post> posts = null;
+        for(Long uid : uids){
+             posts.addAll(postRepository.findNonePrivateByUid(uid));
+        }
+
+        return posts.stream().map(PostDto::pinMap).collect(Collectors.toList());
+    }
+
+
+    //친구 post list preview
+    public List<PostDto> getPostsFriendsList(List<Long> uids) {
+        List<Post> posts = null;
+        for(Long uid : uids){
+            posts.addAll(postRepository.findNonePrivateByUid(uid));
+        }
+
+        return posts.stream()
+                .map(post-> PostDto.postPreviewList(post, likeRepository))
+                .collect(Collectors.toList());
+    }
+
+
+
+    //Public
+    public List<PostDto> getPinsPublicMap() {
+        List<Post> posts = postRepository.findPublicPosts();
+        return posts.stream().map(PostDto::pinMap).collect(Collectors.toList());
+    }
+
+    public List<PostDto> getPostsPublicList(){
+        List<Post> posts = postRepository.findPublicPosts();
+
+        return posts.stream()
+                .map(post-> PostDto.postPreviewList(post, likeRepository))
+                .collect(Collectors.toList());
+    }
 }
