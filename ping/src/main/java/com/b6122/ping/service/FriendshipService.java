@@ -1,8 +1,8 @@
 package com.b6122.ping.service;
 
 import com.b6122.ping.domain.Friendship;
-import com.b6122.ping.domain.FriendshipRequestStatus;
 import com.b6122.ping.domain.User;
+import com.b6122.ping.dto.AddFriendReqDto;
 import com.b6122.ping.dto.SearchUserResDto;
 import com.b6122.ping.dto.UserProfileResDto;
 import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
@@ -31,13 +31,14 @@ public class FriendshipService {
     @Transactional
     public void deleteFriend(Long userId, Long friendId) {
         Optional<Friendship> findFriendship = findFriendByIds(userId, friendId);
-        if(findFriendship.isPresent()) {
+        if (findFriendship.isPresent()) {
             friendshipDataRepository.delete(findFriendship.get());
         }
     }
 
     /**
      * 사용자의 id로 친구 목록 반환
+     *
      * @param userId 요청한 사용자의 id
      * @return 친구 목록 (FriendDto 정보: nickname, profileImg, id)
      */
@@ -51,12 +52,11 @@ public class FriendshipService {
 
         List<UserProfileResDto> userProfiles = new ArrayList<>();
         for (Friendship friendship : friendshipList) {
-            UserProfileResDto userProfile = friendship.getUserProfile(userId);
+            UserProfileResDto userProfile = friendship.getUserProfileOfFriendship(userId);
             userProfiles.add(userProfile);
         }
         return userProfiles;
     }
-
 
 
     /**
@@ -68,15 +68,16 @@ public class FriendshipService {
 
     /**
      * 친구 요청 보내기
+     *
      * @param fromUserId ->친구 요청 보낸 사람 (사용자)
-     * @param toUserId -> 친구 요청 받은 사람
+     * @param toUserId   -> 친구 요청 받은 사람
      */
     @Transactional
     public void sendRequest(Long fromUserId, Long toUserId) {
 
         //중복 방지
         Optional<Friendship> findFriendShip = findFriendByIds(fromUserId, toUserId);
-        if(findFriendShip.isEmpty()) {
+        if (findFriendShip.isEmpty()) {
             Optional<Friendship> findPendingFriendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId);
             if (findPendingFriendship.isEmpty()) {
                 User fromUser = userDataRepository.findById(fromUserId).orElseThrow(EntityNotFoundException::new);
@@ -87,23 +88,7 @@ public class FriendshipService {
         }
     }
 
-    /**
-     * 친구 요청 수락
-     * @param toUserId (친구 요청 받은 사람, 사용자 id)
-     * @param fromUserId (친구 요청 보낸 사람)
-     */
     @Transactional
-    public void addFriendAccept(Long toUserId, Long fromUserId) {
-        //toUser와 fromUser가 반대의 PENDING 상태 데이터 삭제
-        deleteCounterPartPendingFriendship(toUserId, fromUserId);
-
-        Friendship pendingFriendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId)
-                .orElseThrow(RuntimeException::new);
-        pendingFriendship.setRequestStatus(FriendshipRequestStatus.ACCEPTED);
-        pendingFriendship.setIsFriend(true);
-
-    }
-
     public void deleteCounterPartPendingFriendship(Long toUserIdArg, Long fromUserIdArg) throws RuntimeException {
         Long toUserId = fromUserIdArg;
         Long fromUserId = toUserIdArg;
@@ -111,16 +96,19 @@ public class FriendshipService {
         pendingFriendShip.ifPresent(friendshipDataRepository::delete);
     }
 
-
-    /**
-     * 친구 요청 거절
-     * @param toUserId (친구 요청 받은 사람)
-     * @param fromUserId (친구 요청 보낸 사람)
-     */
     @Transactional
-    public void addFriendReject(Long toUserId, Long fromUserId) {
-        Friendship friendship = friendshipDataRepository.findPendingFriendShip(toUserId, fromUserId).orElseThrow(RuntimeException::new);
-        friendship.setRequestStatus(FriendshipRequestStatus.REJECTED);
+    public void addFriend(AddFriendReqDto reqDto) {
+        Long fromUserId = userDataRepository.findByNickname(reqDto.getNickname())
+                .orElseThrow(RuntimeException::new).getId();
+
+        //동시에 두명이 서로 신청 했을 경우 한 쪽이 수락하면 반대쪽 대기 리스트 삭제
+        if ("accept".equals(reqDto.getStatus())) {
+            deleteCounterPartPendingFriendship(reqDto.getToUserId(), fromUserId);
+        }
+
+        Friendship pendingFriendship = friendshipDataRepository.findPendingFriendShip(reqDto.getToUserId(), fromUserId)
+                .orElseThrow(RuntimeException::new);
+        pendingFriendship.updateFriendship(reqDto);
     }
 
     /**
@@ -128,7 +116,7 @@ public class FriendshipService {
      * @param toUserId (내 id)
      * @return
      */
-    public List<UserProfileResDto> findPendingFriendsToMe(Long toUserId) {
+    public List<UserProfileResDto> findPendingFriendsToMe (Long toUserId){
         List<Friendship> friendshipList = friendshipDataRepository.findPendingFriendShipsToMe(toUserId);
 
         if (friendshipList.isEmpty()) {
@@ -137,18 +125,18 @@ public class FriendshipService {
 
         List<UserProfileResDto> userProfiles = new ArrayList<>();
         for (Friendship friendship : friendshipList) {
-            UserProfileResDto userProfile = friendship.getUserProfile(toUserId);
+            UserProfileResDto userProfile = friendship.getUserProfileOfFriendship(toUserId);
             userProfiles.add(userProfile);
         }
         return userProfiles;
     }
 
-    public SearchUserResDto searchUser(String nickname, Long userId) {
-        UserProfileResDto resDto = userService.findUserByNickname(nickname);
-
-        Optional<Friendship> findFriendship = findFriendByIds(userId, resDto.getId());
+    public SearchUserResDto searchUser (String nickname, Long userId){
+        Long friendId = userService.findUserByNickname(nickname);
+        User friendEntity = userDataRepository.findById(friendId).orElseThrow(RuntimeException::new);
+        Optional<Friendship> findFriendship = findFriendByIds(userId, friendId);
         boolean isFriend = findFriendship.isPresent();
 
-        return new SearchUserResDto(nickname, resDto.getProfileImg(), isFriend);
+        return new SearchUserResDto(nickname, friendEntity.getByteArrayOfProfileImgByPath(), isFriend);
     }
 }
