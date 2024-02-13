@@ -32,6 +32,7 @@ public class PostController {
                                         @RequestParam("img") List<MultipartFile> img,
                                         Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
         PostDto postDto = new PostDto();
         postDto.setTitle(title);
         postDto.setContent(content);
@@ -76,7 +77,7 @@ public class PostController {
 
     //pin클릭 시 글 목록 반환, pid 리스트를 받아 반환, home friends public 동일
     @GetMapping("/posts/clickPin")//map -> clickPin 변경
-    public ResponseEntity<List<PostDto>> postsPreviewPin(List<Long> pids){
+    public ResponseEntity<List<PostDto>> postsPreviewPin(@RequestParam List<Long> pids){
         List<PostDto> posts = postService.getPostsPreviewPin(pids);
         return ResponseEntity.ok(posts);
     }
@@ -128,7 +129,7 @@ public class PostController {
 
     //public pin반환, 반경 2km 내에 있는 글 반환
     @GetMapping("/posts/public/pins")
-    public ResponseEntity<List<PostDto>> showPinsPubic(float longitude, float latitude) {
+    public ResponseEntity<List<PostDto>> showPinsPubic(@RequestParam float longitude, @RequestParam float latitude) {
         List<PostDto> posts = postService.getPinsPublicMap(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
@@ -137,7 +138,7 @@ public class PostController {
     //public list 반환,반경 2km 내에 있는 글 반환
 
     @GetMapping("/posts/public/list")
-    public ResponseEntity<List<PostDto>> showPostsPubicList(float longitude, float latitude) {
+    public ResponseEntity<List<PostDto>> showPostsPubicList(@RequestParam float longitude, @RequestParam float latitude) {
         List<PostDto> posts = postService.getPostsPublicList(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
