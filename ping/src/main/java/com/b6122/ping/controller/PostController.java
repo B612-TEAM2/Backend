@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -53,6 +54,13 @@ public class PostController {
     public ResponseEntity modifyPost(@RequestBody @Validated PostDto postDto){
         Long pid = postService.modifyPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
+    }
+
+    //글 삭제
+    @PostMapping("/post/delete")
+        public ResponseEntity deletepost(@RequestParam("pid") Long pid){
+        postService.deletePost(pid);
+        return ResponseEntity.ok(pid);
     }
 
     //글 정보 반환, 조회수 ++
@@ -124,19 +132,19 @@ public class PostController {
 
     //public
 
-    //public pin반환, public인 모든 글 반환? // 조건은 나중에 결정. 일단 모두 반환
+    //public pin반환, 반경 2km 내에 있는 글 반환
     @GetMapping("/posts/public/pins")
-    public ResponseEntity<List<PostDto>> showPinsPubic() {
-        List<PostDto> posts = postService.getPinsPublicMap();
+    public ResponseEntity<List<PostDto>> showPinsPubic(float longitude, float latitude) {
+        List<PostDto> posts = postService.getPinsPublicMap(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
 
 
-    //public list 반환, //조건은 나중에 결정
+    //public list 반환,반경 2km 내에 있는 글 반환
 
     @GetMapping("/posts/public/list")
-    public ResponseEntity<List<PostDto>> showPostsPubicList() {
-        List<PostDto> posts = postService.getPostsPublicList();
+    public ResponseEntity<List<PostDto>> showPostsPubicList(float longitude, float latitude) {
+        List<PostDto> posts = postService.getPostsPublicList(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
 }
