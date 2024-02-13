@@ -90,9 +90,9 @@ public class PostRepository {
                 .getResultList();
     }
 
-    public List<Post> findPublicPosts() {
+    public List<Post> findPublicPosts(float longitude, float latitude) {
         return em.createQuery("select p form post p"+
-                "where p.scope = \"public\""+
+                "where p.scope = \"public\" and ST_Distance_Sphere(POINT(p.longitude, p.latitude), POINT(longitude, latitude)) <= 2000"+
                 "order by p.createdDate, post.class")
                 .getResultList();
     }

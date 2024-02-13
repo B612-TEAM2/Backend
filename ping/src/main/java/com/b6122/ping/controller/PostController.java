@@ -124,19 +124,19 @@ public class PostController {
 
     //public
 
-    //public pin반환, public인 모든 글 반환? // 조건은 나중에 결정. 일단 모두 반환
+    //public pin반환, 반경 2km 내에 있는 글 반환
     @GetMapping("/posts/public/pins")
-    public ResponseEntity<List<PostDto>> showPinsPubic() {
-        List<PostDto> posts = postService.getPinsPublicMap();
+    public ResponseEntity<List<PostDto>> showPinsPubic(float longitude, float latitude) {
+        List<PostDto> posts = postService.getPinsPublicMap(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
 
 
-    //public list 반환, //조건은 나중에 결정
+    //public list 반환,반경 2km 내에 있는 글 반환
 
     @GetMapping("/posts/public/list")
-    public ResponseEntity<List<PostDto>> showPostsPubicList() {
-        List<PostDto> posts = postService.getPostsPublicList();
+    public ResponseEntity<List<PostDto>> showPostsPubicList(float longitude, float latitude) {
+        List<PostDto> posts = postService.getPostsPublicList(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
 }
