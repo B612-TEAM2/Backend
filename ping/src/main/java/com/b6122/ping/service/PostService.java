@@ -63,6 +63,13 @@ public class PostService {
         return postRepository.updatePost(post);
     }
 
+
+    //글 삭제
+    public void deletePost(Long pid) {
+        postRepository.deletePost(pid);
+    }
+
+
     //글 전체보기 요청
     public PostDto getPostInfo(Long pid, Long uid) {
         Post post = postRepository.findById(pid);
@@ -166,4 +173,5 @@ public class PostService {
                 .map(post-> PostDto.postPreviewList(post, likeRepository))
                 .collect(Collectors.toList());
     }
+
 }
