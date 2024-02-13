@@ -6,13 +6,12 @@ import com.b6122.ping.service.PostService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -39,34 +38,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
     }
 
-    //Home-Map, 내 모든 글의 pin 반환
-    @GetMapping("/posts/home/pins")
-    public ResponseEntity<List<PostDto>> showPinsHome(Authentication authentication) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Long uid = principalDetails.getUser().getId();
-        List<PostDto> posts = postService.getPinsHomeMap(uid);
-        return ResponseEntity.ok(posts);
-    }
-
-    //Home-Map 클릭, postList 반환
-    @GetMapping("/posts/home/map")
-    public ResponseEntity<List<PostDto>> showPostsHomeMap(@RequestParam("latitude") float latitude,
-                                                          @RequestParam("longitude") float longitude, Authentication authentication) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Long uid = principalDetails.getUser().getId();
-        List<PostDto> posts = postService.getPostsHomeMap(latitude, longitude,uid);
-        return ResponseEntity.ok(posts);
-    }
-
-
-    //Home-List 토글, postList 반환
-    @GetMapping("/posts/home/list")
-    public ResponseEntity<List<PostDto>> showPostsHomeList(Authentication authentication) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        Long uid = principalDetails.getUser().getId();
-        List<PostDto> posts = postService.getPostsHomeList(uid);
-        return ResponseEntity.ok().body(posts);
-    }
     //글 정보 반환, 조회수 ++
     @GetMapping("/postInfo/{id}")
     public ResponseEntity<PostDto> postInfo(@PathVariable("id") Long pid,Authentication authentication ) {
@@ -84,5 +55,72 @@ public class PostController {
     }
 
 
+    //pin클릭 시 글 목록 반환, pid 리스트를 받아 반환, home friends public 동일
+    @GetMapping("/posts/clickPin")//map -> clickPin 변경
+    public ResponseEntity<List<PostDto>> postsPreviewPin(List<Long> pids){
+        List<PostDto> posts = postService.getPostsPreviewPin(pids);
+        return ResponseEntity.ok(posts);
+    }
+
+    //Home
+
+    //Home-Map, 내 모든 글의 pin 반환
+    @GetMapping("/posts/home/pins")
+    public ResponseEntity<List<PostDto>> showPinsHome(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long uid = principalDetails.getUser().getId();
+        List<PostDto> posts = postService.getPinsHomeMap(uid);
+        return ResponseEntity.ok(posts);
+    }
+
+    //Home-List 토글, postList 반환
+    @GetMapping("/posts/home/list")
+    public ResponseEntity<List<PostDto>> showPostsHomeList(Authentication authentication) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long uid = principalDetails.getUser().getId();
+        List<PostDto> posts = postService.getPostsHomeList(uid);
+        return ResponseEntity.ok().body(posts);
+    }
+
+
+
+
+    //Friend
+
+    //pins 반환, 친구 id 를 리스트로 받아 공개범위가 private이 아닌 것만 pid, 위도 경도 반환
+    @GetMapping("/posts/friends/pins")
+    public ResponseEntity<List<PostDto>> showPinsFriends(@RequestParam List<Long> uids) {
+        List<PostDto> posts = postService.getPinsFriendsMap(uids);
+        return ResponseEntity.ok(posts);
+    }
+
+
+    //친구 글 목록 preview 반환, 친구 id를 리스트로 받아 scope가 friend, public 인 것만 최신순으로 반환
+    @GetMapping("/posts/friends/list")
+    public ResponseEntity<List<PostDto>> showPostsFriendsList(@RequestParam List<Long> uids) {
+        List<PostDto> posts = postService.getPostsFriendsList(uids);
+        return ResponseEntity.ok().body(posts);
+    }
+
+
+
+
+    //public
+
+    //public pin반환, public인 모든 글 반환? // 조건은 나중에 결정. 일단 모두 반환
+    @GetMapping("/posts/public/pins")
+    public ResponseEntity<List<PostDto>> showPinsPubic() {
+        List<PostDto> posts = postService.getPinsPublicMap();
+        return ResponseEntity.ok(posts);
+    }
+
+
+    //public list 반환, //조건은 나중에 결정
+
+    @GetMapping("/posts/public/list")
+    public ResponseEntity<List<PostDto>> showPostsPubicList() {
+        List<PostDto> posts = postService.getPostsPublicList();
+        return ResponseEntity.ok(posts);
+    }
 }
 
