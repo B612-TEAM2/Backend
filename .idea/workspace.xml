@@ -4,9 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
+    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현" />
+=======
     <list default="true" id="0d0a979d-4829-43fd-be31-e355648953b5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/ping/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ping/.gitignore" afterDir="false" />
     </list>
+>>>>>>> 67356c192f65d335c60f55c9e4c2fb43a51788d3
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
