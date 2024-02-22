@@ -27,6 +27,7 @@ out/
 application.yml
 JwtProperties.java
 OAuthProperties.java
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
