@@ -46,7 +46,7 @@ public class PostService {
         post.setLikes(postDto.getLikes());
         if(!postDto.getImgs().isEmpty()) {
             //이미지 저장 MultiPartfile->path
-            post.setImgPaths(post.saveImagesInStorage(postDto.getImgs());
+            post.setImgPaths(post.saveImagesInStorage(postDto.getImgs()));
 
         }
         return postRepository.save(post);
