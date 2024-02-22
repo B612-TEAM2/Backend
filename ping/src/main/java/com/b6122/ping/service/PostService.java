@@ -46,9 +46,15 @@ public class PostService {
         post.setLikes(postDto.getLikes());
         if(!postDto.getImgs().isEmpty()) {
             //이미지 저장 MultiPartfile->path
-            post.setImgPaths(post.saveImagesInStorage(postDto.getImgs());
-
+            List<String> paths = post.saveImagesInStorage(postDto.getImgs());
+            System.out.println("paths = " + paths);
+            System.out.println("paths = " + paths);
+            System.out.println("paths = " + paths);
+            for (String path : paths) {
+                post.addImgPath(path);
+            }
         }
+        System.out.println("post.getImgPaths() = " + post.getImgPaths());
         return postRepository.save(post);
     }
 
@@ -140,12 +146,10 @@ public class PostService {
 
     //Friends
     //친구가 작성한 글의 pin 반환
-    public List<PostDto> getPinsFriendsMap(List<Long> uids) {
-        List<Post> posts = null;
-        for(Long uid : uids){
-             posts.addAll(postRepository.findNonePrivateByUid(uid));
-        }
-
+    public List<PostDto> getPinsFriendsMap(Long uid) {
+        List<Post> posts = postRepository.findNonePrivateByUid(uid);
+        System.out.println("service posts = " + posts);
+        System.out.println("service posts = " + posts);
         return posts.stream().map(PostDto::pinMap).collect(Collectors.toList());
     }
 
