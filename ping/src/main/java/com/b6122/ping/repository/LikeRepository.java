@@ -28,6 +28,7 @@ public class LikeRepository {
         return !result.isEmpty(); // If the result list is not empty, return true; otherwise, return false
     }
 
+    /*
     public Optional<Like> findByPostIdAndUserId(@Param("pid") long pid, @Param("uid") long uid) {
         TypedQuery<Like> query = em.createQuery("SELECT l FROM Like l WHERE l.pid = :pid AND l.uid = :uid", Like.class);
         query.setParameter("pid", pid);
@@ -35,7 +36,7 @@ public class LikeRepository {
         Optional<Like> like = Optional.ofNullable(query.getSingleResult());
         return like ;
     }
-
+*/
 
     public void save(@Param("pids") List<Long> pids,  @Param("uid") Long uid ) {
         for(Long pid : pids){
@@ -52,7 +53,5 @@ public class LikeRepository {
         query.setParameter("uid", uid);
     }
 
-
-    //좋아요 정보 update
 
 }
