@@ -122,7 +122,7 @@ public class PostController {
 
     //pins 반환, 친구 id 를 리스트로 받아 공개범위가 private이 아닌 것만 pid, 위도 경도 반환
     @GetMapping("/posts/friends/pins")
-    public ResponseEntity<List<PostDto>> showPinsFriends(@RequestParam List<Long> uids) {
+    public ResponseEntity<List<PostDto>> showPinsFriends(@RequestParam("uids") List<Long> uids) {
         List<PostDto> posts = postService.getPinsFriendsMap(uids);
         return ResponseEntity.ok(posts);
     }
@@ -130,7 +130,7 @@ public class PostController {
 
     //친구 글 목록 preview 반환, 친구 id를 리스트로 받아 scope가 friend, public 인 것만 최신순으로 반환
     @GetMapping("/posts/friends/list")
-    public ResponseEntity<List<PostDto>> showPostsFriendsList(@RequestParam List<Long> uids) {
+    public ResponseEntity<List<PostDto>> showPostsFriendsList(@RequestParam("uids") List<Long> uids) {
         List<PostDto> posts = postService.getPostsFriendsList(uids);
         return ResponseEntity.ok().body(posts);
     }
@@ -142,7 +142,7 @@ public class PostController {
 
     //public pin반환, 반경 2km 내에 있는 글 반환
     @GetMapping("/posts/public/pins")
-    public ResponseEntity<List<PostDto>> showPinsPubic(@RequestParam float longitude, @RequestParam float latitude) {
+    public ResponseEntity<List<PostDto>> showPinsPubic(@RequestParam("longitude") float longitude, @RequestParam("latitude") float latitude) {
         List<PostDto> posts = postService.getPinsPublicMap(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
@@ -151,7 +151,7 @@ public class PostController {
     //public list 반환,반경 2km 내에 있는 글 반환
 
     @GetMapping("/posts/public/list")
-    public ResponseEntity<List<PostDto>> showPostsPubicList(@RequestParam float longitude, @RequestParam float latitude) {
+    public ResponseEntity<List<PostDto>> showPostsPubicList(@RequestParam("longitude") float longitude, @RequestParam("latitude") float latitude) {
         List<PostDto> posts = postService.getPostsPublicList(longitude,latitude);
         return ResponseEntity.ok(posts);
     }
