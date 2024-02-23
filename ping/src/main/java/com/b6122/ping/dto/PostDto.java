@@ -56,6 +56,9 @@ public class PostDto {
     private List<MultipartFile> imgs;
     private MultipartFile firstImg;
 
+    private byte[] userImg;
+    private String userNickname;
+
 
     //프론트로 이미지 파일 전달
     private byte[] imgByte;
@@ -86,6 +89,8 @@ public class PostDto {
         postDto.setCreatedDate(post.getCreatedDate());
         postDto.setContentPreview(truncateContent(post.getContent(), 15)); // Adjust for content preview
         postDto.setImgByte(post.getByteArrayOfFirstImgByPath()); //대표 이미지 가져오기
+        postDto.setUserImg(post.getUser().getProfileObjectImgBytes());
+        postDto.setUserNickname(post.getUser().getNickname());
         return postDto;
     }
 
@@ -101,6 +106,8 @@ public class PostDto {
         postDto.setCreatedDate(post.getCreatedDate());
         postDto.setContentPreview(truncateContent(post.getContent(), 15)); // Adjust for content preview
         postDto.setImgByte(post.getByteArrayOfFirstImgByPath()); //대표 이미지 가져오기
+        postDto.setUserImg(post.getUser().getProfileObjectImgBytes());
+        postDto.setUserNickname(post.getUser().getNickname());
         return postDto;
     }
 
@@ -118,6 +125,8 @@ public class PostDto {
         postDto.setCreatedDate(post.getModifiedDate());
         postDto.setContent(post.getContent());
         postDto.setImgsByte(post.getByteArraysOfImgsByPaths()); //모든 이미지 반환
+        postDto.setUserImg(post.getUser().getProfileObjectImgBytes());
+        postDto.setUserNickname(post.getUser().getNickname());
         return postDto;
     }
 
