@@ -65,9 +65,12 @@ public class Post extends TimeEntity{
     @OneToMany(mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
 
-    @Column
+    @Column(length = 1000)
     private List<String> imgPaths = new ArrayList<>();
 
+    public void addImgPath(String path) {
+        this.imgPaths.add(path);
+    }
 
     //연관관계 매서드//
     public void setUser(User user) {
@@ -98,12 +101,12 @@ public class Post extends TimeEntity{
             if (!file.exists()) {
                 file.mkdirs();
             }
-
+            imagePath = imagePath + "\\" + imageName;
             // Save the file
             try {
-
-                image.transferTo(new File(imagePath, imageName));
-                imagePath = imagePath + imageName;
+                image.transferTo(new File(imagePath));
+                System.out.println("imagePath = " + imagePath);
+                System.out.println("imagePath = " + imagePath);
                 savedImageNames.add(imagePath);
             } catch (IOException e) {
                 // Handle file saving error
@@ -118,6 +121,11 @@ public class Post extends TimeEntity{
     public byte[] getByteArrayOfFirstImgByPath() {
 //        byte[] fileByteArray = Files.readAllBytes("파일의 절대경로");
         try {
+            List<String> paths = this.getImgPaths();
+            System.out.println("getByteArrayOfFirstImgByPath = " + paths);
+            System.out.println("getByteArrayOfFirstImgByPath = " + paths);
+            System.out.println("getByteArrayOfFirstImgByPath = " + paths);
+
             Resource resource = new UrlResource(Path.of(this.getImgPaths().get(0)).toUri());
             if (resource.exists() && resource.isReadable()) {
                 // InputStream을 사용하여 byte 배열로 변환

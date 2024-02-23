@@ -29,7 +29,7 @@ public class PostController {
                                         @RequestParam("content") String content,
                                         @RequestParam("latitude") float latitude,
                                         @RequestParam("longitude") float longitude,
-                                        @RequestParam("imgs") List<MultipartFile> imgs,
+                                        @RequestParam("img") List<MultipartFile> img,
                                         Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
@@ -38,7 +38,7 @@ public class PostController {
         postDto.setContent(content);
         postDto.setLatitude(latitude);
         postDto.setLongitude(longitude);
-        postDto.setImgs(imgs);
+        postDto.setImgs(img);
         postDto.setUid(principalDetails.getUser().getId());
         Long pid = postService.createPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
@@ -69,10 +69,12 @@ public class PostController {
 
     //좋아요 update
     @PostMapping("/likeToggle")
+
     public ResponseEntity<String> toggleLike(@RequestParam List<Long> pids, @RequestParam List<Boolean> myLikes,Authentication authentication ) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long uid = principalDetails.getUser().getId();
         postService.toggleLike(pids, myLikes, uid);
+
         return ResponseEntity.ok("Like toggled successfully");
     }
 
