@@ -27,6 +27,7 @@ out/
 application.yml
 JwtProperties.java
 OAuthProperties.java
+NcpObjectStorageConfig.java
 
 ### NetBeans ###
 /nbproject/private/
