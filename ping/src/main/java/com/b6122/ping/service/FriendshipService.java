@@ -1,7 +1,6 @@
 package com.b6122.ping.service;
 
 import com.b6122.ping.domain.Friendship;
-import com.b6122.ping.domain.Post;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.AddFriendReqDto;
 import com.b6122.ping.dto.SearchUserResDto;
@@ -137,7 +136,7 @@ public class FriendshipService {
         Optional<Friendship> findFriendship = findFriendByIds(userId, friendId);
         boolean isFriend = findFriendship.isPresent();
 
-        return new SearchUserResDto(nickname, friendEntity.getByteArrayOfProfileImgByPath(), isFriend);
+        return new SearchUserResDto(nickname, friendEntity.getProfileObjectImgBytes(), isFriend);
     }
 
 }

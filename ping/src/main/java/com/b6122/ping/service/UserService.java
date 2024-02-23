@@ -1,30 +1,14 @@
 package com.b6122.ping.service;
 
 import com.b6122.ping.domain.User;
-import com.b6122.ping.domain.UserRole;
-import com.b6122.ping.dto.UserDto;
+import com.b6122.ping.dto.UpdateUserProfileDto;
 import com.b6122.ping.dto.UserProfileReqDto;
 import com.b6122.ping.dto.UserProfileResDto;
-import com.b6122.ping.oauth.provider.GoogleUser;
-import com.b6122.ping.oauth.provider.KakaoUser;
-import com.b6122.ping.oauth.provider.OAuthUser;
-import com.b6122.ping.repository.datajpa.FriendshipDataRepository;
 import com.b6122.ping.repository.datajpa.UserDataRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
 
 @Service
 @RequiredArgsConstructor

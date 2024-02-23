@@ -45,8 +45,8 @@ public class RestApiController {
                                   @RequestParam("nickname") String nickname,
                                   Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg,
-                principalDetails.getUser().getId());
+        Long userId = principalDetails.getUser().getId();
+        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg, userId);
         userService.updateProfile(reqDto);
     }
 
@@ -71,8 +71,8 @@ public class RestApiController {
                                    @RequestParam("nickname") String nickname,
                                    Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg,
-                principalDetails.getUser().getId());
+        Long userId = principalDetails.getUser().getId();
+        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg, userId);
         userService.updateProfile(reqDto);
     }
 
@@ -157,6 +157,4 @@ public class RestApiController {
         reqDto.setToUserId(userId);
         friendshipService.addFriend(reqDto);
     }
-
-
 }
