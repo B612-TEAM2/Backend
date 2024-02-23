@@ -83,8 +83,6 @@ public class Post extends TimeEntity{
     public List<String> saveImagesInStorage(List<MultipartFile> images) {
         List<String> savedImageNames = new ArrayList<>();
 
-
-
         for (MultipartFile image : images) {
             // Generate a random file name to prevent duplicate file names
             String randomFileName = UUID.randomUUID().toString();
@@ -101,13 +99,11 @@ public class Post extends TimeEntity{
             if (!file.exists()) {
                 file.mkdirs();
             }
-            imagePath = imagePath + "\\" + imageName;
             // Save the file
             try {
-                image.transferTo(new File(imagePath));
-                System.out.println("imagePath = " + imagePath);
-                System.out.println("imagePath = " + imagePath);
-                savedImageNames.add(imagePath);
+                image.transferTo(new File(imagePath, imageName));
+                String path = imagePath + "\\" + imageName;
+                savedImageNames.add(path);
             } catch (IOException e) {
                 // Handle file saving error
                 e.printStackTrace();
@@ -122,9 +118,6 @@ public class Post extends TimeEntity{
 //        byte[] fileByteArray = Files.readAllBytes("파일의 절대경로");
         try {
             List<String> paths = this.getImgPaths();
-            System.out.println("getByteArrayOfFirstImgByPath = " + paths);
-            System.out.println("getByteArrayOfFirstImgByPath = " + paths);
-            System.out.println("getByteArrayOfFirstImgByPath = " + paths);
 
             Resource resource = new UrlResource(Path.of(this.getImgPaths().get(0)).toUri());
             if (resource.exists() && resource.isReadable()) {

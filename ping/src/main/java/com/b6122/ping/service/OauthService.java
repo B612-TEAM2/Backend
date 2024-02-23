@@ -28,6 +28,7 @@ public class OauthService {
 
     //회원 가입 후 jwt 토큰 발급
     public UserDto join(String server, String code) throws IOException {
+
         Map<String, Object> userInfo = new HashMap<>();
         if ("kakao".equals(server)) {
             String accessToken = getKakaoAccessToken(code);

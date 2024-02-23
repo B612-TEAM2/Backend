@@ -34,7 +34,6 @@ public class RestApiController {
     @PostMapping("/oauth/jwt/{serverName}")
     public ResponseEntity<Map<String, Object>> oauthLogin(@PathVariable("serverName") String server,
                                                          @RequestBody Map<String, Object> request) throws IOException {
-
         UserDto joinedUser = oauthService.join(server, request.get("code").toString());
         return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(joinedUser));
     }

@@ -60,6 +60,46 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Post> posts = new ArrayList<>();
 
+
+    @Transient
+    private final String REGION_NAME = "kr-standard";
+
+    @Transient
+    private final String ENDPOINT = NcpObjectStorageConfig.endPoint;
+
+    @Transient
+    private final String ACCESS_KEY = NcpObjectStorageConfig.accessKey;
+
+    @Transient
+    private final String SECRET_KEY = NcpObjectStorageConfig.secretKey;
+
+    @Transient
+    private final String CHARSET_NAME = "UTF-8";
+
+    @Transient
+    private final String HMAC_ALGORITHM = "HmacSHA256";
+
+    @Transient
+    private final String HASH_ALGORITHM = "SHA-256";
+
+    @Transient
+    private final String AWS_ALGORITHM = "AWS4-HMAC-SHA256";
+
+    @Transient
+    private final String SERVICE_NAME = "s3";
+
+    @Transient
+    private final String REQUEST_TYPE = "aws4_request";
+
+    @Transient
+    private final String UNSIGNED_PAYLOAD = "UNSIGNED-PAYLOAD";
+
+    @Transient
+    private final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyyMMdd");
+
+    @Transient
+    private final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyyMMdd\'T\'HHmmss\'Z\'");
+
     public void addPost(Post p) {//외부에서 post 생성시 posts list에 추가
         this.posts.add(p);
     }
@@ -81,19 +121,6 @@ public class User {
         return new UserProfileResDto(nickname, this.getProfileObjectImgBytes(), id);
     }
 
-    private final String REGION_NAME = "kr-standard";
-    private final String ENDPOINT = NcpObjectStorageConfig.endPoint;
-    private final String ACCESS_KEY = NcpObjectStorageConfig.accessKey;
-    private final String SECRET_KEY = NcpObjectStorageConfig.secretKey;
-    private final String CHARSET_NAME = "UTF-8";
-    private final String HMAC_ALGORITHM = "HmacSHA256";
-    private final String HASH_ALGORITHM = "SHA-256";
-    private final String AWS_ALGORITHM = "AWS4-HMAC-SHA256";
-    private final String SERVICE_NAME = "s3";
-    private final String REQUEST_TYPE = "aws4_request";
-    private final String UNSIGNED_PAYLOAD = "UNSIGNED-PAYLOAD";
-    private final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyyMMdd");
-    private final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("yyyyMMdd\'T\'HHmmss\'Z\'");
 
     public byte[] getProfileObjectImgBytes() {
 
