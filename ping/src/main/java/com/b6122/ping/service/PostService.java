@@ -1,8 +1,5 @@
 package com.b6122.ping.service;
-
-import com.b6122.ping.domain.Like;
 import com.b6122.ping.domain.Post;
-import com.b6122.ping.domain.PostScope;
 import com.b6122.ping.domain.User;
 import com.b6122.ping.dto.PostDto;
 import com.b6122.ping.repository.LikeRepository;
@@ -12,11 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -70,6 +65,8 @@ public class PostService {
     }
 
 
+
+
     //글 전체보기 요청
     public PostDto getPostInfo(Long pid, Long uid) {
         Post post = postRepository.findById(pid);
@@ -80,26 +77,24 @@ public class PostService {
 
         return PostDto.postInfo(post, likeRepository);
     }
+    //for문 마다 확인하기엔 통신이 너무 오래 걸림, db에서 한번에 검사하는게 효율적
+    //postid, MyLike 받아서 체크
+    public void toggleLike(List<Long> pids, List<Boolean> myLikes, Long uid) {
+        List<Long> delLikePids = null;
+        List<Long> insertLikePids = null;
+        for (int i = 0; i < pids.size(); i++) {
+            if(!myLikes.get(i)){
+                delLikePids.add(pids.get(i));
+            }
 
-    public void toggleLike(long postId, long userId) {
-        Optional<Like> existingLike = likeRepository.findByPostIdAndUserId(postId, userId);
-
-        if (existingLike.isPresent()) {
-            // If like exists, delete it
-            likeRepository.delete(existingLike.get().getId());
-            postRepository.downLikeCount(postId);
+            else{
+                insertLikePids.add(pids.get(i));
+            }
         }
+        likeRepository.delete(delLikePids, uid);
+        likeRepository.save(insertLikePids, uid);
 
-        else {
-            // If like does not exist, create it
-            Like newLike = new Like();
-//            newLike.getPost().setId(postId);
-//            newLike.getUser().setId(userId);
-            newLike.setPost(postRepository.findById(postId));
-            newLike.setUser(userDataRepository.findById(userId).orElseThrow(RuntimeException::new));
-            likeRepository.save(newLike);
-            postRepository.upLikeCount(postId);
-        }
+
     }
 
 
