@@ -9,6 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
       <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/NcpObjectStorageConfig.java" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UpdateUserProfileDto.java" afterDir="false" />
@@ -22,6 +23,11 @@
       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/init/initDb.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/FriendshipService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/FriendshipService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" afterDir="false" />
+=======
+    <list default="true" id="ce119cb3-ee78-41c8-b8a0-a735ff172a88" name="Changes" comment="Naver 소셜로그인 구현">
+      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Image.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> 734a3b3526f23b4e13cbdcbfb5612c9e65d8885a
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +57,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+<<<<<<< HEAD
         <option value="Interface" />
+=======
+>>>>>>> 734a3b3526f23b4e13cbdcbfb5612c9e65d8885a
         <option value="Class" />
       </list>
     </option>
@@ -73,6 +82,7 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "RequestMappingsPanelOrder0": "0",
@@ -94,9 +104,32 @@
     "project.structure.side.proportion": "0.0",
     "spring.configuration.checksum": "cc8741b3fc961a1221529fe862d8a73f",
     "vue.rearranger.settings.migration": "true"
+=======
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/B612project_backend/Backend&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;,
+    &quot;spring.configuration.checksum&quot;: &quot;cc8741b3fc961a1221529fe862d8a73f&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+>>>>>>> 734a3b3526f23b4e13cbdcbfb5612c9e65d8885a
   }
-}]]></component>
-  <component name="RunManager" selected="Spring Boot.PingApplication">
+}</component>
+  <component name="RunManager" selected="Gradle.ping [bootJar]">
     <configuration name="ping [bootJar]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -116,7 +149,6 @@
       <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
       <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
       <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
     <configuration name="PingApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
@@ -135,7 +167,6 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Spring Boot.PingApplication" />
         <item itemvalue="Gradle.ping [bootJar]" />
       </list>
     </recent_temporary>
@@ -160,5 +191,20 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="LikeToggle 수정" />
+    <option name="LAST_COMMIT_MESSAGE" value="LikeToggle 수정" />
   </component>
 </project>
