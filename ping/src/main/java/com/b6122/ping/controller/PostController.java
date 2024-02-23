@@ -1,6 +1,7 @@
 package com.b6122.ping.controller;
 
 import com.b6122.ping.auth.PrincipalDetails;
+import com.b6122.ping.domain.PostScope;
 import com.b6122.ping.dto.PostDto;
 import com.b6122.ping.service.PostService;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class PostController {
                                         @RequestParam("content") String content,
                                         @RequestParam("latitude") float latitude,
                                         @RequestParam("longitude") float longitude,
+                                        @RequestParam("scope") String scope,
                                         @RequestParam(value = "img", required = false) List<MultipartFile> img,
                                         Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -40,6 +42,13 @@ public class PostController {
         postDto.setLongitude(longitude);
         postDto.setImgs(img);
         postDto.setUid(principalDetails.getUser().getId());
+        if("private".equals(scope)){
+            postDto.setScope(PostScope.PRIVATE);
+        } else if("public".equals(scope)) {
+            postDto.setScope(PostScope.PUBLIC);
+        } else {
+            postDto.setScope(PostScope.FRIENDS);
+        }
         Long pid = postService.createPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
     }
