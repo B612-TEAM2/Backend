@@ -69,8 +69,10 @@ public class PostController {
 
     //좋아요 update
     @PostMapping("/likeToggle")
-    public ResponseEntity<String> toggleLike(@RequestParam long pid, @RequestParam long uid) {
-        postService.toggleLike(pid, uid);
+    public ResponseEntity<String> toggleLike(@RequestParam List<Long> pids, @RequestParam List<Boolean> myLikes,Authentication authentication ) {
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        Long uid = principalDetails.getUser().getId();
+        postService.toggleLike(pids, myLikes, uid);
         return ResponseEntity.ok("Like toggled successfully");
     }
 

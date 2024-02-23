@@ -37,13 +37,19 @@ public class LikeRepository {
     }
 
 
-    public void save(Like newLike) {
-        em.persist(newLike);
+    public void save(@Param("pids") List<Long> pids,  @Param("uid") Long uid ) {
+        for(Long pid : pids){
+            TypedQuery<Like> query = em.createQuery("Insert INTO Like l(pid, uid) VALUES (:pid, :uid)", Like.class);
+            query.setParameter("pid", pid);
+            query.setParameter("uid", uid);
+        }
+
     }
 
-    public void delete(@Param("id") Long id){
-        TypedQuery<Like> query = em.createQuery("delete FROM Like l WHERE l.id = :id",Like.class);
-        query.setParameter("id", id);
+    public void delete(@Param("pids") List<Long> pids, @Param("uid") Long uid ){
+        TypedQuery<Like> query = em.createQuery("delete FROM Like l WHERE l.pid in :pids And l.uid = :uid", Like.class);
+        query.setParameter("pids", pids);
+        query.setParameter("uid", uid);
     }
 
 
