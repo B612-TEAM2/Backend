@@ -1,0 +1,535 @@
+Index: ping/src/main/java/com/b6122/ping/service/UserService.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.b6122.ping.service;\r\n\r\nimport com.b6122.ping.domain.User;\r\nimport com.b6122.ping.domain.UserRole;\r\nimport com.b6122.ping.dto.CreateJwtRequestDto;\r\nimport com.b6122.ping.dto.UserDto;\r\nimport com.b6122.ping.oauth.provider.GoogleUser;\r\nimport com.b6122.ping.oauth.provider.KakaoUser;\r\nimport com.b6122.ping.oauth.provider.NaverUser;\r\nimport com.b6122.ping.oauth.provider.OAuthUser;\r\nimport com.b6122.ping.repository.datajpa.UserDataRepository;\r\nimport com.fasterxml.jackson.core.JsonProcessingException;\r\nimport com.fasterxml.jackson.databind.JsonNode;\r\nimport com.fasterxml.jackson.databind.ObjectMapper;\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.stereotype.Service;\r\nimport org.springframework.transaction.annotation.Transactional;\r\n\r\nimport java.io.IOException;\r\nimport java.util.HashMap;\r\nimport java.util.Map;\r\n\r\n@Service\r\n@RequiredArgsConstructor\r\npublic class UserService {\r\n\r\n    private final UserDataRepository userDataRepository;\r\n\r\n    @Transactional\r\n    public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {\r\n\r\n        //OAuthUser 생성을 위한 매핑\r\n        String provider = \"kakao\";\r\n        String providerId = userInfoMap.get(\"id\").toString();\r\n        String username = provider + \"_\" + providerId;\r\n\r\n        userInfoMap = new HashMap<>();\r\n\r\n        userInfoMap.put(\"provider\", provider);\r\n        userInfoMap.put(\"providerId\", providerId);\r\n        userInfoMap.put(\"username\", username);\r\n\r\n        //OAuthUser 생성 -> 나중에 프로바이더마다 다른 회원가입 정책을 할 수도 있기 때문에 추상화\r\n        OAuthUser oAuthUser = createOAuthUser(provider, userInfoMap);\r\n\r\n        //db에 회원 등록이 되어있는지 확인후, 안되어 있다면 회원가입 시도\r\n        User findUser = userDataRepository\r\n                .findByUsername(oAuthUser.getProvider() + \"_\" + oAuthUser.getProviderId())\r\n                .orElseGet(() -> {\r\n                    User user = User.builder()\r\n                            .provider(oAuthUser.getProvider())\r\n                            .providerId(oAuthUser.getProviderId())\r\n                            .role(UserRole.ROLE_USER)\r\n                            .build();\r\n\r\n                    // 회원가입\r\n                    return userDataRepository.save(user);\r\n                });\r\n        return new UserDto( findUser.getId(), findUser.getProvider(),\r\n                findUser.getProviderId(), findUser.getRole());\r\n\r\n    }\r\n\r\n    //OAuthUser 생성 메소드. 리소스 서버에 따라 분기.\r\n    protected OAuthUser createOAuthUser(String provider, Map<String, Object> userInfo) {\r\n        switch (provider) {\r\n            case \"google\":\r\n                return new GoogleUser(userInfo);\r\n            case \"kakao\":\r\n                return new KakaoUser(userInfo);\r\n            case \"naver\":\r\n                return new NaverUser(userInfo);\r\n            default:\r\n                return null;\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/service/UserService.java b/ping/src/main/java/com/b6122/ping/service/UserService.java
+--- a/ping/src/main/java/com/b6122/ping/service/UserService.java	(revision 231bda2ef97cc66ff7d3293714c3c864173f8ee2)
++++ b/ping/src/main/java/com/b6122/ping/service/UserService.java	(date 1706860595338)
+@@ -30,7 +30,7 @@
+     public UserDto joinOAuthUser(Map<String, Object> userInfoMap) throws IOException {
+ 
+         //OAuthUser 생성을 위한 매핑
+-        String provider = "kakao";
++        String provider = userInfoMap.get("provider").toString();
+         String providerId = userInfoMap.get("id").toString();
+         String username = provider + "_" + providerId;
+ 
+Index: ping/src/main/java/com/b6122/ping/controller/PostController.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.b6122.ping.controller;\r\n\r\nimport com.b6122.ping.auth.PrincipalDetails;\r\nimport com.b6122.ping.dto.PostDto;\r\nimport com.b6122.ping.service.PostService;\r\nimport lombok.Getter;\r\nimport lombok.RequiredArgsConstructor;\r\nimport lombok.Setter;\r\nimport org.springframework.http.HttpStatus;\r\nimport org.springframework.http.ResponseEntity;\r\nimport org.springframework.security.core.Authentication;\r\nimport org.springframework.validation.annotation.Validated;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\nimport java.util.List;\r\n\r\n@Getter@Setter\r\n@RestController\r\n@RequestMapping(\"/posts/home\")\r\n@RequiredArgsConstructor\r\npublic class PostController {\r\n    private final PostService postService;\r\n\r\n    //글 작성, 수정 후 디비 저장\r\n    @PostMapping(\"/store\")\r\n    public ResponseEntity getPost(@RequestBody @Validated PostDto postDto){\r\n        Long pid = postService.createPost(postDto);\r\n        return ResponseEntity.status(HttpStatus.CREATED).body(pid);\r\n    }\r\n\r\n\r\n    //Home-Map, 내 모든 글의 pin 반환\r\n    @GetMapping\r\n    public ResponseEntity<List<PostDto>> showPinsHome(@RequestParam(\"latitude\") float latitude,\r\n                                                          @RequestParam(\"longitude\") float longitude, Authentication authentication) {\r\n        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();\r\n        Long uid = principalDetails.getUser().getId();\r\n        List<PostDto> posts = postService.getPinsHomeMap(uid);\r\n        return ResponseEntity.ok(posts);\r\n    }\r\n\r\n    //Home-Map 클릭, postList 반환\r\n    @GetMapping(\"/map\")\r\n    public ResponseEntity<List<PostDto>> showPostsHomeMap(@RequestParam(\"latitude\") float latitude,\r\n                                                          @RequestParam(\"longitude\") float longitude, Authentication authentication) {\r\n        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();\r\n        Long uid = principalDetails.getUser().getId();\r\n        List<PostDto> posts = postService.getPostsHomeMap(latitude, longitude,uid);\r\n        return ResponseEntity.ok(posts);\r\n    }\r\n\r\n\r\n    //Home-List 토글, postList 반환\r\n    @GetMapping(\"/list\")\r\n    public ResponseEntity<List<PostDto>> showPostsHomeList(Authentication authentication) {\r\n        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();\r\n        Long uid = principalDetails.getUser().getId();\r\n        List<PostDto> posts = postService.getPostsHomeList(uid);\r\n        return ResponseEntity.ok(posts);\r\n    }\r\n    //글 수정 요청시 디비에서 반환\r\n\r\n\r\n    //내 글 보기\r\n\r\n    //친구 글 보기\r\n\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/ping/src/main/java/com/b6122/ping/controller/PostController.java b/ping/src/main/java/com/b6122/ping/controller/PostController.java
+--- a/ping/src/main/java/com/b6122/ping/controller/PostController.java	(revision 231bda2ef97cc66ff7d3293714c3c864173f8ee2)
++++ b/ping/src/main/java/com/b6122/ping/controller/PostController.java	(date 1706860731400)
+@@ -30,7 +30,7 @@
+ 
+ 
+     //Home-Map, 내 모든 글의 pin 반환
+-    @GetMapping
++    @GetMapping("/pins")
+     public ResponseEntity<List<PostDto>> showPinsHome(@RequestParam("latitude") float latitude,
+                                                           @RequestParam("longitude") float longitude, Authentication authentication) {
+         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_2024-01-19_오후_5_04_[Changes]/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-01-19_오후_5_04_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_2024-01-19_오후_5_04_[Changes]/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_2024-01-19_오후_5_04_[Changes]/shelved.patch	(revision 231bda2ef97cc66ff7d3293714c3c864173f8ee2)
++++ /dev/null	(revision 231bda2ef97cc66ff7d3293714c3c864173f8ee2)
+@@ -1,314 +0,0 @@
+-Index: ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>package com.b6122.ping.oauth.provider;\r\n\r\npublic interface OAuthUser {\r\n    String getProviderId();\r\n    String getProvider();\r\n    String getName();\r\n}\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java b/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java
+---- a/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java	(revision 7d8470c8a6e6f012fecc127eecfb30fb98b7a85a)
+-+++ b/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java	(date 1705564426358)
+-@@ -5,3 +5,5 @@
+-     String getProvider();
+-     String getName();
+- }
+-+
+-+//환준님 코드 업데이트 확인
+-\ No newline at end of file
+-Index: ping/.gitignore
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>HELP.md\r\n.gradle\r\nbuild/\r\n!gradle/wrapper/gradle-wrapper.jar\r\n!**/src/main/**/build/\r\n!**/src/test/**/build/\r\n\r\n### STS ###\r\n.apt_generated\r\n.classpath\r\n.factorypath\r\n.project\r\n.settings\r\n.springBeans\r\n.sts4-cache\r\nbin/\r\n!**/src/main/**/bin/\r\n!**/src/test/**/bin/\r\n### IntelliJ IDEA ###\r\n.idea\r\n*.iws\r\n*.iml\r\n*.ipr\r\nout/\r\n!**/src/main/**/out/\r\n!**/src/test/**/out/\r\napplication.yml\r\nJwtProperties.java\r\n### NetBeans ###\r\n/nbproject/private/\r\n/nbbuild/\r\n/dist/\r\n/nbdist/\r\n/.nb-gradle/\r\n\r\n### VS Code ###\r\n.vscode/\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/ping/.gitignore b/ping/.gitignore
+---- a/ping/.gitignore	(revision 7d8470c8a6e6f012fecc127eecfb30fb98b7a85a)
+-+++ b/ping/.gitignore	(date 1705639789512)
+-@@ -32,6 +32,6 @@
+- /dist/
+- /nbdist/
+- /.nb-gradle/
+--
+-+OAuhpProperties
+- ### VS Code ###
+- .vscode/
+-Index: .idea/workspace.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"f7b5d0e3-c203-4ac2-8340-d5731dea6b7c\" name=\"Changes\" comment=\"\">\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/compiler.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/jarRepositories.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/uiDesigner.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthProperties.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/GoogleOAuthService.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/gradle.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/gradle.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ExternalProjectsData\">\r\n    <projectState path=\"$PROJECT_DIR$/ping\">\r\n      <ProjectState />\r\n    </projectState>\r\n  </component>\r\n  <component name=\"ExternalProjectsManager\">\r\n    <system id=\"GRADLE\">\r\n      <state>\r\n        <projects_view>\r\n          <tree_state>\r\n            <expand />\r\n            <select />\r\n          </tree_state>\r\n        </projects_view>\r\n      </state>\r\n    </system>\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2aO5QEjUgFEpj0eFr9ieXL95cNz\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,\r\n    &quot;android.gradle.sync.needed&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/B612project_backend/Backend&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"f7b5d0e3-c203-4ac2-8340-d5731dea6b7c\" name=\"Changes\" comment=\"\" />\r\n      <created>1704176766234</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1704176766234</updated>\r\n      <workItem from=\"1704176767281\" duration=\"80000\" />\r\n    </task>\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"main\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <breakpoint-manager>\r\n      <breakpoints>\r\n        <line-breakpoint enabled=\"true\" type=\"java-method\">\r\n          <url>file://$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java</url>\r\n          <line>11</line>\r\n          <properties class=\"com.b6122.ping.repository.datajpa.PostDataRepository\" method=\"updateViewCount\">\r\n            <option name=\"EMULATED\" value=\"true\" />\r\n            <option name=\"WATCH_EXIT\" value=\"false\" />\r\n          </properties>\r\n          <option name=\"timeStamp\" value=\"1\" />\r\n        </line-breakpoint>\r\n      </breakpoints>\r\n    </breakpoint-manager>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+---- a/.idea/workspace.xml	(revision 7d8470c8a6e6f012fecc127eecfb30fb98b7a85a)
+-+++ b/.idea/workspace.xml	(date 1705650407716)
+-@@ -4,22 +4,16 @@
+-     <option name="autoReloadType" value="SELECTIVE" />
+-   </component>
+-   <component name="ChangeListManager">
+--    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="">
+-+    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
+-       <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+-       <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+-       <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+--      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthProperties.java" afterDir="false" />
+--      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" afterDir="false" />
+--      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java" afterDir="false" />
+--      <change afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/GoogleOAuthService.java" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/RestApiController.java" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/ping/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ping/.gitignore" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/User.java" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/dto/UserDto.java" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" afterDir="false" />
+-     </list>
+-     <option name="SHOW_DIALOG" value="false" />
+-@@ -89,6 +83,21 @@
+-       <updated>1704176766234</updated>
+-       <workItem from="1704176767281" duration="80000" />
+-     </task>
+-+    <task id="LOCAL-00001" summary="Post 수정, google 로그인 구현">
+-+      <created>1705639450008</created>
+-+      <option name="number" value="00001" />
+-+      <option name="presentableId" value="LOCAL-00001" />
+-+      <option name="project" value="LOCAL" />
+-+      <updated>1705639450008</updated>
+-+    </task>
+-+    <task id="LOCAL-00002" summary="Naver 소셜로그인 구현">
+-+      <created>1705650308048</created>
+-+      <option name="number" value="00002" />
+-+      <option name="presentableId" value="LOCAL-00002" />
+-+      <option name="project" value="LOCAL" />
+-+      <updated>1705650308048</updated>
+-+    </task>
+-+    <option name="localTasksCounter" value="3" />
+-     <servers />
+-   </component>
+-   <component name="TypeScriptGeneratedFilesManager">
+-@@ -116,6 +125,12 @@
+-         </entry>
+-       </map>
+-     </option>
+-+  </component>
+-+  <component name="VcsManagerConfiguration">
+-+    <MESSAGE value="Post 수정, google 로그인 구현" />
+-+    <MESSAGE value="likeCount 수정" />
+-+    <MESSAGE value="Naver 소셜로그인 구현" />
+-+    <option name="LAST_COMMIT_MESSAGE" value="Naver 소셜로그인 구현" />
+-   </component>
+-   <component name="XDebuggerManager">
+-     <breakpoint-manager>
+-Index: .idea/compiler.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/compiler.xml b/.idea/compiler.xml
+-new file mode 100644
+---- /dev/null	(date 1704795338547)
+-+++ b/.idea/compiler.xml	(date 1704795338547)
+-@@ -0,0 +1,14 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="CompilerConfiguration">
+-+    <annotationProcessing>
+-+      <profile name="Gradle Imported" enabled="true">
+-+        <outputRelativeToContentRoot value="true" />
+-+        <processorPath useClasspath="false">
+-+          <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok/1.18.30/f195ee86e6c896ea47a1d39defbe20eb59cd149d/lombok-1.18.30.jar" />
+-+        </processorPath>
+-+        <module name="ping.main" />
+-+      </profile>
+-+    </annotationProcessing>
+-+  </component>
+-+</project>
+-\ No newline at end of file
+-Index: .idea/uiDesigner.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/uiDesigner.xml b/.idea/uiDesigner.xml
+-new file mode 100644
+---- /dev/null	(date 1705205719231)
+-+++ b/.idea/uiDesigner.xml	(date 1705205719231)
+-@@ -0,0 +1,124 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="Palette2">
+-+    <group name="Swing">
+-+      <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
+-+        <default-constraints vsize-policy="1" hsize-policy="6" anchor="0" fill="1" />
+-+      </item>
+-+      <item class="com.intellij.uiDesigner.VSpacer" tooltip-text="Vertical Spacer" icon="/com/intellij/uiDesigner/icons/vspacer.svg" removable="false" auto-create-binding="false" can-attach-label="false">
+-+        <default-constraints vsize-policy="6" hsize-policy="1" anchor="0" fill="2" />
+-+      </item>
+-+      <item class="javax.swing.JPanel" icon="/com/intellij/uiDesigner/icons/panel.svg" removable="false" auto-create-binding="false" can-attach-label="false">
+-+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3" />
+-+      </item>
+-+      <item class="javax.swing.JScrollPane" icon="/com/intellij/uiDesigner/icons/scrollPane.svg" removable="false" auto-create-binding="false" can-attach-label="true">
+-+        <default-constraints vsize-policy="7" hsize-policy="7" anchor="0" fill="3" />
+-+      </item>
+-+      <item class="javax.swing.JButton" icon="/com/intellij/uiDesigner/icons/button.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="0" fill="1" />
+-+        <initial-values>
+-+          <property name="text" value="Button" />
+-+        </initial-values>
+-+      </item>
+-+      <item class="javax.swing.JRadioButton" icon="/com/intellij/uiDesigner/icons/radioButton.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+-+        <initial-values>
+-+          <property name="text" value="RadioButton" />
+-+        </initial-values>
+-+      </item>
+-+      <item class="javax.swing.JCheckBox" icon="/com/intellij/uiDesigner/icons/checkBox.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="0" hsize-policy="3" anchor="8" fill="0" />
+-+        <initial-values>
+-+          <property name="text" value="CheckBox" />
+-+        </initial-values>
+-+      </item>
+-+      <item class="javax.swing.JLabel" icon="/com/intellij/uiDesigner/icons/label.svg" removable="false" auto-create-binding="false" can-attach-label="false">
+-+        <default-constraints vsize-policy="0" hsize-policy="0" anchor="8" fill="0" />
+-+        <initial-values>
+-+          <property name="text" value="Label" />
+-+        </initial-values>
+-+      </item>
+-+      <item class="javax.swing.JTextField" icon="/com/intellij/uiDesigner/icons/textField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+-+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+-+          <preferred-size width="150" height="-1" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JPasswordField" icon="/com/intellij/uiDesigner/icons/passwordField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+-+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+-+          <preferred-size width="150" height="-1" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JFormattedTextField" icon="/com/intellij/uiDesigner/icons/formattedTextField.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+-+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1">
+-+          <preferred-size width="150" height="-1" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JTextArea" icon="/com/intellij/uiDesigner/icons/textArea.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+-+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+-+          <preferred-size width="150" height="50" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JTextPane" icon="/com/intellij/uiDesigner/icons/textPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+-+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+-+          <preferred-size width="150" height="50" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JEditorPane" icon="/com/intellij/uiDesigner/icons/editorPane.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+-+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+-+          <preferred-size width="150" height="50" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JComboBox" icon="/com/intellij/uiDesigner/icons/comboBox.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+-+        <default-constraints vsize-policy="0" hsize-policy="2" anchor="8" fill="1" />
+-+      </item>
+-+      <item class="javax.swing.JTable" icon="/com/intellij/uiDesigner/icons/table.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+-+          <preferred-size width="150" height="50" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JList" icon="/com/intellij/uiDesigner/icons/list.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="6" hsize-policy="2" anchor="0" fill="3">
+-+          <preferred-size width="150" height="50" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JTree" icon="/com/intellij/uiDesigner/icons/tree.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3">
+-+          <preferred-size width="150" height="50" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JTabbedPane" icon="/com/intellij/uiDesigner/icons/tabbedPane.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+-+          <preferred-size width="200" height="200" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JSplitPane" icon="/com/intellij/uiDesigner/icons/splitPane.svg" removable="false" auto-create-binding="false" can-attach-label="false">
+-+        <default-constraints vsize-policy="3" hsize-policy="3" anchor="0" fill="3">
+-+          <preferred-size width="200" height="200" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JSpinner" icon="/com/intellij/uiDesigner/icons/spinner.svg" removable="false" auto-create-binding="true" can-attach-label="true">
+-+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
+-+      </item>
+-+      <item class="javax.swing.JSlider" icon="/com/intellij/uiDesigner/icons/slider.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="8" fill="1" />
+-+      </item>
+-+      <item class="javax.swing.JSeparator" icon="/com/intellij/uiDesigner/icons/separator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
+-+        <default-constraints vsize-policy="6" hsize-policy="6" anchor="0" fill="3" />
+-+      </item>
+-+      <item class="javax.swing.JProgressBar" icon="/com/intellij/uiDesigner/icons/progressbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1" />
+-+      </item>
+-+      <item class="javax.swing.JToolBar" icon="/com/intellij/uiDesigner/icons/toolbar.svg" removable="false" auto-create-binding="false" can-attach-label="false">
+-+        <default-constraints vsize-policy="0" hsize-policy="6" anchor="0" fill="1">
+-+          <preferred-size width="-1" height="20" />
+-+        </default-constraints>
+-+      </item>
+-+      <item class="javax.swing.JToolBar$Separator" icon="/com/intellij/uiDesigner/icons/toolbarSeparator.svg" removable="false" auto-create-binding="false" can-attach-label="false">
+-+        <default-constraints vsize-policy="0" hsize-policy="0" anchor="0" fill="1" />
+-+      </item>
+-+      <item class="javax.swing.JScrollBar" icon="/com/intellij/uiDesigner/icons/scrollbar.svg" removable="false" auto-create-binding="true" can-attach-label="false">
+-+        <default-constraints vsize-policy="6" hsize-policy="0" anchor="0" fill="2" />
+-+      </item>
+-+    </group>
+-+  </component>
+-+</project>
+-\ No newline at end of file
+-Index: .idea/gradle.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"GradleSettings\">\r\n    <option name=\"linkedExternalProjectsSettings\">\r\n      <GradleProjectSettings>\r\n        <option name=\"delegatedBuild\" value=\"false\" />\r\n        <option name=\"testRunner\" value=\"PLATFORM\" />\r\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$/ping\" />\r\n        <option name=\"gradleJvm\" value=\"17\" />\r\n        <option name=\"modules\">\r\n          <set>\r\n            <option value=\"$PROJECT_DIR$/ping\" />\r\n          </set>\r\n        </option>\r\n      </GradleProjectSettings>\r\n    </option>\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/gradle.xml b/.idea/gradle.xml
+---- a/.idea/gradle.xml	(revision 7d8470c8a6e6f012fecc127eecfb30fb98b7a85a)
+-+++ b/.idea/gradle.xml	(date 1705472256582)
+-@@ -1,5 +1,6 @@
+- <?xml version="1.0" encoding="UTF-8"?>
+- <project version="4">
+-+  <component name="GradleMigrationSettings" migrationVersion="1" />
+-   <component name="GradleSettings">
+-     <option name="linkedExternalProjectsSettings">
+-       <GradleProjectSettings>
+-Index: .idea/jarRepositories.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/jarRepositories.xml b/.idea/jarRepositories.xml
+-new file mode 100644
+---- /dev/null	(date 1704795559705)
+-+++ b/.idea/jarRepositories.xml	(date 1704795559705)
+-@@ -0,0 +1,20 @@
+-+<?xml version="1.0" encoding="UTF-8"?>
+-+<project version="4">
+-+  <component name="RemoteRepositoriesConfiguration">
+-+    <remote-repository>
+-+      <option name="id" value="central" />
+-+      <option name="name" value="Maven Central repository" />
+-+      <option name="url" value="https://repo1.maven.org/maven2" />
+-+    </remote-repository>
+-+    <remote-repository>
+-+      <option name="id" value="jboss.community" />
+-+      <option name="name" value="JBoss Community repository" />
+-+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+-+    </remote-repository>
+-+    <remote-repository>
+-+      <option name="id" value="MavenRepo" />
+-+      <option name="name" value="MavenRepo" />
+-+      <option name="url" value="https://repo.maven.apache.org/maven2/" />
+-+    </remote-repository>
+-+  </component>
+-+</project>
+-\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"f7b5d0e3-c203-4ac2-8340-d5731dea6b7c\" name=\"Changes\" comment=\"Naver 소셜로그인 구현\">\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/compiler.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/jarRepositories.xml\" afterDir=\"false\" />\r\n      <change afterPath=\"$PROJECT_DIR$/.idea/uiDesigner.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/gradle.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/gradle.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/.gitignore\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/.gitignore\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"ExternalProjectsData\">\r\n    <projectState path=\"$PROJECT_DIR$/ping\">\r\n      <ProjectState />\r\n    </projectState>\r\n  </component>\r\n  <component name=\"ExternalProjectsManager\">\r\n    <system id=\"GRADLE\">\r\n      <state>\r\n        <projects_view>\r\n          <tree_state>\r\n            <expand />\r\n            <select />\r\n          </tree_state>\r\n        </projects_view>\r\n      </state>\r\n    </system>\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"MarkdownSettingsMigration\">\r\n    <option name=\"stateVersion\" value=\"1\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"2aO5QEjUgFEpj0eFr9ieXL95cNz\" />\r\n  <component name=\"ProjectLevelVcsManager\">\r\n    <ConfirmationsSetting value=\"2\" id=\"Add\" />\r\n  </component>\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,\r\n    &quot;android.gradle.sync.needed&quot;: &quot;true&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;main&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/B612project_backend/Backend&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"f7b5d0e3-c203-4ac2-8340-d5731dea6b7c\" name=\"Changes\" comment=\"\" />\r\n      <created>1704176766234</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1704176766234</updated>\r\n      <workItem from=\"1704176767281\" duration=\"80000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Post 수정, google 로그인 구현\">\r\n      <created>1705639450008</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1705639450008</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Naver 소셜로그인 구현\">\r\n      <created>1705650308048</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1705650308048</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"3\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"main\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Post 수정, google 로그인 구현\" />\r\n    <MESSAGE value=\"likeCount 수정\" />\r\n    <MESSAGE value=\"Naver 소셜로그인 구현\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Naver 소셜로그인 구현\" />\r\n  </component>\r\n  <component name=\"XDebuggerManager\">\r\n    <breakpoint-manager>\r\n      <breakpoints>\r\n        <line-breakpoint enabled=\"true\" type=\"java-method\">\r\n          <url>file://$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java</url>\r\n          <line>11</line>\r\n          <properties class=\"com.b6122.ping.repository.datajpa.PostDataRepository\" method=\"updateViewCount\">\r\n            <option name=\"EMULATED\" value=\"true\" />\r\n            <option name=\"WATCH_EXIT\" value=\"false\" />\r\n          </properties>\r\n          <option name=\"timeStamp\" value=\"1\" />\r\n        </line-breakpoint>\r\n      </breakpoints>\r\n    </breakpoint-manager>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 231bda2ef97cc66ff7d3293714c3c864173f8ee2)
++++ b/.idea/workspace.xml	(date 1706860887733)
+@@ -4,17 +4,11 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
+-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
++    <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="PostController수정">
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_2024-01-19_오후_5_04_[Changes]/shelved.patch" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ping/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/ping/.gitignore" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/domain/Post.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthUser.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/PostRepository.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/JwtService.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/controller/PostController.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/service/UserService.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -47,6 +41,19 @@
+   </component>
+   <component name="Git.Settings">
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
++  </component>
++  <component name="GitHubPullRequestSearchHistory">{
++  &quot;lastFilter&quot;: {
++    &quot;state&quot;: &quot;OPEN&quot;
++  }
++}</component>
++  <component name="GithubPullRequestsUISettings">
++    <option name="selectedUrlAndAccountId">
++      <UrlAndAccount>
++        <option name="accountId" value="ea0e92ca-f83d-428f-819b-5aa3e06d38bd" />
++        <option name="url" value="https://github.com/B612-TEAM2/Backend.git" />
++      </UrlAndAccount>
++    </option>
+   </component>
+   <component name="MarkdownSettingsMigration">
+     <option name="stateVersion" value="1" />
+@@ -68,11 +75,33 @@
+     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+     &quot;android.gradle.sync.needed&quot;: &quot;true&quot;,
+     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Administrator/Desktop/B612project_backend/Backend&quot;,
++    &quot;last_opened_file_path&quot;: &quot;C:/backend/Backend/ping_main/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthProperties.java&quot;,
+     &quot;settings.editor.selected.configurable&quot;: &quot;configurable.group.build&quot;,
++    &quot;two.files.diff.last.used.file&quot;: &quot;C:/backend/Backend/ping_main/ping/src/main/java/com/b6122/ping/oauth/provider/OAuthProperties.java&quot;,
+     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+ }</component>
++  <component name="RunManager">
++    <configuration name="ping" type="GradleRunConfiguration" factoryName="Gradle" nameIsGenerated="true">
++      <ExternalSystemSettings>
++        <option name="executionName" />
++        <option name="externalProjectPath" value="$PROJECT_DIR$/ping" />
++        <option name="externalSystemIdString" value="GRADLE" />
++        <option name="scriptParameters" value="" />
++        <option name="taskDescriptions">
++          <list />
++        </option>
++        <option name="taskNames">
++          <list />
++        </option>
++        <option name="vmOptions" />
++      </ExternalSystemSettings>
++      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
++      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
++      <DebugAllEnabled>false</DebugAllEnabled>
++      <method v="2" />
++    </configuration>
++  </component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
+     <task active="true" id="Default" summary="Default task">
+@@ -97,7 +126,63 @@
+       <option name="project" value="LOCAL" />
+       <updated>1705650308048</updated>
+     </task>
+-    <option name="localTasksCounter" value="3" />
++    <task id="LOCAL-00003" summary="Naver 소셜로그인 구현">
++      <created>1705651483489</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1705651483489</updated>
++    </task>
++    <task id="LOCAL-00004" summary="네이버 CrossOrigin 주소 변경">
++      <created>1705995547162</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1705995547162</updated>
++    </task>
++    <task id="LOCAL-00005" summary="네이버 @CrossOrigin변경">
++      <created>1705997607956</created>
++      <option name="number" value="00005" />
++      <option name="presentableId" value="LOCAL-00005" />
++      <option name="project" value="LOCAL" />
++      <updated>1705997607956</updated>
++    </task>
++    <task id="LOCAL-00006" summary="네이버 requestBody 수정">
++      <created>1705998849804</created>
++      <option name="number" value="00006" />
++      <option name="presentableId" value="LOCAL-00006" />
++      <option name="project" value="LOCAL" />
++      <updated>1705998849804</updated>
++    </task>
++    <task id="LOCAL-00007" summary="CORS 주석">
++      <created>1706001177851</created>
++      <option name="number" value="00007" />
++      <option name="presentableId" value="LOCAL-00007" />
++      <option name="project" value="LOCAL" />
++      <updated>1706001177851</updated>
++    </task>
++    <task id="LOCAL-00008" summary="git ignore 수정">
++      <created>1706002881746</created>
++      <option name="number" value="00008" />
++      <option name="presentableId" value="LOCAL-00008" />
++      <option name="project" value="LOCAL" />
++      <updated>1706002881746</updated>
++    </task>
++    <task id="LOCAL-00009" summary="Like, Post 수정">
++      <created>1706860333627</created>
++      <option name="number" value="00009" />
++      <option name="presentableId" value="LOCAL-00009" />
++      <option name="project" value="LOCAL" />
++      <updated>1706860333627</updated>
++    </task>
++    <task id="LOCAL-00010" summary="PostController수정">
++      <created>1706860584967</created>
++      <option name="number" value="00010" />
++      <option name="presentableId" value="LOCAL-00010" />
++      <option name="project" value="LOCAL" />
++      <updated>1706860584967</updated>
++    </task>
++    <option name="localTasksCounter" value="11" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -130,14 +215,21 @@
+     <MESSAGE value="Post 수정, google 로그인 구현" />
+     <MESSAGE value="likeCount 수정" />
+     <MESSAGE value="Naver 소셜로그인 구현" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Naver 소셜로그인 구현" />
++    <MESSAGE value="네이버 CrossOrigin 주소 변경" />
++    <MESSAGE value="네이버 @CrossOrigin변경" />
++    <MESSAGE value="네이버 requestBody 수정" />
++    <MESSAGE value="CORS 주석" />
++    <MESSAGE value="git ignore 수정" />
++    <MESSAGE value="Like, Post 수정" />
++    <MESSAGE value="PostController수정" />
++    <option name="LAST_COMMIT_MESSAGE" value="PostController수정" />
+   </component>
+   <component name="XDebuggerManager">
+     <breakpoint-manager>
+       <breakpoints>
+         <line-breakpoint enabled="true" type="java-method">
+           <url>file://$PROJECT_DIR$/ping/src/main/java/com/b6122/ping/repository/datajpa/PostDataRepository.java</url>
+-          <line>11</line>
++          <line>13</line>
+           <properties class="com.b6122.ping.repository.datajpa.PostDataRepository" method="updateViewCount">
+             <option name="EMULATED" value="true" />
+             <option name="WATCH_EXIT" value="false" />
