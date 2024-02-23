@@ -138,5 +138,4 @@ public class FriendshipService {
 
         return new SearchUserResDto(nickname, friendEntity.getProfileObjectImgBytes(), isFriend);
     }
-
 }

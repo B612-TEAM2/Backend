@@ -95,6 +95,7 @@ public class Post extends TimeEntity{
             // Generate the full file path with the random file name and original file extension
             String imagePath = ImgPathProperties.postImgPath;
             File file = new File(imagePath);
+
             String imageName = randomFileName + originalFilename;
             //지정한 디렉토리가 없으면 생성
             if (!file.exists()) {

@@ -88,6 +88,7 @@ public class PostRepository {
 
     public List<Post> findNonePrivateByUid(Long uid) {
         return em.createQuery("select p from Post p" +
+
                 " where p.user.id = :uid and p.scope != \"private\" " +
                         "order by p.createdDate", Post.class) //최신순
                 .setParameter("uid", uid)

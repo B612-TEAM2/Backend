@@ -1,7 +1,6 @@
 package com.b6122.ping.controller;
 
 import com.b6122.ping.auth.PrincipalDetails;
-import com.b6122.ping.domain.Post;
 import com.b6122.ping.dto.*;
 import com.b6122.ping.service.*;
 import lombok.RequiredArgsConstructor;
