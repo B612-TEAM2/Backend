@@ -88,16 +88,17 @@ public class PostRepository {
 
     public List<Post> findNonePrivateByUid(Long uid) {
         return em.createQuery("select p from Post p" +
-                "where p.user.id = :uid and p.scope != \"private\" " +
-                        "order by p.createdDate, Post.class") //최신순
+
+                " where p.user.id = :uid and p.scope != \"private\" " +
+                        "order by p.createdDate", Post.class) //최신순
                 .setParameter("uid", uid)
                 .getResultList();
     }
 
     public List<Post> findPublicPosts(float longitude, float latitude) {
-        return em.createQuery("select p form post p"+
-                "where p.scope = \"public\" and ST_Distance_Sphere(POINT(p.longitude, p.latitude), POINT(longitude, latitude)) <= 2000"+
-                "order by p.createdDate, post.class")
+        return em.createQuery("select p from Post p"+
+                " where p.scope = \"public\" and ST_Distance_Sphere(POINT(p.longitude, p.latitude), POINT(longitude, latitude)) <= 2000"+
+                "order by p.createdDate", Post.class)
                 .getResultList();
     }
 }

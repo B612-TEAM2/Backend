@@ -10,6 +10,7 @@
   </component>
   <component name="ChangeListManager">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <list default="true" id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현">
       <change afterPath="$PROJECT_DIR$/.idea/artifacts/Backend_jar.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/ping/src/main/resources/META-INF/MANIFEST.MF" afterDir="false" />
@@ -25,6 +26,11 @@
     </list>
 
 >>>>>>> 3f77768e9e3d796079209e041eb24609fabf3c0f
+=======
+    <list default="true" id="f5e5144e-68e1-487b-abf7-b162f7621993" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+>>>>>>> 16a5bd44488e7816feb1317a0c74ac7fe7d1d58b
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,9 +44,6 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
-        <task path="$PROJECT_DIR$/ping">
-          <activation />
-        </task>
         <projects_view>
           <tree_state>
             <expand />
@@ -57,18 +60,17 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectColorInfo">{
-  &quot;customColor&quot;: &quot;&quot;,
-  &quot;associatedIndex&quot;: -1
+  &quot;associatedIndex&quot;: 8
 }</component>
-  <component name="ProjectId" id="2cJ7wG2D0l1B1W4hah25IlrsO8G" />
+  <component name="ProjectId" id="2cloTYsYLmoZnMsFdGmawWOFsqV" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
-
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
+<<<<<<< HEAD
 <<<<<<< HEAD
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
@@ -124,6 +126,28 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+=======
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "main",
+    "last_opened_file_path": "C:/Users/Administrator/Desktop/B612project_backend/Backend",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "spring.configuration.checksum": "cc8741b3fc961a1221529fe862d8a73f",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+>>>>>>> 16a5bd44488e7816feb1317a0c74ac7fe7d1d58b
     <configuration name="PingApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="ping.main" />
@@ -148,15 +172,21 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="f7b5d0e3-c203-4ac2-8340-d5731dea6b7c" name="Changes" comment="Naver 소셜로그인 구현" />
-      <created>1707818064766</created>
+      <changelist id="f5e5144e-68e1-487b-abf7-b162f7621993" name="Changes" comment="" />
+      <created>1708695534467</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
+<<<<<<< HEAD
       <updated>1707818064766</updated>
       <workItem from="1707818067067" duration="1531000" />
       <workItem from="1708407159373" duration="87000" />
       <workItem from="1708440498396" duration="690000" />
       <workItem from="1708441237109" duration="25000" />
+=======
+      <updated>1708695534467</updated>
+      <workItem from="1708695535460" duration="8000" />
+      <workItem from="1708826887834" duration="954000" />
+>>>>>>> 16a5bd44488e7816feb1317a0c74ac7fe7d1d58b
     </task>
     <servers />
   </component>

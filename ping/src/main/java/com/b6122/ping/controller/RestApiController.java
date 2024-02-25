@@ -1,7 +1,6 @@
 package com.b6122.ping.controller;
 
 import com.b6122.ping.auth.PrincipalDetails;
-import com.b6122.ping.domain.Post;
 import com.b6122.ping.dto.*;
 import com.b6122.ping.service.*;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +34,6 @@ public class RestApiController {
     @PostMapping("/oauth/jwt/{serverName}")
     public ResponseEntity<Map<String, Object>> oauthLogin(@PathVariable("serverName") String server,
                                                          @RequestBody Map<String, Object> request) throws IOException {
-
         UserDto joinedUser = oauthService.join(server, request.get("code").toString());
         return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(joinedUser));
     }
@@ -45,8 +43,8 @@ public class RestApiController {
                                   @RequestParam("nickname") String nickname,
                                   Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg,
-                principalDetails.getUser().getId());
+        Long userId = principalDetails.getUser().getId();
+        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg, userId);
         userService.updateProfile(reqDto);
     }
 
@@ -71,8 +69,8 @@ public class RestApiController {
                                    @RequestParam("nickname") String nickname,
                                    Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg,
-                principalDetails.getUser().getId());
+        Long userId = principalDetails.getUser().getId();
+        UserProfileReqDto reqDto = new UserProfileReqDto(nickname, profileImg, userId);
         userService.updateProfile(reqDto);
     }
 
@@ -157,6 +155,4 @@ public class RestApiController {
         reqDto.setToUserId(userId);
         friendshipService.addFriend(reqDto);
     }
-
-
 }

@@ -28,6 +28,7 @@ public class LikeRepository {
         return !result.isEmpty(); // If the result list is not empty, return true; otherwise, return false
     }
 
+    /*
     public Optional<Like> findByPostIdAndUserId(@Param("pid") long pid, @Param("uid") long uid) {
         TypedQuery<Like> query = em.createQuery("SELECT l FROM Like l WHERE l.pid = :pid AND l.uid = :uid", Like.class);
         query.setParameter("pid", pid);
@@ -35,18 +36,22 @@ public class LikeRepository {
         Optional<Like> like = Optional.ofNullable(query.getSingleResult());
         return like ;
     }
+*/
 
+    public void save(@Param("pids") List<Long> pids,  @Param("uid") Long uid ) {
+        for(Long pid : pids){
+            TypedQuery<Like> query = em.createQuery("Insert INTO Like l(pid, uid) VALUES (:pid, :uid)", Like.class);
+            query.setParameter("pid", pid);
+            query.setParameter("uid", uid);
+        }
 
-    public void save(Like newLike) {
-        em.persist(newLike);
     }
 
-    public void delete(@Param("id") Long id){
-        TypedQuery<Like> query = em.createQuery("delete FROM Like l WHERE l.id = :id",Like.class);
-        query.setParameter("id", id);
+    public void delete(@Param("pids") List<Long> pids, @Param("uid") Long uid ){
+        TypedQuery<Like> query = em.createQuery("delete FROM Like l WHERE l.pid in :pids And l.uid = :uid", Like.class);
+        query.setParameter("pids", pids);
+        query.setParameter("uid", uid);
     }
 
-
-    //좋아요 정보 update
 
 }

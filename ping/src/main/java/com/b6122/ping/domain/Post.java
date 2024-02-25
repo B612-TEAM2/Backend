@@ -65,9 +65,12 @@ public class Post extends TimeEntity{
     @OneToMany(mappedBy = "post")
     private List<Like> likes = new ArrayList<>();
 
-    @Column
+    @Column(length = 1000)
     private List<String> imgPaths = new ArrayList<>();
 
+    public void addImgPath(String path) {
+        this.imgPaths.add(path);
+    }
 
     //연관관계 매서드//
     public void setUser(User user) {
@@ -79,8 +82,6 @@ public class Post extends TimeEntity{
     //이미지 파일 저장
     public List<String> saveImagesInStorage(List<MultipartFile> images) {
         List<String> savedImageNames = new ArrayList<>();
-
-
 
         for (MultipartFile image : images) {
             // Generate a random file name to prevent duplicate file names
@@ -98,13 +99,11 @@ public class Post extends TimeEntity{
             if (!file.exists()) {
                 file.mkdirs();
             }
-
             // Save the file
             try {
-
                 image.transferTo(new File(imagePath, imageName));
-                imagePath = imagePath + imageName;
-                savedImageNames.add(imagePath);
+                String path = imagePath + "\\" + imageName;
+                savedImageNames.add(path);
             } catch (IOException e) {
                 // Handle file saving error
                 e.printStackTrace();
@@ -117,22 +116,25 @@ public class Post extends TimeEntity{
     //대표 이미지 반환
     public byte[] getByteArrayOfFirstImgByPath() {
 //        byte[] fileByteArray = Files.readAllBytes("파일의 절대경로");
-        try {
-            Resource resource = new UrlResource(Path.of(this.getImgPaths().get(0)).toUri());
-            if (resource.exists() && resource.isReadable()) {
-                // InputStream을 사용하여 byte 배열로 변환
-                try (InputStream inputStream = resource.getInputStream()) {
-                    byte[] data = new byte[inputStream.available()];
-                    inputStream.read(data);
-                    return data;
+        if (!this.getImgPaths().isEmpty()) {
+            try {
+                Resource resource = new UrlResource(Path.of(this.getImgPaths().get(0)).toUri());
+                if (resource.exists() && resource.isReadable()) {
+                    // InputStream을 사용하여 byte 배열로 변환
+                    try (InputStream inputStream = resource.getInputStream()) {
+                        byte[] data = new byte[inputStream.available()];
+                        inputStream.read(data);
+                        return data;
+                    }
+                } else {
+                    // 이미지를 찾을 수 없는 경우 예외 또는 다른 처리 방법을 선택
+                    throw new RuntimeException("Image not found");
                 }
-            } else {
-                // 이미지를 찾을 수 없는 경우 예외 또는 다른 처리 방법을 선택
-                throw new RuntimeException("Image not found");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
+        return new byte[0];
     }
 
     //모든 이미지 반환

@@ -4,6 +4,7 @@ import com.b6122.ping.domain.Like;
 import com.b6122.ping.domain.Post;
 import com.b6122.ping.domain.PostScope;
 import com.b6122.ping.repository.LikeRepository;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -51,8 +52,12 @@ public class PostDto {
     private String contentPreview; //미리보기 15자
 
     //프론트에서 이미지 파일 받을때
+
     private List<MultipartFile> imgs;
     private MultipartFile firstImg;
+
+    private byte[] userImg;
+    private String userNickname;
 
 
     //프론트로 이미지 파일 전달
@@ -84,6 +89,8 @@ public class PostDto {
         postDto.setCreatedDate(post.getCreatedDate());
         postDto.setContentPreview(truncateContent(post.getContent(), 15)); // Adjust for content preview
         postDto.setImgByte(post.getByteArrayOfFirstImgByPath()); //대표 이미지 가져오기
+        postDto.setUserImg(post.getUser().getProfileObjectImgBytes());
+        postDto.setUserNickname(post.getUser().getNickname());
         return postDto;
     }
 
@@ -99,6 +106,8 @@ public class PostDto {
         postDto.setCreatedDate(post.getCreatedDate());
         postDto.setContentPreview(truncateContent(post.getContent(), 15)); // Adjust for content preview
         postDto.setImgByte(post.getByteArrayOfFirstImgByPath()); //대표 이미지 가져오기
+        postDto.setUserImg(post.getUser().getProfileObjectImgBytes());
+        postDto.setUserNickname(post.getUser().getNickname());
         return postDto;
     }
 
@@ -116,6 +125,8 @@ public class PostDto {
         postDto.setCreatedDate(post.getModifiedDate());
         postDto.setContent(post.getContent());
         postDto.setImgsByte(post.getByteArraysOfImgsByPaths()); //모든 이미지 반환
+        postDto.setUserImg(post.getUser().getProfileObjectImgBytes());
+        postDto.setUserNickname(post.getUser().getNickname());
         return postDto;
     }
 
