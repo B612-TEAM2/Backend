@@ -87,7 +87,6 @@ public class FriendshipService {
         }
     }
 
-    @Transactional
     public void deleteCounterPartPendingFriendship(Long toUserIdArg, Long fromUserIdArg) throws RuntimeException {
         Long toUserId = fromUserIdArg;
         Long fromUserId = toUserIdArg;

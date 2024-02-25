@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,18 +44,14 @@ public class PostService {
         post.setViewCount(postDto.getViewCount());
         post.setLikeCount(postDto.getLikeCount());
         post.setLikes(postDto.getLikes());
-        post.saveImagesInStorage(postDto.getImgs()); //이미지 저장 MultiPartfile->path
-        if(!postDto.getImgs().isEmpty()) {
+//        post.saveImagesInStorage(postDto.getImgs()); //이미지 저장 MultiPartfile->path
+        if(postDto.getImgs() != null) {
             //이미지 저장 MultiPartfile->path
             List<String> paths = post.saveImagesInStorage(postDto.getImgs());
-            System.out.println("paths = " + paths);
-            System.out.println("paths = " + paths);
-            System.out.println("paths = " + paths);
             for (String path : paths) {
                 post.addImgPath(path);
             }
         }
-        System.out.println("post.getImgPaths() = " + post.getImgPaths());
         return postRepository.save(post);
     }
 
@@ -126,6 +124,8 @@ public class PostService {
         //Home-List 토글, postList 반환
         public List<PostDto> getPostsHomeList (Long uid){
             List<Post> posts = postRepository.findByUid(uid);
+            System.out.println("posts = " + posts);
+            System.out.println("posts = " + posts);
             return posts.stream()
                     .map(post -> PostDto.postPreviewList(post, likeRepository))
                     .collect(Collectors.toList());

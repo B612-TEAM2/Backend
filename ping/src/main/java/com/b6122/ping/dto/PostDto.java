@@ -4,6 +4,7 @@ import com.b6122.ping.domain.Like;
 import com.b6122.ping.domain.Post;
 import com.b6122.ping.domain.PostScope;
 import com.b6122.ping.repository.LikeRepository;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 import lombok.Getter;
@@ -51,6 +52,7 @@ public class PostDto {
     private String contentPreview; //미리보기 15자
 
     //프론트에서 이미지 파일 받을때
+
     private List<MultipartFile> imgs;
     private MultipartFile firstImg;
 
