@@ -39,7 +39,7 @@ public class RestApiController {
     }
 
     @PostMapping("/profile")
-    public void setInitialProfile(@RequestParam("profileImg") MultipartFile profileImg,
+    public void setInitialProfile(@RequestParam(value = "profileImg", required = false) MultipartFile profileImg,
                                   @RequestParam("nickname") String nickname,
                                   Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
@@ -65,7 +65,7 @@ public class RestApiController {
 
     //회원정보 변경(일단 사진만, 닉네임까지 확장 가능)
     @PostMapping("/account")
-    public void updateProfile(@RequestParam("profileImg") MultipartFile profileImg,
+    public void updateProfile(@RequestParam(value = "profileImg", required = false) MultipartFile profileImg,
                                    @RequestParam("nickname") String nickname,
                                    Authentication authentication) {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
