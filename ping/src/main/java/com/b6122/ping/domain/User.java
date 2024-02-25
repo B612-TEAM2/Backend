@@ -105,12 +105,16 @@ public class User {
     }
 
     public void updateProfile(UserProfileReqDto reqDto) {
-        String objectName = UUID.randomUUID() + "_" + reqDto.getProfileImg().getOriginalFilename();
-        String bucketName = NcpObjectStorageConfig.ProfileImgBucketName;
-        try {
-            putObject(bucketName, objectName, reqDto.getProfileImg());
-        } catch(IOException e) {
-            e.printStackTrace();
+
+        String objectName = null;
+        if (reqDto.getProfileImg() != null) {
+            objectName = UUID.randomUUID() + "_" + reqDto.getProfileImg().getOriginalFilename();
+            String bucketName = NcpObjectStorageConfig.ProfileImgBucketName;
+            try {
+                putObject(bucketName, objectName, reqDto.getProfileImg());
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
         }
         this.nickname = reqDto.getNickname();
         this.profileImgObjectName = objectName;

@@ -54,8 +54,33 @@ public class PostController {
     }
 
     //글 수정 후 디비 저장
-    @PostMapping("/posts/home/edit")
-    public ResponseEntity modifyPost(@RequestBody @Validated PostDto postDto){
+    @PutMapping("/posts/home/edit/{postId}")
+    public ResponseEntity modifyPost(@RequestParam("title") String title,
+                                     @RequestParam("content") String content,
+                                     @RequestParam("latitude") float latitude,
+                                     @RequestParam("longitude") float longitude,
+                                     @RequestParam("scope") String scope,
+                                     @RequestParam(value = "img", required = false) List<MultipartFile> img,
+                                     @PathVariable("postId") Long postId,
+                                     Authentication authentication){
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+        PostDto postDto = new PostDto();
+        postDto.setTitle(title);
+        postDto.setContent(content);
+        postDto.setLatitude(latitude);
+        postDto.setLongitude(longitude);
+        postDto.setImgs(img);
+        postDto.setUid(principalDetails.getUser().getId());
+        postDto.setId(postId);
+        if("private".equals(scope)){
+            postDto.setScope(PostScope.PRIVATE);
+        } else if("public".equals(scope)) {
+            postDto.setScope(PostScope.PUBLIC);
+        } else {
+            postDto.setScope(PostScope.FRIENDS);
+        }
         Long pid = postService.modifyPost(postDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
     }
@@ -73,6 +98,7 @@ public class PostController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long uid = principalDetails.getUser().getId();
         PostDto pd = postService.getPostInfo(pid, uid);
+        System.out.println("PostDto = " + pd);
         return ResponseEntity.ok(pd);
     }
 
