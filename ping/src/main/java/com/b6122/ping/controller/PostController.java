@@ -7,8 +7,6 @@ import com.b6122.ping.service.PostService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-
-import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -31,7 +29,7 @@ public class PostController {
                                         @RequestParam("latitude") float latitude,
                                         @RequestParam("longitude") float longitude,
                                         @RequestParam("scope") String scope,
-                                        @RequestParam(value = "img", required = false) List<MultipartFile> img,
+                                        @RequestParam(value = "img", required = false) List<MultipartFile> imgs,
                                         Authentication authentication){
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
 
@@ -40,7 +38,6 @@ public class PostController {
         postDto.setContent(content);
         postDto.setLatitude(latitude);
         postDto.setLongitude(longitude);
-        postDto.setImgs(img);
         postDto.setUid(principalDetails.getUser().getId());
         if("private".equals(scope)){
             postDto.setScope(PostScope.PRIVATE);
@@ -49,39 +46,15 @@ public class PostController {
         } else {
             postDto.setScope(PostScope.FRIENDS);
         }
-        Long pid = postService.createPost(postDto);
+        Long pid = postService.createPost(postDto, imgs);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
     }
 
     //글 수정 후 디비 저장
-    @PutMapping("/posts/home/edit/{postId}")
-    public ResponseEntity modifyPost(@RequestParam("title") String title,
-                                     @RequestParam("content") String content,
-                                     @RequestParam("latitude") float latitude,
-                                     @RequestParam("longitude") float longitude,
-                                     @RequestParam("scope") String scope,
-                                     @RequestParam(value = "img", required = false) List<MultipartFile> img,
-                                     @PathVariable("postId") Long postId,
-                                     Authentication authentication){
-
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-
-        PostDto postDto = new PostDto();
-        postDto.setTitle(title);
-        postDto.setContent(content);
-        postDto.setLatitude(latitude);
-        postDto.setLongitude(longitude);
-        postDto.setImgs(img);
-        postDto.setUid(principalDetails.getUser().getId());
-        postDto.setId(postId);
-        if("private".equals(scope)){
-            postDto.setScope(PostScope.PRIVATE);
-        } else if("public".equals(scope)) {
-            postDto.setScope(PostScope.PUBLIC);
-        } else {
-            postDto.setScope(PostScope.FRIENDS);
-        }
-        Long pid = postService.modifyPost(postDto);
+    @PostMapping("/posts/home/edit")
+    public ResponseEntity modifyPost(@RequestBody @Validated PostDto postDto,
+                                     @RequestParam(value = "img", required = false) List<MultipartFile> imgs){
+        Long pid = postService.modifyPost(postDto, imgs);
         return ResponseEntity.status(HttpStatus.CREATED).body(pid);
     }
 
@@ -98,7 +71,6 @@ public class PostController {
         PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
         Long uid = principalDetails.getUser().getId();
         PostDto pd = postService.getPostInfo(pid, uid);
-        System.out.println("PostDto = " + pd);
         return ResponseEntity.ok(pd);
     }
 
