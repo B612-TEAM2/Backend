@@ -20,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class RestApiController {
 
     private final JwtService jwtService;
@@ -31,9 +32,27 @@ public class RestApiController {
     // 받아 온 access token으로 카카오 리소스 서버로부터 카카오 유저 정보 가져오기
     // 가져온 정보를 기반으로 회원가입
     // jwt accessToken을 리액트 서버에 return
+//    @PostMapping("/oauth/jwt")
+//    public ResponseEntity<Map<String, Object>> oauthLogin(String server, String code) throws IOException {
+//        UserDto joinedUser = oauthService.join(server, code);
+//        return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(joinedUser));
+//    }
+//
+//    @GetMapping("/auth/{serverName}/callback")
+//    public void getCode(@PathVariable("serverName") String server,
+//                          @RequestParam("code") String code) throws IOException {
+//            oauthLogin(server, code);
+//    }
+
+    @GetMapping("/jwt/access")
+    public void jwt() {
+
+    }
+
     @PostMapping("/oauth/jwt/{serverName}")
     public ResponseEntity<Map<String, Object>> oauthLogin(@PathVariable("serverName") String server,
-                                                         @RequestBody Map<String, Object> request) throws IOException {
+                                                          @RequestBody Map<String, Object> request) throws IOException {
+
         UserDto joinedUser = oauthService.join(server, request.get("code").toString());
         return ResponseEntity.ok().body(jwtService.createJwtAccessAndRefreshToken(joinedUser));
     }

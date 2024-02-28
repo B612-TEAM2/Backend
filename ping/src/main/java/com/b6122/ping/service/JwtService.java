@@ -30,6 +30,7 @@ public class JwtService {
                 .withClaim("id", userDto.getId())
                 .withClaim("username", userDto.getUsername())
                 .withClaim("token_type", "access")
+                .withClaim("expires-at", JwtProperties.ACCESS_TOKEN_EXPIRATION_TIME)
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
         //refreshToken 생성
@@ -38,6 +39,7 @@ public class JwtService {
                 .withClaim("id", userDto.getId())
                 .withClaim("username", userDto.getUsername())
                 .withClaim("token_type", "refresh")
+                .withClaim("expires-at", JwtProperties.REFRESH_TOKEN_EXPIRATION_TIME)
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
         //responseBody에 값 저장해서 return

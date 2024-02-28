@@ -21,6 +21,7 @@ import java.util.List;
 @Getter@Setter
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api")
 public class PostController {
     private final PostService postService;
 
