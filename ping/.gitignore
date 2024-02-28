@@ -16,7 +16,6 @@ build/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
-
 ### IntelliJ IDEA ###
 .idea
 *.iws
@@ -26,6 +25,9 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 application.yml
+JwtProperties.java
+OAuthProperties.java
+NcpObjectStorageConfig.java
 
 ### NetBeans ###
 /nbproject/private/
@@ -33,6 +35,6 @@ application.yml
 /dist/
 /nbdist/
 /.nb-gradle/
-
+frontend/
 ### VS Code ###
 .vscode/
